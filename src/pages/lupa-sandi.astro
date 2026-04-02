@@ -1,0 +1,129 @@
+---
+import '../styles/global.css';
+---
+<html lang="id" data-theme="light">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Lupa Kata Sandi | Alif.Tech</title>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+		<style is:global>
+			body {
+				font-family: 'Inter', sans-serif;
+				margin: 0;
+				padding: 0;
+			}
+			
+			::-webkit-scrollbar { width: 8px; }
+			::-webkit-scrollbar-track { background: #F5EEDB; }
+			::-webkit-scrollbar-thumb { background: #C8B8A3; border-radius: 10px; }
+			::-webkit-scrollbar-thumb:hover { background: #EA580C; }
+			
+			input:-webkit-autofill {
+				-webkit-box-shadow: 0 0 0 30px #FFFFFF inset !important;
+				-webkit-text-fill-color: #2E1F1A !important;
+			}
+
+            /* Efek halus untuk teks di atas gambar agar lebih menyatu dengan branding */
+			.teks-branding-kiri {
+				text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+			}
+		</style>
+	</head>
+	<body class="h-screen w-full antialiased selection:bg-[#EA580C] selection:text-white overflow-hidden bg-[#F5EEDB]">
+		
+		<div class="flex w-full h-screen">
+			
+			<div class="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-center items-center text-center p-10 lg:p-16 bg-[#2E1F1A]">
+				
+				<div class="absolute inset-0 z-0">
+					<img 
+						src="/gambar-login.jpg" 
+						alt="Background Lupa Sandi" 
+						class="w-full h-full object-cover object-center opacity-70"
+					/>
+					<div class="absolute inset-0 bg-[#2E1F1A]/50"></div>
+				</div>
+				
+				<div class="relative z-10 mt-auto mb-10">
+					<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EA580C] text-white text-[10px] font-black tracking-widest mb-6 shadow-lg uppercase">
+						🔒 Keamanan Akun Bisnis
+					</div>
+                    
+                    <h1 class="text-4xl lg:text-5xl font-black mb-4 leading-tight text-[#EA580C] teks-branding-kiri">
+                        Jangan Khawatir.
+                    </h1>
+
+                    <p class="text-[#F5EEDB] font-bold text-sm lg:text-base leading-relaxed max-w-md mx-auto teks-branding-kiri opacity-90">
+						Kami akan membantu Anda mendapatkan kembali akses ke dashboard eksklusif Alif.Tech. Keamanan data bisnis Anda adalah prioritas utama kami.
+					</p>
+				</div>
+			</div>
+
+			<div class="w-full lg:w-1/2 relative flex flex-col bg-[#F5EEDB] h-screen overflow-y-auto px-6 sm:px-12 lg:px-20">
+				
+				<a href="/" class="absolute top-6 left-6 lg:top-8 lg:left-8 text-[#7B6153] hover:text-[#EA580C] font-bold text-sm flex items-center gap-2 transition-colors z-50">
+					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+					Kembali ke Home
+				</a>
+
+				<div class="max-w-md mx-auto w-full py-16 my-auto">
+					
+					<div class="w-16 h-16 bg-white rounded-2xl border border-[#C8B8A3] shadow-sm flex items-center justify-center mx-auto mb-6">
+						<svg class="w-8 h-8 text-[#EA580C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+					</div>
+					
+					<h2 class="text-3xl font-black text-center mb-3 text-[#2E1F1A]">Lupa Kata Sandi?</h2>
+					<p class="text-sm font-medium text-center text-[#7B6153] mb-8 leading-relaxed">
+						Masukkan alamat email yang terdaftar pada akun Anda. Kami akan mengirimkan tautan khusus untuk mengatur ulang kata sandi.
+					</p>
+
+					<form id="formReset" class="space-y-4">
+						<div>
+							<label class="block text-sm font-semibold text-[#2E1F1A] mb-1">Alamat Email</label>
+							<input 
+								type="email" 
+								id="emailReset" 
+								placeholder="nama@email.com" 
+								class="w-full px-4 py-3.5 rounded-xl border border-[#C8B8A3] bg-white text-[#2E1F1A] placeholder-[#8A8173] transition-all outline-none focus:border-[#EA580C] focus:ring-4 focus:ring-[#EA580C]/10" 
+								required 
+							/>
+						</div>
+
+						<button type="submit" id="btnReset" class="w-full py-4 bg-[#2E1F1A] text-[#F5EEDB] rounded-xl font-bold text-base hover:bg-[#4A332A] transition-all shadow-md mt-4 flex justify-center items-center gap-2 active:scale-95">
+							Kirim Tautan Reset
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+						</button>
+					</form>
+
+					<div class="text-center mt-10">
+						<p class="text-sm font-medium text-[#2E1F1A]">
+							Ingat kata sandi Anda? <a href="/login" class="text-[#EA580C] font-bold hover:underline transition-all">Kembali Masuk</a>
+						</p>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		
+		<script is:inline>
+			document.getElementById('formReset').addEventListener('submit', function(e) {
+				e.preventDefault();
+				const email = document.getElementById('emailReset').value;
+				const btn = document.getElementById('btnReset');
+				
+				if(email) {
+					btn.innerHTML = "Mengirim... ⏳";
+					btn.disabled = true;
+					
+					setTimeout(() => {
+						alert("Tautan untuk mereset kata sandi telah dikirim ke " + email + ".\nSilakan cek kotak masuk atau folder spam Anda.");
+						btn.innerHTML = "Kirim Tautan Reset ➔";
+						btn.disabled = false;
+						document.getElementById('emailReset').value = "";
+					}, 1500);
+				}
+			});
+		</script>
+	</body>
+</html>

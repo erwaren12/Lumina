@@ -1,0 +1,115 @@
+---
+import '../styles/global.css';
+
+// CEK SESI (PROTECTED ROUTE): Hanya klien yang login yang bisa buka halaman ini
+const session = Astro.cookies.get('user_session');
+
+if (!session) {
+    return Astro.redirect('/login');
+}
+---
+
+<html lang="id" data-theme="light">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Checkout Pesanan | Alif.Tech</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <style is:global>
+            body { font-family: 'Inter', sans-serif; background-color: #F5EEDB; color: #2E1F1A; }
+            input:focus, select:focus, textarea:focus {
+                outline: none;
+                border-color: #EA580C !important;
+                box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1);
+            }
+        </style>
+    </head>
+    <body class="min-h-screen antialiased flex flex-col">
+
+        <nav class="w-full bg-[#2E1F1A] p-5 text-[#E3D5C1] flex justify-between items-center shadow-md">
+            <a href="/dashboard" class="font-bold flex items-center gap-2 hover:text-[#EA580C] transition-colors text-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Kembali ke Dashboard
+            </a>
+            <div class="font-black flex items-center gap-2 text-lg">
+                <div class="w-7 h-7 bg-[#EA580C] rounded-lg flex items-center justify-center text-xs text-white shadow-sm">🚀</div>
+                Alif<span class="text-[#EA580C]">.Tech</span>
+            </div>
+        </nav>
+
+        <main class="flex-1 container mx-auto px-6 py-12 max-w-2xl flex flex-col justify-center">
+            <div class="bg-white p-8 lg:p-12 rounded-3xl border border-[#C8B8A3] shadow-xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EA580C] text-white text-[10px] font-black tracking-wide mb-4 uppercase shadow-sm">
+                    🛒 Form Checkout
+                </div>
+                <h1 class="text-3xl font-black mb-2 text-[#2E1F1A]">Detail Pesanan</h1>
+                <p class="text-[#7B6153] font-medium mb-8 border-b border-[#C8B8A3] pb-6">Lengkapi formulir di bawah ini untuk memulai transformasi digital bisnis Anda.</p>
+
+                <form id="formOrder" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold text-[#2E1F1A] mb-2">Pilih Paket Website</label>
+                        <select id="jenis_paket" class="w-full px-4 py-3.5 rounded-xl border border-[#C8B8A3] bg-white text-[#2E1F1A] transition-all cursor-pointer font-medium" required>
+                            <option value="">-- Pilih Paket Katalog --</option>
+                            <option value="Katalog Basic">Katalog Basic (Rp 999.000)</option>
+                            <option value="E-Commerce Pro">E-Commerce Pro (Rp 2.499.000)</option>
+                            <option value="AI Integration">Custom AI Agent (Mulai Rp 4.999.000)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-[#2E1F1A] mb-2">Nama Bisnis / Brand</label>
+                        <input type="text" id="nama_bisnis" placeholder="Contoh: Kedai Kopi Nusantara" class="w-full px-4 py-3.5 rounded-xl border border-[#C8B8A3] bg-white text-[#2E1F1A] placeholder-[#8A8173] transition-all font-medium" required />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-[#2E1F1A] mb-2">Catatan Tambahan (Opsional)</label>
+                        <textarea id="catatan" rows="4" placeholder="Jelaskan secara singkat warna tema, fitur khusus, atau referensi website yang Anda inginkan..." class="w-full px-4 py-3.5 rounded-xl border border-[#C8B8A3] bg-white text-[#2E1F1A] placeholder-[#8A8173] transition-all font-medium resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" id="btnSubmitOrder" class="w-full py-4 bg-[#EA580C] text-white rounded-xl font-black text-lg hover:bg-[#C0470A] transition-all shadow-md mt-6 flex justify-center items-center gap-2 active:scale-95">
+                        Konfirmasi Pesanan
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <script is:inline>
+            document.getElementById('formOrder').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const jenis_paket = document.getElementById('jenis_paket').value;
+                const nama_bisnis = document.getElementById('nama_bisnis').value;
+                const catatan = document.getElementById('catatan').value;
+                const btn = document.getElementById('btnSubmitOrder');
+
+                btn.innerHTML = "Memproses Pesanan... ⏳";
+                btn.disabled = true;
+
+                try {
+                    const response = await fetch('/api/order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ jenis_paket, nama_bisnis, catatan })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        alert("🎉 " + result.message);
+                        window.location.href = "/dashboard"; 
+                    } else {
+                        alert("❌ Pendaftaran Gagal: " + result.message);
+                        btn.innerHTML = 'Konfirmasi Pesanan <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                        btn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("❌ Terjadi kesalahan sistem. Coba lagi nanti.");
+                    btn.innerHTML = 'Konfirmasi Pesanan <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                    btn.disabled = false;
+                }
+            });
+        </script>
+    </body>
+</html>

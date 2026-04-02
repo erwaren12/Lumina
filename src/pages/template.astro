@@ -1,0 +1,417 @@
+---
+import '../styles/global.css';
+---
+<html lang="id" data-theme="light">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Template Desain | Alif.Tech</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        
+        <script is:inline>
+            document.documentElement.setAttribute('data-theme', 'light');
+        </script>
+
+        <style is:global>
+            @keyframes shimmer { 100% { transform: translateX(100%); } }
+            details > summary { list-style: none; }
+            details > summary::-webkit-details-marker { display: none; }
+            .hide-scrollbar::-webkit-scrollbar { display: none; }
+            .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            .kursor-tarik { cursor: grab; }
+            .kursor-tarik:active { cursor: grabbing; }
+            @keyframes blink { 0%, 100% { border-color: transparent; } 50% { border-color: #EA580C; } }
+            
+            /* ========================================================
+               🌟 PREMIUM SCROLLBAR
+               ======================================================== */
+            ::-webkit-scrollbar { width: 10px; }
+            ::-webkit-scrollbar-track { background: #0F172A; }
+            ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; border: 2px solid #0F172A; }
+            ::-webkit-scrollbar-thumb:hover { background: #3B82F6; }
+            
+            [data-theme="light"] ::-webkit-scrollbar-track { background: #F5EEDB !important; }
+            [data-theme="light"] ::-webkit-scrollbar-thumb { background: #C8B8A3 !important; border: 2px solid #F5EEDB !important; }
+            [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #EA580C !important; }
+
+            /* ========================================================
+               🏗️ GLOBAL STRUCTURE & SHAPES 
+               ======================================================== */
+            .bg-slate-800, .mockup-container, #terminal-card, #stats-container, section div.bg-gradient-to-r {
+                border-radius: 1.5rem !important;
+                transition: all 0.4s ease-in-out !important;
+                background-image: none !important; 
+            }
+            .bg-slate-800:hover, .mockup-container:hover {
+                transform: translateY(-5px) !important;
+            }
+            
+            div#stats-grid > * { border: none !important; }
+            #fitur-grid-section { border: none !important; box-shadow: none !important; }
+            #fitur-grid div.bg-slate-800 > div { border: none !important; }
+
+            #arsitektur-section .w-12.h-12, #arsitektur-section .w-14.h-14 {
+                border-radius: 50% !important;
+            }
+
+            .portfolio-btn { border: none !important; transition: background-color 0.3s ease !important; }
+            .mockup-category { transition: all 0.3s ease; border: 1px solid transparent !important; }
+            
+            #hero-glow { display: block !important; filter: blur(80px) !important; transition: all 0.7s ease !important; }
+            footer { border-top: none !important; }
+
+            /* ========================================================
+               🌙 DARK MODE COLORS
+               ======================================================== */
+            body { background-color: #0F172A; } 
+            
+            .bg-slate-800, #terminal-card, #stats-container, section div.bg-gradient-to-r {
+                background-color: #1E293B !important; border: 1px solid #334155 !important;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+            }
+            .bg-slate-800:hover, .mockup-container:hover {
+                box-shadow: 0 12px 25px rgba(59, 130, 246, 0.15) !important; border-color: #3B82F6 !important;
+            }
+            
+            .border-slate-800, .border-slate-700, .border-2, .border-t-2, .border-b-2 {
+                border-color: #334155 !important; border-width: 1px !important;
+            }
+            .divide-slate-700 > :not([hidden]) ~ :not([hidden]) { border-color: transparent !important; }
+
+            #typewriter { color: #3B82F6 !important; -webkit-text-fill-color: #3B82F6 !important; }
+
+            .mockup-header { background-color: #0F172A !important; border-bottom: 1px solid #334155 !important; }
+            .mockup-url { background-color: #1E293B !important; color: #94A3B8 !important; border: 1px solid #334155 !important; }
+            .mockup-body { background-color: #1E293B !important; }
+            .mockup-banner { background-color: #0F172A !important; border-color: #334155 !important; color: #64748B !important; }
+            .mockup-category { background-color: #0F172A !important; }
+            .mockup-category:hover { border-color: #3B82F6 !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important; }
+            .mockup-icon-bg { background-color: #1E293B !important; border: 1px solid #334155 !important; }
+            .mockup-text { color: #94A3B8 !important; }
+
+            #hero-glow { background-color: rgba(59, 130, 246, 0.15) !important; }
+            .group:hover #hero-glow { background-color: rgba(59, 130, 246, 0.25) !important; }
+
+            #pita-umkm-section { background-color: #020617 !important; border-radius: 0 !important; } 
+
+            .portfolio-img-bg { background-color: #0F172A !important; }
+            .portfolio-btn { background-color: #3B82F6 !important; color: #FFFFFF !important; }
+            .portfolio-btn:hover { background-color: #2563EB !important; }
+            #btn-portofolio { background-color: #1E293B !important; color: #E2E8F0 !important; border: 1px solid #334155 !important; }
+            #btn-portofolio:hover { border-color: #3B82F6 !important; color: #3B82F6 !important; }
+
+            #arsitektur-section .w-12.h-12, #arsitektur-section .w-14.h-14 {
+                background-color: #1E293B !important; border: 1px solid #334155 !important; color: #3B82F6 !important;
+            }
+
+            footer { background-color: #020617 !important; border-top: 1px solid #1E293B !important; }
+            footer .bg-blue-600 { background-color: #3B82F6 !important; color: #FFFFFF !important; }
+            
+            section, .border-t, .border-b, .border-y { border-color: transparent !important; }
+
+            /* ========================================================
+               ☀️ LIGHT MODE COLORS (TERRACOTTA & BEIGE)
+               ======================================================== */
+            [data-theme="light"] body { background-color: #F5EEDB !important; color: #2E1F1A !important; }
+            
+            [data-theme="light"] .bg-slate-900, [data-theme="light"] .bg-slate-950, 
+            [data-theme="light"] .bg-slate-900\/50, [data-theme="light"] .bg-slate-800\/30 { 
+                background-color: transparent !important;
+            }
+            
+            [data-theme="light"] header .bg-slate-950 { background-color: #F5EEDB !important; border: none !important; }
+            [data-theme="light"] nav.bg-slate-900\/85 { background-color: rgba(245, 238, 219, 0.85) !important; border-bottom: 1px solid #E3D5C1 !important; }
+            [data-theme="light"] #mobile-menu { background-color: rgba(245, 238, 219, 0.98) !important; }
+
+            [data-theme="light"] .bg-slate-800, [data-theme="light"] #terminal-card, 
+            [data-theme="light"] #stats-container, [data-theme="light"] section div.bg-gradient-to-r {
+                background-color: #E3D5C1 !important; border: none !important;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+            }
+            [data-theme="light"] .bg-slate-800:hover, [data-theme="light"] .mockup-container:hover { 
+                box-shadow: 0 12px 25px rgba(234, 88, 12, 0.1) !important; border-color: transparent !important;
+            }
+
+            [data-theme="light"] .border-slate-800, [data-theme="light"] .border-slate-700, 
+            [data-theme="light"] .border-2, [data-theme="light"] .border-t-2, [data-theme="light"] .border-b-2 { 
+                border-color: #C8B8A3 !important;
+            }
+
+            [data-theme="light"] .text-white { color: #2E1F1A !important; }
+            [data-theme="light"] .text-slate-300 { color: #2E1F1A !important; font-weight: 600 !important; }
+            [data-theme="light"] .text-slate-400 { color: #7B6153 !important; font-weight: 500 !important; }
+            [data-theme="light"] .text-slate-500 { color: #8A8173 !important; font-weight: 500 !important; }
+            [data-theme="light"] .text-blue-500, [data-theme="light"] .text-blue-400, 
+            [data-theme="light"] .text-emerald-500, [data-theme="light"] .text-purple-500 { color: #EA580C !important; } 
+            [data-theme="light"] #typewriter { color: #EA580C !important; -webkit-text-fill-color: #EA580C !important; }
+            [data-theme="light"] .border-cyan-400 { border-color: #EA580C !important; }
+
+            [data-theme="light"] .bg-blue-600, [data-theme="light"] a.bg-white.text-blue-600 { 
+                background-color: #2E1F1A !important; color: #F5EEDB !important; border: none !important; 
+            }
+            [data-theme="light"] .bg-blue-600:hover, [data-theme="light"] a.bg-white.text-blue-600:hover { background-color: #4A332A !important; }
+            [data-theme="light"] #btn-portofolio { background-color: #E3D5C1 !important; color: #2E1F1A !important; border: 1px solid #C8B8A3 !important; }
+            [data-theme="light"] #btn-portofolio:hover { background-color: #C8B8A3 !important; border-color: #C8B8A3 !important; color: #2E1F1A !important; }
+
+            [data-theme="light"] #theme-toggle-desktop, [data-theme="light"] #theme-toggle-mobile { 
+                background-color: transparent !important; border: 1px solid #C8B8A3 !important; color: #2E1F1A !important; 
+            }
+            [data-theme="light"] #theme-toggle-desktop:hover, [data-theme="light"] #theme-toggle-mobile:hover { background-color: #E5E7EB !important; color: #EA580C !important; }
+            [data-theme="light"] a.fixed.bottom-6.right-6 svg.w-8.h-8 { color: #FFFFFF !important; }
+
+            [data-theme="light"] .mockup-container { background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; }
+            [data-theme="light"] .mockup-header { background-color: #E3D5C1 !important; border-bottom: 1px solid #C8B8A3 !important; }
+            [data-theme="light"] .mockup-url { background-color: #F5EEDB !important; color: #7B6153 !important; border: 1px solid #C8B8A3 !important; }
+            [data-theme="light"] .mockup-body { background-color: #E3D5C1 !important; }
+            [data-theme="light"] .mockup-banner { background-color: #F5EEDB !important; border-color: #C8B8A3 !important; color: #7B6153 !important; }
+            [data-theme="light"] .mockup-category { background-color: #F5EEDB !important; }
+            [data-theme="light"] .mockup-category:hover { border-color: #EA580C !important; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15) !important; }
+            [data-theme="light"] .mockup-icon-bg { background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; }
+            [data-theme="light"] .mockup-text { color: #7B6153 !important; }
+
+            [data-theme="light"] #hero-glow { background-color: rgba(234, 88, 12, 0.25) !important; }
+            [data-theme="light"] .group:hover #hero-glow { background-color: rgba(234, 88, 12, 0.35) !important; }
+
+            [data-theme="light"] #pita-umkm-section { background-color: #2E1F1A !important; border: none !important; }
+            [data-theme="light"] #pita-umkm-section p, [data-theme="light"] #pita-umkm-section span { color: #EA580C !important; }
+            [data-theme="light"] #pita-umkm-section .font-extrabold { color: #E3D5C1 !important; }
+
+            [data-theme="light"] .portfolio-img-bg { background-color: #F5EEDB !important; }
+            [data-theme="light"] .portfolio-btn { background-color: #EA580C !important; color: #F5EEDB !important; border: none !important; }
+            [data-theme="light"] .portfolio-btn:hover { background-color: #C0470A !important; }
+
+            [data-theme="light"] #arsitektur-section .w-12.h-12, [data-theme="light"] #arsitektur-section .w-14.h-14 {
+                background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; color: #EA580C !important;
+            }
+
+            [data-theme="light"] footer.bg-slate-950 { background-color: #2E1F1A !important; border-top: none !important; }
+            [data-theme="light"] footer h4, 
+            [data-theme="light"] footer p, 
+            [data-theme="light"] footer a, 
+            [data-theme="light"] footer span, 
+            [data-theme="light"] footer ul,
+            [data-theme="light"] footer .text-white,
+            [data-theme="light"] footer .text-slate-400,
+            [data-theme="light"] footer .text-slate-500 { 
+                color: #F5EEDB !important; }
+            [data-theme="light"] footer .bg-blue-600 { background-color: #EA580C !important; color: #F5EEDB !important; }
+            [data-theme="light"] footer .bg-blue-600\/10 { background-color: transparent !important; border: 1px solid #F5EEDB !important; color: #F5EEDB !important; }
+
+            [data-theme="light"] section, [data-theme="light"] .border-t, [data-theme="light"] .border-b, [data-theme="light"] .border-y { border-color: transparent !important; }
+            [data-theme="light"] .bg-blue-600\/20 { display: none !important; } 
+        </style>
+    </head>
+    <body class="bg-slate-900 text-slate-300 font-sans antialiased selection:bg-blue-500 selection:text-white flex flex-col min-h-screen transition-colors duration-500" style="font-family: 'Inter', sans-serif;">
+        
+        <header class="fixed w-full top-0 z-50 transition-all shadow-sm backdrop-blur-lg">
+            <div class="bg-slate-950 border-b border-slate-800 hidden lg:block transition-colors duration-500">
+                <div class="container mx-auto px-6 py-2 flex justify-between items-center text-xs text-slate-400 font-medium">
+                    <div class="flex items-center gap-6">
+                        <span>📞 +62 812-3456-7890</span>
+                        <span>⏰ Setiap Hari 09.00 - 21.00</span>
+                    </div>
+                    <div class="flex items-center gap-1 cursor-pointer hover:text-blue-500 transition">🌐 ID</div>
+                </div>
+            </div>
+            
+            <nav class="bg-slate-900/85 relative z-50 transition-colors duration-500 border-b border-slate-800/50">
+                <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                    <a href="/" class="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2 hover:opacity-80 transition-opacity">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm shadow-lg text-white">🚀</div> 
+                        Alif<span class="text-blue-500">.Tech</span>
+                    </a>
+                    
+                    <div class="hidden lg:flex space-x-8 text-sm font-bold text-slate-300">
+                        <a href="/" class="hover:text-blue-500 transition-all">Home</a>
+                        <a href="/template" class="text-white underline decoration-blue-500 decoration-4 underline-offset-8">Template</a>
+                        <a href="/portofolio" class="hover:text-blue-500 transition-all">Portofolio</a>
+                        <a href="/harga" class="hover:text-blue-500 transition-all">Harga</a>
+                    </div>
+                    
+                    <div class="hidden lg:flex items-center gap-4 md:gap-5">
+                        <button id="theme-toggle-desktop" class="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-slate-300 transition-all shadow-sm cursor-pointer hover:scale-105">
+                            🌙
+                        </button>
+                        <div class="flex items-center gap-3 text-sm font-bold">
+                            <a href="/login" class="text-slate-300 hover:text-blue-500 transition-colors">Login</a>
+                            <a href="/register" class="text-blue-500 hover:text-blue-400 transition-colors">Daftar</a>
+                        </div>
+                        <a href="https://wa.me/6281234567890" target="_blank" class="bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-md hover:-translate-y-1 transition-transform">
+                            Konsultasi
+                        </a>
+                    </div>
+
+                    <button id="mobile-menu-btn" class="lg:hidden p-2 text-slate-300 hover:text-blue-500">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </nav>
+
+            <div id="mobile-menu" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 transform translate-x-full transition-transform duration-300 flex flex-col items-center justify-center space-y-6 text-xl font-extrabold lg:hidden">
+                <button id="theme-toggle-mobile" class="absolute top-24 w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-2xl text-slate-300 hover:scale-105 transition-transform">
+                    🌙
+                </button>
+                <a href="/" class="text-slate-300 hover:text-blue-500 transition-colors mt-10">Home</a>
+                <a href="/template" class="text-white hover:text-blue-500 transition-colors">Template</a>
+                <a href="/portofolio" class="text-slate-300 hover:text-blue-500 transition-colors">Portofolio</a>
+                <a href="/harga" class="text-slate-300 hover:text-blue-500 transition-colors">Harga</a>
+                <div class="w-16 h-px bg-slate-700 my-2"></div>
+                <a href="/login" class="text-slate-300 hover:text-blue-500 transition-colors">Login</a>
+                <a href="/register" class="text-blue-500 transition-colors">Daftar Klien Baru</a>
+                <a href="https://wa.me/6281234567890" class="mt-4 bg-blue-600 text-white px-8 py-3 rounded-full text-base">Konsultasi WA</a>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-6 pt-40 pb-24 relative flex-1">
+            <div class="text-center mb-16 relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 text-xs font-bold tracking-wide mb-6">
+                    🎨 GALERI DESAIN
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black text-white mb-4 transition-colors duration-500">Koleksi Template Desain</h1>
+                <p class="text-slate-400 font-medium max-w-2xl mx-auto transition-colors duration-500">Pilih desain website yang paling cocok untuk mendominasi pasar digital bisnismu. Semua template sudah terintegrasi dengan Payment Gateway dan AI Assistant.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 text-left relative z-10">
+                
+                <div class="group relative overflow-hidden bg-slate-800 cursor-pointer transition-colors duration-500 rounded-[1.5rem] flex flex-col h-full shadow-xl border border-transparent">
+                    <div class="aspect-video portfolio-img-bg relative flex flex-col items-center justify-center overflow-hidden transition-all rounded-t-[1.5rem]">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-orange-500/10 to-transparent"></div>
+                        <span class="text-8xl z-10 transition-transform duration-500 group-hover:-translate-y-4">🛒</span>
+                        <div class="absolute bottom-8 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 translate-y-4 group-hover:translate-y-0">
+                            <a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Lihat Demo</a>
+                        </div>
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-white transition-colors duration-500">E-Commerce Pro</h3>
+                            <span class="bg-blue-600/20 text-blue-500 text-xs font-bold px-3 py-1 rounded-full">F&B</span>
+                        </div>
+                        <p class="text-sm text-slate-400 transition-colors duration-500">Cocok untuk bisnis makanan dan minuman dengan fitur order online langsung ke WhatsApp.</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden bg-slate-800 cursor-pointer transition-colors duration-500 rounded-[1.5rem] flex flex-col h-full shadow-xl border border-transparent">
+                    <div class="aspect-video portfolio-img-bg relative flex flex-col items-center justify-center overflow-hidden transition-all rounded-t-[1.5rem]">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent"></div>
+                        <span class="text-8xl z-10 transition-transform duration-500 group-hover:-translate-y-4">👗</span>
+                        <div class="absolute bottom-8 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 translate-y-4 group-hover:translate-y-0">
+                            <a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Lihat Demo</a>
+                        </div>
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-white transition-colors duration-500">Fashion Store</h3>
+                            <span class="bg-emerald-500/20 text-emerald-500 text-xs font-bold px-3 py-1 rounded-full">FASHION</span>
+                        </div>
+                        <p class="text-sm text-slate-400 transition-colors duration-500">Desain elegan minimalis untuk brand pakaian, butik, dan aksesoris dengan katalog dinamis.</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden bg-slate-800 cursor-pointer transition-colors duration-500 rounded-[1.5rem] flex flex-col h-full shadow-xl border border-transparent">
+                    <div class="aspect-video portfolio-img-bg relative flex flex-col items-center justify-center overflow-hidden transition-all rounded-t-[1.5rem]">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-purple-500/10 to-transparent"></div>
+                        <span class="text-8xl z-10 transition-transform duration-500 group-hover:-translate-y-4">📱</span>
+                        <div class="absolute bottom-8 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 translate-y-4 group-hover:translate-y-0">
+                            <a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Lihat Demo</a>
+                        </div>
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-white transition-colors duration-500">Tech Gadget</h3>
+                            <span class="bg-purple-500/20 text-purple-500 text-xs font-bold px-3 py-1 rounded-full">GADGET</span>
+                        </div>
+                        <p class="text-sm text-slate-400 transition-colors duration-500">Tampilan futuristik untuk toko elektronik, smartphone, dan layanan servis komputer.</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer class="bg-slate-950 pt-20 pb-10 mt-auto relative z-10 transition-colors duration-500">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
+                    <div>
+                        <h4 class="text-white font-bold mb-6 text-lg transition-colors duration-500">Layanan Alif.Tech</h4>
+                        <ul class="space-y-4 text-sm font-medium text-slate-400">
+                            <li><a href="#" class="hover:text-blue-500 transition">Website Katalog</a></li>
+                            <li><a href="#" class="hover:text-blue-500 transition">Paket E-Commerce</a></li>
+                            <li><a href="#" class="hover:text-blue-500 transition">Integrasi Sistem AI</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-6 text-lg transition-colors duration-500">Perusahaan</h4>
+                        <ul class="space-y-4 text-sm font-medium text-slate-400">
+                            <li><a href="#" class="hover:text-blue-500 transition">Tentang Kami</a></li>
+                            <li><a href="#" class="hover:text-blue-500 transition">Hubungi Kami</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="lg:col-span-3 flex flex-col lg:items-end lg:text-right">
+                        <div class="text-3xl font-black text-white tracking-tight flex items-center justify-start lg:justify-end gap-2 mb-4 transition-colors duration-500">
+                            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm text-white shadow-sm transition-colors duration-500">🚀</div>
+                            Alif.Tech
+                        </div>
+                        <p class="text-sm text-slate-400 max-w-sm transition-colors duration-500">Solusi agensi digital terpercaya untuk membangun masa depan bisnis Anda di internet.</p>
+                    </div>
+                </div>
+                
+                <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-6 transition-colors duration-500">
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 opacity-60 hover:opacity-100 transition-all duration-500">
+                        <div class="bg-blue-600/10 px-4 py-2 rounded-lg text-xs font-bold text-blue-500 flex items-center transition-colors duration-500">🏆 Penghargaan Bisnis</div>
+                        <div class="bg-blue-600/10 px-4 py-2 rounded-lg text-xs font-bold text-blue-500 flex items-center transition-colors duration-500">🔒 SECURE SSL</div>
+                    </div>
+                    <div class="text-slate-500 text-xs font-medium transition-colors duration-500">
+                        © 2026 Alif.Tech Agency. All rights reserved.
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script is:inline>
+            // SISTEM TOGGLE TEMA
+            const btnDesktop = document.getElementById('theme-toggle-desktop');
+            const btnMobile = document.getElementById('theme-toggle-mobile');
+            const html = document.documentElement;
+            
+            // Default diset True (Light Mode)
+            let isLight = true;
+            function toggleTheme() {
+                isLight = !isLight;
+                if(isLight) {
+                    html.setAttribute('data-theme', 'light');
+                    if(btnDesktop) btnDesktop.innerText = '🌙';
+                    if(btnMobile) btnMobile.innerText = '🌙';
+                } else {
+                    html.removeAttribute('data-theme');
+                    if(btnDesktop) btnDesktop.innerText = '☀️';
+                    if(btnMobile) btnMobile.innerText = '☀️';
+                }
+            }
+            if(btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
+            if(btnMobile) btnMobile.addEventListener('click', toggleTheme);
+            
+            window.addEventListener('DOMContentLoaded', () => {
+                // Memastikan button iconnya sinkron pas pertama kali load
+                html.setAttribute('data-theme', 'light');
+                if(btnDesktop) btnDesktop.innerText = '🌙';
+                if(btnMobile) btnMobile.innerText = '🌙';
+            });
+            // MOBILE MENU TOGGLE
+            const btnMenu = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            let menuOpen = false;
+            if(btnMenu) {
+                btnMenu.addEventListener('click', () => {
+                    menuOpen = !menuOpen;
+                    if(menuOpen) {
+                        menu.classList.remove('translate-x-full');
+                        btnMenu.innerHTML = '<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                    } else {
+                        menu.classList.add('translate-x-full');
+                        btnMenu.innerHTML = '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>';
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

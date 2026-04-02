@@ -1,0 +1,136 @@
+---
+import '../styles/global.css';
+import { db } from '../lib/db.js';
+
+// 1. CEK SESI
+const session = Astro.cookies.get('user_session');
+
+if (!session) {
+    return Astro.redirect('/login');
+}
+
+const userId = session.value;
+
+// 2. AMBIL DATA USER
+const [userRows] = await db.query('SELECT nama, email FROM users WHERE id = ?', [userId]) as any;
+
+if (userRows.length === 0) {
+    Astro.cookies.delete('user_session');
+    return Astro.redirect('/login');
+}
+
+const user = userRows[0];
+
+// 3. AMBIL DATA PESANAN TERBARU (LANGKAH BARU!)
+// Mencari apakah klien ini punya data di tabel orders
+const [orderRows] = await db.query('SELECT * FROM orders WHERE user_id = ? ORDER BY tanggal_order DESC LIMIT 1', [userId]) as any;
+
+// Cek status: true kalau ada pesanan, false kalau kosong
+const hasOrder = orderRows.length > 0;
+const order = hasOrder ? orderRows[0] : null;
+---
+
+<html lang="id" data-theme="light">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Dashboard Klien | Alif.Tech</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+        <style is:global>
+            body { font-family: 'Inter', sans-serif; background-color: #F5EEDB; color: #2E1F1A; margin: 0; padding: 0; }
+            main::-webkit-scrollbar { width: 8px; }
+            main::-webkit-scrollbar-track { background: #F5EEDB; }
+            main::-webkit-scrollbar-thumb { background: #C8B8A3; border-radius: 10px; }
+            main::-webkit-scrollbar-thumb:hover { background: #EA580C; }
+        </style>
+    </head>
+    
+    <body class="h-screen w-full bg-[#F5EEDB] overflow-hidden">
+        
+        <div class="flex h-full w-full">
+            
+            <aside class="w-[280px] flex-shrink-0 bg-[#2E1F1A] text-[#E3D5C1] flex flex-col shadow-2xl z-20 h-full">
+                <div class="p-8">
+                    <div class="text-2xl font-black flex items-center gap-2">
+                        <div class="w-8 h-8 bg-[#EA580C] rounded-lg flex items-center justify-center text-sm text-white shadow-md">🚀</div>
+                        Alif<span class="text-[#EA580C]">.Tech</span>
+                    </div>
+                </div>
+                
+                <nav class="space-y-2 flex-grow px-4">
+                    <a href="#" class="block px-4 py-3 rounded-xl bg-[#EA580C] text-white font-bold shadow-md">Ringkasan</a>
+                    <a href="/order" class="block px-4 py-3 rounded-xl font-semibold hover:bg-[#4A332A] transition-colors">Pesanan Baru</a>
+                    <a href="#" class="block px-4 py-3 rounded-xl font-semibold hover:bg-[#4A332A] transition-colors">Pengaturan Akun</a>
+                </nav>
+
+                <div class="p-4 border-t border-[#4A332A]">
+                    <button id="btnLogout" class="w-full text-left px-4 py-3 text-red-400 font-bold hover:text-red-300 hover:bg-[#4A332A] rounded-xl transition-colors">
+                        Keluar Akun
+                    </button>
+                </div>
+            </aside>
+
+            <main class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto p-8 lg:p-12">
+                <header class="flex justify-between items-center mb-10">
+                    <div>
+                        <h1 class="text-3xl lg:text-4xl font-black mb-2 text-[#2E1F1A]">Selamat Datang, {user.nama}!</h1>
+                        <p class="text-[#7B6153] font-medium">Dashboard eksklusif Klien Alif.Tech</p>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="bg-white p-6 rounded-2xl border border-[#C8B8A3] shadow-sm">
+                        <div class="text-xs font-bold text-[#7B6153] uppercase mb-2 tracking-wide">Status Website</div>
+                        <div class="text-xl font-black text-[#EA580C] truncate">
+                            {hasOrder ? order.status : 'Belum Ada Pesanan'}
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-[#C8B8A3] shadow-sm">
+                        <div class="text-xs font-bold text-[#7B6153] uppercase mb-2 tracking-wide">Paket Aktif</div>
+                        <div class="text-xl font-black text-[#2E1F1A] truncate">
+                            {hasOrder ? order.jenis_paket : '-'}
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-[#C8B8A3] shadow-sm">
+                        <div class="text-xs font-bold text-[#7B6153] uppercase mb-2 tracking-wide">Tiket Bantuan</div>
+                        <div class="text-xl font-black text-green-600 truncate">0 Aktif</div>
+                    </div>
+                </div>
+
+                <div class="bg-[#E3D5C1] p-8 lg:p-10 rounded-3xl border border-[#C8B8A3] shadow-sm relative overflow-hidden shrink-0">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-[#EA580C] opacity-10 rounded-full blur-3xl"></div>
+                    
+                    <div class="relative z-10">
+                        {hasOrder ? (
+                            <>
+                                <h3 class="text-2xl font-black mb-3 text-[#2E1F1A]">Pesanan Sedang Diproses! 🚀</h3>
+                                <p class="text-[#7B6153] mb-8 leading-relaxed max-w-2xl font-medium">
+                                    Terima kasih telah mempercayakan bisnis <b>{order.nama_bisnis}</b> kepada kami. Tim Alif.Tech akan segera menghubungi Anda untuk proses selanjutnya.
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <h3 class="text-2xl font-black mb-3 text-[#2E1F1A]">Mulai Proyek Pertamamu</h3>
+                                <p class="text-[#7B6153] mb-8 leading-relaxed max-w-2xl font-medium">Anda belum memiliki proyek aktif. Pilih template desain terbaik kami dan mulai transformasi digital bisnis Anda hari ini.</p>
+                                <a href="/order" class="inline-flex items-center gap-2 bg-[#2E1F1A] text-[#E3D5C1] px-6 py-3.5 rounded-xl font-bold hover:bg-[#4A332A] transition-all shadow-md active:scale-95">
+                                    Pesan Website Sekarang
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </a>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <script is:inline>
+            document.getElementById('btnLogout').addEventListener('click', async () => {
+                const confirmLogout = confirm("Apakah Anda yakin ingin keluar?");
+                if (confirmLogout) {
+                    await fetch('/api/logout', { method: 'POST' });
+                    window.location.href = '/login';
+                }
+            });
+        </script>
+    </body>
+</html>

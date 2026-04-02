@@ -1,0 +1,169 @@
+---
+import '../styles/global.css';
+import { db } from '../lib/db.js';
+
+// 1. CEK SESI LOGIN
+const session = Astro.cookies.get('user_session');
+
+if (!session) {
+    return Astro.redirect('/login');
+}
+
+const userId = session.value;
+
+// 2. CEK OTORISASI ROLE (KEAMANAN BARU 🛡️)
+const [userRows] = await db.query('SELECT role FROM users WHERE id = ?', [userId]) as any;
+
+// Jika user tidak ada di DB, atau role-nya BUKAN admin, tendang ke dashboard klien!
+if (userRows.length === 0 || userRows[0].role !== 'admin') {
+    return Astro.redirect('/dashboard');
+}
+
+// 3. JIKA LOLOS PENGECEKAN, AMBIL SEMUA DATA PESANAN
+const [orders] = await db.query(`
+    SELECT 
+        orders.id as order_id, 
+        users.nama, 
+        users.email, 
+        orders.jenis_paket, 
+        orders.nama_bisnis, 
+        orders.status, 
+        orders.tanggal_order 
+    FROM orders 
+    JOIN users ON orders.user_id = users.id 
+    ORDER BY orders.tanggal_order DESC
+`) as any;
+---
+<html lang="id" data-theme="light">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Admin Panel | Alif.Tech</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+        <style is:global>
+            body { font-family: 'Inter', sans-serif; background-color: #E3D5C1; color: #2E1F1A; margin: 0; padding: 0; }
+            select:focus { outline: none; border-color: #EA580C; }
+        </style>
+    </head>
+    
+    <body class="min-h-screen w-full">
+        
+        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg">
+            <div class="font-black flex items-center gap-2 text-xl px-4">
+                <div class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-sm text-white shadow-sm">👑</div>
+                Alif<span class="text-red-500">.Admin</span>
+            </div>
+            <a href="/dashboard" class="px-4 py-2 bg-[#2E1F1A] hover:bg-[#4A332A] rounded-lg text-sm font-bold transition-colors">
+                Mode Klien
+            </a>
+        </nav>
+
+        <main class="p-8 lg:p-12 max-w-7xl mx-auto">
+            <header class="mb-10">
+                <h1 class="text-4xl font-black mb-2 text-[#2E1F1A]">Ruang Kendali Pesanan</h1>
+                <p class="text-[#7B6153] font-medium">Pantau dan kelola seluruh pesanan masuk dari klien Alif.Tech.</p>
+            </header>
+
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#C8B8A3]">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#2E1F1A] text-[#E3D5C1] text-sm uppercase tracking-wide">
+                                <th class="p-5 font-bold">Klien</th>
+                                <th class="p-5 font-bold">Bisnis & Paket</th>
+                                <th class="p-5 font-bold">Tanggal</th>
+                                <th class="p-5 font-bold">Aksi Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#C8B8A3]">
+                            {orders.length === 0 ? (
+                                <tr>
+                                    <td colspan="4" class="p-10 text-center text-[#7B6153] font-bold">Belum ada pesanan masuk.</td>
+                                </tr>
+                            ) : (
+                                orders.map((order: any) => (
+                                    <tr class="hover:bg-[#F5EEDB] transition-colors">
+                                        <td class="p-5">
+                                            <div class="font-black text-[#2E1F1A]">{order.nama}</div>
+                                            <div class="text-xs font-semibold text-[#7B6153]">{order.email}</div>
+                                        </td>
+                                        <td class="p-5">
+                                            <div class="font-bold text-[#EA580C]">{order.nama_bisnis}</div>
+                                            <div class="text-sm font-semibold text-[#2E1F1A]">{order.jenis_paket}</div>
+                                        </td>
+                                        <td class="p-5 text-sm font-medium text-[#7B6153]">
+                                            {new Date(order.tanggal_order).toLocaleDateString('id-ID')}
+                                        </td>
+                                        <td class="p-5">
+                                            <div class="flex items-center gap-3">
+                                                <select class="status-dropdown px-3 py-2 rounded-lg border border-[#C8B8A3] bg-white text-sm font-bold text-[#2E1F1A] cursor-pointer" data-id={order.order_id}>
+                                                    <option value="Menunggu Pembayaran" selected={order.status === "Menunggu Pembayaran"}>Menunggu Pembayaran</option>
+                                                    <option value="Sedang Dikerjakan" selected={order.status === "Sedang Dikerjakan"}>Sedang Dikerjakan</option>
+                                                    <option value="Selesai / Live" selected={order.status === "Selesai / Live"}>Selesai / Live</option>
+                                                    <option value="Dibatalkan" selected={order.status === "Dibatalkan"}>Dibatalkan</option>
+                                                </select>
+                                                <button class="btn-update bg-[#2E1F1A] text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-[#EA580C] transition-colors shadow-md">
+                                                    Update
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <script is:inline>
+            // Ambil semua tombol update di dalam tabel
+            const updateButtons = document.querySelectorAll('.btn-update');
+
+            updateButtons.forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    // Cari elemen <select> yang posisinya bersebelahan dengan tombol yang diklik
+                    const selectElement = e.target.previousElementSibling;
+                    const order_id = selectElement.getAttribute('data-id');
+                    const status_baru = selectElement.value;
+
+                    // Animasi tombol loading
+                    const originalText = e.target.innerHTML;
+                    e.target.innerHTML = "⏳";
+                    e.target.disabled = true;
+
+                    try {
+                        const response = await fetch('/api/update-status', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ order_id, status_baru })
+                        });
+
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            alert("✅ " + result.message);
+                            e.target.innerHTML = "OK!";
+                            e.target.classList.replace('bg-[#2E1F1A]', 'bg-green-600');
+                            
+                            // Kembalikan tombol ke semula setelah 2 detik
+                            setTimeout(() => {
+                                e.target.innerHTML = originalText;
+                                e.target.classList.replace('bg-green-600', 'bg-[#2E1F1A]');
+                                e.target.disabled = false;
+                            }, 2000);
+                        } else {
+                            alert("❌ Gagal: " + result.message);
+                            e.target.innerHTML = originalText;
+                            e.target.disabled = false;
+                        }
+                    } catch (error) {
+                        alert("❌ Terjadi kesalahan pada server.");
+                        e.target.innerHTML = originalText;
+                        e.target.disabled = false;
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,17 +1,830 @@
 ---
+const session = Astro.cookies.get('user_session');
+const isLoggedIn = !!session;
 
+import '../styles/global.css';
 ---
-
-<html lang="en">
+<html lang="id" data-theme="light">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Alif.Tech | Agensi Web Profesional</title>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+		<style is:global>
+			@keyframes shimmer { 100% { transform: translateX(100%); } }
+			details > summary { list-style: none; }
+			details > summary::-webkit-details-marker { display: none; }
+			.hide-scrollbar::-webkit-scrollbar { display: none; }
+			.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+			.kursor-tarik { cursor: grab; }
+			.kursor-tarik:active { cursor: grabbing; }
+			@keyframes blink { 0%, 100% { border-color: transparent; } 50% { border-color: #EA580C; } }
+			
+			/* ========================================================
+			   🌟 PREMIUM SCROLLBAR
+			   ======================================================== */
+			::-webkit-scrollbar { width: 10px; }
+			::-webkit-scrollbar-track { background: #0F172A; }
+			::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; border: 2px solid #0F172A; }
+			::-webkit-scrollbar-thumb:hover { background: #3B82F6; }
+			
+			[data-theme="light"] ::-webkit-scrollbar-track { background: #F5EEDB !important; }
+			[data-theme="light"] ::-webkit-scrollbar-thumb { background: #C8B8A3 !important; border: 2px solid #F5EEDB !important; }
+			[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #EA580C !important; }
+
+			/* ========================================================
+			   🏗️ GLOBAL STRUCTURE & SHAPES (BERLAKU UNTUK KEDUA MODE)
+			   ======================================================== */
+			.bg-slate-800, .mockup-container, #terminal-card, #stats-container, section div.bg-gradient-to-r {
+				border-radius: 1.5rem !important;
+				transition: all 0.4s ease-in-out !important;
+				background-image: none !important; 
+			}
+			.bg-slate-800:hover, .mockup-container:hover {
+				transform: translateY(-5px) !important;
+			}
+			
+			div#stats-grid > * { border: none !important; }
+			#fitur-grid-section { border: none !important; box-shadow: none !important; }
+			#fitur-grid div.bg-slate-800 > div { border: none !important; }
+
+			#arsitektur-section .w-12.h-12, #arsitektur-section .w-14.h-14 {
+				border-radius: 50% !important;
+			}
+
+			.portfolio-btn { border: none !important; transition: background-color 0.3s ease !important; }
+			.mockup-category { transition: all 0.3s ease; border: 1px solid transparent !important; }
+			
+			#hero-glow { display: block !important; filter: blur(80px) !important; transition: all 0.7s ease !important; }
+			footer { border-top: none !important; }
+
+			/* ========================================================
+			   🌙 DARK MODE COLORS
+			   ======================================================== */
+			body { background-color: #0F172A; } 
+			
+			.bg-slate-800, #terminal-card, #stats-container, section div.bg-gradient-to-r {
+				background-color: #1E293B !important; 
+				border: 1px solid #334155 !important;
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+			}
+			.bg-slate-800:hover, .mockup-container:hover {
+				box-shadow: 0 12px 25px rgba(59, 130, 246, 0.15) !important;
+				border-color: #3B82F6 !important;
+			}
+			
+			.border-slate-800, .border-slate-700, .border-2, .border-t-2, .border-b-2 {
+				border-color: #334155 !important; border-width: 1px !important; }
+			.divide-slate-700 > :not([hidden]) ~ :not([hidden]) { border-color: transparent !important; }
+
+			#typewriter { color: #3B82F6 !important; -webkit-text-fill-color: #3B82F6 !important; }
+
+			.mockup-header { background-color: #0F172A !important; border-bottom: 1px solid #334155 !important; }
+			.mockup-url { background-color: #1E293B !important; color: #94A3B8 !important; border: 1px solid #334155 !important; }
+			.mockup-body { background-color: #1E293B !important; }
+			.mockup-banner { background-color: #0F172A !important; border-color: #334155 !important; color: #64748B !important; }
+			.mockup-category { background-color: #0F172A !important; }
+			.mockup-category:hover { border-color: #3B82F6 !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important; }
+			.mockup-icon-bg { background-color: #1E293B !important; border: 1px solid #334155 !important; }
+			.mockup-text { color: #94A3B8 !important; }
+
+			#hero-glow { background-color: rgba(59, 130, 246, 0.15) !important; }
+			.group:hover #hero-glow { background-color: rgba(59, 130, 246, 0.25) !important; }
+
+			#pita-umkm-section { background-color: #020617 !important; border-radius: 0 !important; } 
+
+			.portfolio-img-bg { background-color: #0F172A !important; }
+			.portfolio-btn { background-color: #3B82F6 !important; color: #FFFFFF !important; }
+			.portfolio-btn:hover { background-color: #2563EB !important; }
+			#btn-portofolio { background-color: #1E293B !important; color: #E2E8F0 !important; border: 1px solid #334155 !important; }
+			#btn-portofolio:hover { border-color: #3B82F6 !important; color: #3B82F6 !important; }
+
+			#arsitektur-section .w-12.h-12, #arsitektur-section .w-14.h-14 {
+				background-color: #1E293B !important; border: 1px solid #334155 !important; color: #3B82F6 !important;
+			}
+
+			footer { background-color: #020617 !important; border-top: 1px solid #1E293B !important; }
+			footer .bg-blue-600 { background-color: #3B82F6 !important; color: #FFFFFF !important; }
+			
+			section, .border-t, .border-b, .border-y { border-color: transparent !important; }
+
+			/* ========================================================
+			   ☀️ LIGHT MODE COLORS (TERRACOTTA & BEIGE OVERRIDES)
+			   ======================================================== */
+			[data-theme="light"] body { background-color: #F5EEDB !important; color: #2E1F1A !important; }
+			
+			/* Penghapus Latar Belakang Default (Transparan) */
+			[data-theme="light"] .bg-slate-900, [data-theme="light"] .bg-slate-950, 
+			[data-theme="light"] .bg-slate-900\/50, [data-theme="light"] .bg-slate-800\/30 { 
+				background-color: transparent !important;
+			}
+			
+			[data-theme="light"] header .bg-slate-950 { background-color: #F5EEDB !important; border: none !important; }
+			[data-theme="light"] nav.bg-slate-900\/85 { background-color: rgba(245, 238, 219, 0.85) !important; border-bottom: 1px solid #E3D5C1 !important; }
+			[data-theme="light"] #mobile-menu { background-color: rgba(245, 238, 219, 0.98) !important; }
+
+			[data-theme="light"] .bg-slate-800, [data-theme="light"] #terminal-card, 
+			[data-theme="light"] #stats-container, [data-theme="light"] section div.bg-gradient-to-r {
+				background-color: #E3D5C1 !important;
+				border: none !important;
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+			}
+			[data-theme="light"] .bg-slate-800:hover, [data-theme="light"] .mockup-container:hover { 
+				box-shadow: 0 12px 25px rgba(234, 88, 12, 0.1) !important;
+				border-color: transparent !important;
+			}
+
+			/* FIXED BUG KOTAK: Menghapus border-width: 1px !important yang merusak footer */
+			[data-theme="light"] .border-slate-800, [data-theme="light"] .border-slate-700, 
+			[data-theme="light"] .border-2, [data-theme="light"] .border-t-2, [data-theme="light"] .border-b-2 { 
+				border-color: #C8B8A3 !important;
+			}
+
+			[data-theme="light"] .text-white { color: #2E1F1A !important; }
+			[data-theme="light"] .text-slate-300 { color: #2E1F1A !important; font-weight: 600 !important; }
+			[data-theme="light"] .text-slate-400 { color: #7B6153 !important; font-weight: 500 !important; }
+			[data-theme="light"] .text-slate-500 { color: #8A8173 !important; font-weight: 500 !important; }
+			[data-theme="light"] .text-blue-500, [data-theme="light"] .text-blue-400, 
+			[data-theme="light"] .text-emerald-500, [data-theme="light"] .text-purple-500 { color: #EA580C !important; } 
+			[data-theme="light"] #typewriter { color: #EA580C !important; -webkit-text-fill-color: #EA580C !important; }
+			[data-theme="light"] .border-cyan-400 { border-color: #EA580C !important; }
+
+			[data-theme="light"] .bg-blue-600, [data-theme="light"] a.bg-white.text-blue-600 { 
+				background-color: #2E1F1A !important; color: #F5EEDB !important; border: none !important; 
+			}
+			[data-theme="light"] .bg-blue-600:hover, [data-theme="light"] a.bg-white.text-blue-600:hover { background-color: #4A332A !important; }
+			[data-theme="light"] #btn-portofolio { background-color: #E3D5C1 !important; color: #2E1F1A !important; border: 1px solid #C8B8A3 !important; }
+			[data-theme="light"] #btn-portofolio:hover { background-color: #C8B8A3 !important; border-color: #C8B8A3 !important; color: #2E1F1A !important; }
+
+			[data-theme="light"] #theme-toggle-desktop, [data-theme="light"] #theme-toggle-mobile { 
+				background-color: transparent !important; border: 1px solid #C8B8A3 !important; color: #2E1F1A !important;
+			}
+			[data-theme="light"] #theme-toggle-desktop:hover, [data-theme="light"] #theme-toggle-mobile:hover { background-color: #E5E7EB !important; color: #EA580C !important; }
+			[data-theme="light"] a.fixed.bottom-6.right-6 svg.w-8.h-8 { color: #FFFFFF !important; }
+
+			[data-theme="light"] .mockup-container { background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; }
+			[data-theme="light"] .mockup-header { background-color: #E3D5C1 !important; border-bottom: 1px solid #C8B8A3 !important; }
+			[data-theme="light"] .mockup-url { background-color: #F5EEDB !important; color: #7B6153 !important; border: 1px solid #C8B8A3 !important; }
+			[data-theme="light"] .mockup-body { background-color: #E3D5C1 !important; }
+			[data-theme="light"] .mockup-banner { background-color: #F5EEDB !important; border-color: #C8B8A3 !important; color: #7B6153 !important; }
+			[data-theme="light"] .mockup-category { background-color: #F5EEDB !important; }
+			[data-theme="light"] .mockup-category:hover { border-color: #EA580C !important; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15) !important; }
+			[data-theme="light"] .mockup-icon-bg { background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; }
+			[data-theme="light"] .mockup-text { color: #7B6153 !important; }
+
+			[data-theme="light"] #hero-glow { background-color: rgba(234, 88, 12, 0.25) !important; }
+			[data-theme="light"] .group:hover #hero-glow { background-color: rgba(234, 88, 12, 0.35) !important; }
+
+			[data-theme="light"] #pita-umkm-section { background-color: #2E1F1A !important; border: none !important; }
+			[data-theme="light"] #pita-umkm-section p, [data-theme="light"] #pita-umkm-section span { color: #EA580C !important; }
+			[data-theme="light"] #pita-umkm-section .font-extrabold { color: #E3D5C1 !important; }
+
+			[data-theme="light"] .portfolio-img-bg { background-color: #F5EEDB !important; }
+			[data-theme="light"] .portfolio-btn { background-color: #EA580C !important; color: #F5EEDB !important; border: none !important; }
+			[data-theme="light"] .portfolio-btn:hover { background-color: #C0470A !important; }
+
+			[data-theme="light"] #arsitektur-section .w-12.h-12, [data-theme="light"] #arsitektur-section .w-14.h-14 {
+				background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; color: #EA580C !important;
+			}
+
+			/* FOOTER WARNA HITAM PEKAT & TEKS KREM */
+			[data-theme="light"] footer.bg-slate-950 { background-color: #2E1F1A !important; border-top: none !important; }
+			[data-theme="light"] footer h4, 
+			[data-theme="light"] footer p, 
+			[data-theme="light"] footer a, 
+			[data-theme="light"] footer span, 
+			[data-theme="light"] footer ul,
+			[data-theme="light"] footer .text-white,
+			[data-theme="light"] footer .text-slate-400,
+			[data-theme="light"] footer .text-slate-500 { 
+				color: #F5EEDB !important;
+			}
+			[data-theme="light"] footer .bg-blue-600 { background-color: #EA580C !important; color: #F5EEDB !important; }
+			[data-theme="light"] footer .bg-blue-600\/10 { background-color: transparent !important; border: 1px solid #F5EEDB !important; color: #F5EEDB !important; }
+
+			/* CLEANUP TAMBAHAN */
+			[data-theme="light"] section, [data-theme="light"] .border-t, [data-theme="light"] .border-b, [data-theme="light"] .border-y { border-color: transparent !important; }
+			[data-theme="light"] .bg-blue-600\/20 { display: none !important; } 
+		</style>
 	</head>
-	<body>
-		<h1>Astro</h1>
+	<body class="bg-slate-900 text-slate-300 font-sans antialiased selection:bg-blue-500 selection:text-white flex flex-col min-h-screen transition-colors duration-500" style="font-family: 'Inter', sans-serif;">
+		
+		<header class="fixed w-full top-0 z-50 transition-all shadow-sm backdrop-blur-lg">
+			<div class="bg-slate-950 border-b border-slate-800 hidden lg:block transition-colors duration-500">
+				<div class="container mx-auto px-6 py-2 flex justify-between items-center text-xs text-slate-400 font-medium">
+					<div class="flex items-center gap-6">
+						<span>📞 +62 812-3456-7890</span>
+						<span>⏰ Setiap Hari 09.00 - 21.00</span>
+					</div>
+					<div class="flex items-center gap-1 cursor-pointer hover:text-blue-500 transition">🌐 ID</div>
+				</div>
+			</div>
+			
+			<nav class="bg-slate-900/85 relative z-50 transition-colors duration-500 border-b border-slate-800/50">
+				<div class="container mx-auto px-6 py-4 flex justify-between items-center">
+					<a href="/" class="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2 hover:opacity-80 transition-opacity">
+						<div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm shadow-lg text-white">🚀</div> 
+						Alif<span class="text-blue-500">.Tech</span>
+					</a>
+					
+					<div class="hidden lg:flex space-x-8 text-sm font-bold text-slate-300">
+						<a href="/" class="text-white underline decoration-blue-500 decoration-4 underline-offset-8">Home</a>
+						<a href="/template" class="hover:text-blue-500 transition-all">Template</a>
+						<a href="/portofolio" class="hover:text-blue-500 transition-all">Portofolio</a>
+						<a href="/harga" class="hover:text-blue-500 transition-all">Harga</a>
+					</div>
+					
+					<div class="hidden lg:flex items-center gap-4 md:gap-5">
+						<button id="theme-toggle-desktop" class="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-slate-300 transition-all shadow-sm cursor-pointer hover:scale-105">
+							🌙
+						</button>
+						<div class="flex items-center gap-3 text-sm font-bold">
+							{isLoggedIn ? (
+								<a href="/dashboard" class="text-blue-500 hover:text-blue-400 transition-colors">
+									Dashboard Saya
+								</a>
+							) : (
+								<>
+									<a href="/login" class="text-slate-300 hover:text-blue-500 transition-colors">Login</a>
+									<a href="/register" class="text-blue-500 hover:text-blue-400 transition-colors">Daftar</a>
+								</>
+							)}
+						</div>
+						<a href="https://wa.me/6281234567890" target="_blank" class="bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-md hover:-translate-y-1 transition-transform">
+							Konsultasi
+						</a>
+					</div>
+
+					<button id="mobile-menu-btn" class="lg:hidden p-2 text-slate-300 hover:text-blue-500">
+						<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+					</button>
+				</div>
+			</nav>
+
+			<div id="mobile-menu" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 transform translate-x-full transition-transform duration-300 flex flex-col items-center justify-center space-y-6 text-xl font-extrabold lg:hidden">
+				<button id="theme-toggle-mobile" class="absolute top-24 w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-2xl text-slate-300 hover:scale-105 transition-transform">
+					🌙
+				</button>
+				<a href="/" class="text-white hover:text-blue-500 transition-colors mt-10">Home</a>
+				<a href="/template" class="text-slate-300 hover:text-blue-500 transition-colors">Template</a>
+				<a href="/portofolio" class="text-slate-300 hover:text-blue-500 transition-colors">Portofolio</a>
+				<a href="/harga" class="text-slate-300 hover:text-blue-500 transition-colors">Harga</a>
+				<div class="w-16 h-px bg-slate-700 my-2"></div>
+				<a href="/login" class="text-slate-300 hover:text-blue-500 transition-colors">Login</a>
+				<a href="/register" class="text-blue-500 transition-colors">Daftar Klien Baru</a>
+				<a href="https://wa.me/6281234567890" class="mt-4 bg-blue-600 text-white px-8 py-3 rounded-full text-base">Konsultasi WA</a>
+			</div>
+		</header>
+
+		<main class="container mx-auto px-6 pt-56 pb-24 relative">
+			<div class="flex flex-col lg:flex-row items-center gap-12">
+				<div class="w-full lg:w-1/2 text-center lg:text-left relative z-10">
+					<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 text-xs font-bold tracking-wide mb-6">
+						🌟 AGENSI WEB E-COMMERCE #1
+					</div>
+					
+					<h1 class="text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
+						Otomatisasi <br/>
+						<span id="typewriter" class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400 border-r-4 border-blue-500 pr-1">Bisnis Digital</span> <br/>
+						Anda Hari Ini.
+					</h1>
+
+					<p class="text-lg text-slate-400 mb-8 max-w-lg leading-relaxed mx-auto lg:mx-0 transition-colors duration-500">
+						Bangun ekosistem website yang terintegrasi langsung dengan Payment Gateway dan AI Assistant.
+					</p>
+					
+					<div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+						<a href="/harga" class="w-full sm:w-auto bg-blue-600 text-white px-8 py-4 rounded-full font-black text-lg transition-all text-center shadow-lg btn-magnet">
+							Lihat Paket Harga
+						</a>
+						<a href="/template" class="w-full sm:w-auto bg-slate-800 text-slate-300 px-8 py-4 rounded-full font-bold text-lg transition-all text-center hover:scale-105">
+							Jelajahi Template
+						</a>
+					</div>
+				</div>
+				
+				<div class="w-full lg:w-1/2 relative group hidden md:block">
+					<div id="hero-glow" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-blue-600/20 rounded-full z-[-1] blur-[80px] transition-all duration-700"></div>
+					
+					<div class="bg-slate-800 rounded-[2rem] overflow-hidden transform md:rotate-2 group-hover:rotate-0 transition-all duration-500 shadow-2xl relative z-10 mockup-container">
+						
+						<div class="bg-slate-900 px-6 py-4 flex items-center gap-4 transition-colors duration-500 mockup-header">
+							<div class="flex gap-2">
+								<div class="w-3.5 h-3.5 rounded-full bg-red-500 shadow-sm"></div>
+								<div class="w-3.5 h-3.5 rounded-full bg-yellow-500 shadow-sm"></div>
+								<div class="w-3.5 h-3.5 rounded-full bg-green-500 shadow-sm"></div>
+							</div>
+							<div class="flex-1 max-w-md mx-auto bg-slate-800 px-4 py-2 rounded-lg text-sm text-slate-400 text-center font-medium flex items-center justify-center gap-2 mockup-url transition-colors duration-500">
+								<svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8V7z"></path></svg>
+								www.tokoanda.com
+							</div>
+						</div>
+
+						<div class="p-8 relative overflow-hidden transition-colors duration-500 mockup-body">
+							
+							<div class="w-full h-40 bg-slate-700/50 rounded-2xl mb-8 flex flex-col items-center justify-center text-slate-400 font-bold relative overflow-hidden group/banner border-2 border-dashed border-slate-600 mockup-banner transition-colors duration-500">
+								<div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent -translate-x-full group-hover/banner:animate-[shimmer_1.5s_infinite]"></div>
+								<svg class="w-8 h-8 mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+								<span>Banner Etalase Toko</span>
+							</div>
+
+							<div class="grid grid-cols-3 gap-6">
+								<div class="h-32 bg-slate-700/30 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all cursor-pointer mockup-category">
+									<div class="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center text-3xl shadow-inner mockup-icon-bg transition-colors duration-500">🍔</div>
+									<span class="text-xs font-bold text-slate-400 uppercase tracking-wider mockup-text transition-colors duration-500">F&B</span>
+								</div>
+								<div class="h-32 bg-slate-700/30 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all cursor-pointer mockup-category">
+									<div class="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center text-3xl shadow-inner mockup-icon-bg transition-colors duration-500">👕</div>
+									<span class="text-xs font-bold text-slate-400 uppercase tracking-wider mockup-text transition-colors duration-500">Fashion</span>
+								</div>
+								<div class="h-32 bg-slate-700/30 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all cursor-pointer mockup-category">
+									<div class="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center text-3xl shadow-inner mockup-icon-bg transition-colors duration-500">📱</div>
+									<span class="text-xs font-bold text-slate-400 uppercase tracking-wider mockup-text transition-colors duration-500">Gadget</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<section class="py-12 relative z-10 transition-colors duration-500">
+			<div class="container mx-auto px-6">
+				<div id="stats-container" class="py-10 px-6 transition-colors duration-500">
+					<div id="stats-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-slate-700">
+						<div class="pt-4 md:pt-0">
+							<div class="text-5xl font-black text-white mb-2 transition-colors duration-500"><span class="counter" data-target="250">0</span>+</div>
+							<div class="text-blue-500 text-sm font-bold uppercase tracking-widest">Klien Terselesaikan</div>
+						</div>
+						<div class="pt-8 md:pt-0">
+							<div class="text-5xl font-black text-white mb-2 transition-colors duration-500"><span class="counter" data-target="99">0</span>%</div>
+							<div class="text-emerald-500 text-sm font-bold uppercase tracking-widest">Uptime Server Aktif</div>
+						</div>
+						<div class="pt-8 md:pt-0">
+							<div class="text-5xl font-black text-white mb-2 transition-colors duration-500"><span class="counter" data-target="24">0</span> Jam</div>
+							<div class="text-purple-500 text-sm font-bold uppercase tracking-widest">Rata-rata Setup Sistem</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="pita-umkm-section" class="py-12 overflow-hidden transition-colors duration-500 bg-slate-900 border-y border-slate-800">
+			<div class="container mx-auto px-6 text-center">
+				<p class="text-sm font-bold uppercase tracking-widest mb-8 transition-colors duration-500 text-slate-500">Dipercaya oleh berbagai UMKM & Bisnis Lokal</p>
+				<div id="klien-logos" class="flex flex-wrap justify-center items-center gap-8 md:gap-16 transition-all duration-500">
+					<div class="text-xl font-extrabold flex items-center gap-2 text-slate-400"><span>📦</span> TokoLokal</div>
+					<div class="text-xl font-extrabold flex items-center gap-2 text-slate-400"><span>☕</span> Kopi Senja</div>
+					<div class="text-xl font-extrabold flex items-center gap-2 text-slate-400"><span>🍕</span> Juragan Kuliner</div>
+					<div class="text-xl font-extrabold flex items-center gap-2 text-slate-400"><span>✨</span> BeautyStudio</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-24 transition-colors duration-500">
+			<div class="container mx-auto px-6">
+				<div class="text-center max-w-2xl mx-auto mb-16">
+					<h2 class="text-4xl font-black text-white mb-4 transition-colors duration-500">Bagaimana Cara Mulainya?</h2>
+					<p class="text-slate-400 transition-colors duration-500">Proses kami sangat transparan, cepat, dan tidak merepotkan.</p>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+					<div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -z-10 -translate-y-1/2 transition-colors duration-500"></div>
+					<div class="bg-slate-800 p-8 rounded-3xl text-center transition-all duration-300 group cursor-pointer shadow-lg">
+						<div class="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-black mx-auto mb-6 shadow-md group-hover:scale-110 transition-transform">1</div>
+						<h3 class="text-xl font-bold text-white mb-3 transition-colors duration-500">Pilih Paket & Desain</h3>
+						<p class="text-sm text-slate-400 transition-colors duration-500">Pilih paket sesuai budget dan jelajahi galeri template kami.</p>
+					</div>
+					<div class="bg-slate-800 p-8 rounded-3xl text-center transition-all duration-300 group cursor-pointer shadow-lg">
+						<div class="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-black mx-auto mb-6 shadow-md group-hover:scale-110 transition-transform">2</div>
+						<h3 class="text-xl font-bold text-white mb-3 transition-colors duration-500">Kirim Materi</h3>
+						<p class="text-sm text-slate-400 transition-colors duration-500">Lakukan pembayaran dan kirimkan logo serta foto produk Anda.</p>
+					</div>
+					<div class="bg-slate-800 p-8 rounded-3xl text-center transition-all duration-300 group cursor-pointer shadow-lg">
+						<div class="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-black mx-auto mb-6 shadow-md group-hover:scale-110 transition-transform">3</div>
+						<h3 class="text-xl font-bold text-white mb-3 transition-colors duration-500">Revisi & Launching</h3>
+						<p class="text-sm text-slate-400 transition-colors duration-500">Tim kami merakit web Anda. Revisi, lalu siap diluncurkan ke internet.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="fitur-grid-section" class="max-w-7xl mx-auto px-6 py-20 transition-colors duration-500">
+			<div class="text-center mb-16 relative z-10">
+				<h2 class="text-4xl font-black text-white mb-4 transition-colors duration-500">Fitur Premium Bawaan</h2>
+				<p class="text-slate-400 transition-colors duration-500">Website modern yang langsung siap jualan tanpa perlu coding tambahan.</p>
+			</div>
+			<div id="fitur-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+				<div class="bg-slate-800 p-8 transition-colors duration-500 cursor-pointer shadow-lg">
+					<div class="text-4xl mb-6 text-blue-500 transition-transform">⚡</div>
+					<h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">Kecepatan Maksimal</h3>
+					<p class="text-sm text-slate-400 transition-colors duration-500">Dibangun menggunakan framework Astro untuk waktu muat super cepat.</p>
+				</div>
+				<div class="bg-slate-800 p-8 transition-colors duration-500 cursor-pointer shadow-lg">
+					<div class="text-4xl mb-6 text-blue-500 transition-transform">💳</div>
+					<h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">Payment Gateway</h3>
+					<p class="text-sm text-slate-400 transition-colors duration-500">Terima pembayaran otomatis 24 jam nonstop via Bank & e-Wallet.</p>
+				</div>
+				<div class="bg-slate-800 p-8 transition-colors duration-500 cursor-pointer shadow-lg">
+					<div class="text-4xl mb-6 text-blue-500 transition-transform">🤖</div>
+					<h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">Integrasi AI Agent</h3>
+					<p class="text-sm text-slate-400 transition-colors duration-500">Otomatisasi pesan tagihan pelanggan langsung ke WhatsApp.</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-24 transition-colors duration-500">
+			<div class="container mx-auto px-6">
+				
+				<div class="flex flex-col md:flex-row justify-between items-end mb-12">
+					<div class="max-w-xl text-left">
+						<h2 class="text-4xl md:text-5xl font-black text-white mb-4 transition-colors duration-500">Hasil Karya Kami</h2>
+						<p class="text-slate-400 font-medium transition-colors duration-500">Beberapa contoh website performa tinggi yang telah kami rakit untuk klien kami.</p>
+					</div>
+					<a href="/portofolio" id="btn-portofolio" class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all shadow-sm hover:scale-105 mt-6 md:mt-0">
+						Lihat Portofolio <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+					</a>
+				</div>
+				
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
+					<div class="group relative overflow-hidden bg-slate-800 cursor-pointer transition-colors duration-500 rounded-[1.5rem] flex flex-col h-full shadow-xl">
+						<div class="aspect-video portfolio-img-bg relative flex flex-col items-center justify-center overflow-hidden transition-all rounded-t-[1.5rem]">
+							<div class="absolute inset-0 bg-gradient-to-tr from-orange-500/10 to-transparent"></div>
+							<span class="text-8xl z-10 transition-transform duration-500 group-hover:-translate-y-4">🍔</span>
+							<div class="absolute bottom-8 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 translate-y-4 group-hover:translate-y-0">
+								<a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Pesan Desain Ini</a>
+							</div>
+						</div>
+						<div class="p-8 flex-1">
+							<h3 class="text-2xl font-bold text-white transition-colors duration-500 mb-2">Juragan Kuliner Katalog</h3>
+							<p class="text-sm text-slate-400 transition-colors duration-500">Web App F&B Terintegrasi WhatsApp</p>
+						</div>
+					</div>
+					<div class="group relative overflow-hidden bg-slate-800 cursor-pointer transition-colors duration-500 rounded-[1.5rem] flex flex-col h-full shadow-xl">
+						<div class="aspect-video portfolio-img-bg relative flex flex-col items-center justify-center overflow-hidden transition-all rounded-t-[1.5rem]">
+							<div class="absolute inset-0 bg-gradient-to-tr from-purple-500/10 to-transparent"></div>
+							<span class="text-8xl z-10 transition-transform duration-500 group-hover:-translate-y-4">👠</span>
+							<div class="absolute bottom-8 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 translate-y-4 group-hover:translate-y-0">
+								<a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Pesan Desain Ini</a>
+							</div>
+						</div>
+						<div class="p-8 flex-1">
+							<h3 class="text-2xl font-bold text-white transition-colors duration-500 mb-2">BeautyStudio Store</h3>
+							<p class="text-sm text-slate-400 transition-colors duration-500">Full-Stack E-Commerce & Payment Gateway</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="arsitektur-section" class="py-24 relative overflow-hidden transition-colors duration-500">
+			<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none transition-colors duration-500"></div>
+
+			<div class="container mx-auto px-6 max-w-6xl relative z-10">
+				<div class="flex flex-col lg:flex-row gap-16 items-center">
+					<div class="w-full lg:w-1/2">
+						<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-500 text-xs font-bold tracking-wide mb-6">
+							⚙️ ENGINE DI BALIK LAYAR
+						</div>
+						<h2 class="text-4xl font-black text-white mb-6 transition-colors duration-500 leading-tight">Infrastruktur Jaringan & <span class="text-blue-500">AI Agent</span> Canggih.</h2>
+						<p class="text-slate-400 mb-8 leading-relaxed transition-colors duration-500">
+							Kami tidak sekadar membuat desain. Website Anda ditenagai oleh konfigurasi administrasi jaringan tingkat tinggi untuk menjamin lalu lintas data yang stabil.
+						</p>
+
+						<ul class="space-y-6">
+							<li class="flex items-start gap-5 group cursor-pointer">
+								<div class="w-14 h-14 flex items-center justify-center text-2xl transition-all shrink-0 group-hover:scale-110 shadow-md">🌐</div>
+								<div>
+									<h4 class="text-white font-bold mb-1 text-lg transition-colors duration-500">Manajemen Jaringan</h4>
+									<p class="text-sm text-slate-400 leading-relaxed transition-colors duration-500">Sistem jaringan *load balancing* yang dirancang untuk merutekan lalu lintas data yang padat.</p>
+								</div>
+							</li>
+							<li class="flex items-start gap-5 group cursor-pointer">
+								<div class="w-14 h-14 flex items-center justify-center text-2xl transition-all shrink-0 group-hover:scale-110 shadow-md">🤖</div>
+								<div>
+									<h4 class="text-white font-bold mb-1 text-lg transition-colors duration-500">AI Affiliate & Sales Agent</h4>
+									<p class="text-sm text-slate-400 leading-relaxed transition-colors duration-500">Otomatisasi bisnis Anda dengan *bot* pintar yang bekerja 24/7 memandu pelanggan.</p>
+								</div>
+							</li>
+						</ul>
+					</div>
+
+					<div class="w-full lg:w-1/2">
+						<div id="terminal-card" class="bg-slate-800 p-8 relative overflow-hidden font-mono text-sm hidden md:block transition-colors duration-500 shadow-2xl">
+							<div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:100%_4px] pointer-events-none"></div>
+							
+							<div class="flex items-center justify-between border-b border-slate-700 pb-4 mb-6 transition-colors duration-500">
+								<div class="flex gap-2">
+									<div class="w-3 h-3 rounded-full bg-red-500"></div>
+									<div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+									<div class="w-3 h-3 rounded-full bg-green-500"></div>
+								</div>
+								<div class="text-slate-500 text-xs tracking-widest transition-colors duration-500">ALIF.TECH SERVER TERMINAL</div>
+							</div>
+
+							<div class="space-y-4">
+								<div class="flex flex-col gap-1">
+									<span class="text-emerald-500">admin@aliftech:~$ <span class="text-slate-400">status check --server</span></span>
+									<span class="text-slate-500 pl-4">64 bytes from core.alif.tech: icmp_seq=1 ttl=116 time=0.8 ms</span>
+									<span class="text-blue-500 font-bold pl-4">[OK] Network connection stable.</span>
+								</div>
+								
+								<div class="flex flex-col gap-1 mt-4">
+									<span class="text-emerald-500">admin@aliftech:~$ <span class="text-slate-400">systemctl status ai_sales_agent</span></span>
+									<span class="text-slate-500 pl-4">Connecting to WhatsApp API...</span>
+									<span class="text-purple-500 font-bold pl-4">[SUCCESS] AI Sales Agent is now ONLINE.</span>
+								</div>
+
+								<div class="mt-6 flex items-center gap-2">
+									<span class="text-emerald-500">admin@aliftech:~$ </span>
+									<div class="w-2 h-4 bg-slate-400 animate-pulse"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-24 border-y border-slate-800 overflow-hidden transition-colors duration-500">
+			<div class="container mx-auto px-6 mb-12 text-center">
+				<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-500 text-xs font-bold tracking-wide mb-6">
+					⭐ 100+ KLIEN PUAS
+				</div>
+				<h2 class="text-4xl font-black text-white mb-4 transition-colors duration-500">Apa Kata Klien Kami?</h2>
+				<p class="text-slate-400 max-w-2xl mx-auto transition-colors duration-500">Bergabunglah dengan pengusaha hebat yang telah mentransformasi bisnis mereka.</p>
+			</div>
+
+			<div id="slider-testimoni" class="flex items-stretch overflow-x-auto snap-x snap-mandatory gap-6 pb-10 px-6 max-w-7xl mx-auto hide-scrollbar kursor-tarik select-none">
+				
+				<div class="snap-center shrink-0 w-[300px] md:w-[400px] bg-slate-800 p-8 transition-colors pointer-events-none shadow-lg duration-500 rounded-[1.5rem] flex flex-col h-auto">
+					<div class="flex text-yellow-400 mb-4 text-sm gap-1">⭐⭐⭐⭐⭐</div>
+					<p class="text-slate-400 mb-8 italic leading-relaxed transition-colors duration-500 flex-1">"Sangat membantu! Order hari Senin, Rabu katalog makanan saya udah online dan bisa langsung terima orderan via WA."</p>
+					<div class="flex items-center gap-4 mt-auto">
+						<div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center font-bold text-white shadow-md">BS</div>
+						<div>
+							<h4 class="text-white font-bold transition-colors duration-500">Budi Santoso</h4>
+							<p class="text-xs text-slate-500 transition-colors duration-500">Owner, Juragan Kuliner</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="snap-center shrink-0 w-[300px] md:w-[400px] bg-slate-800 p-8 transition-colors pointer-events-none shadow-lg duration-500 rounded-[1.5rem] flex flex-col h-auto">
+					<div class="flex justify-between items-center mb-4">
+						<div class="flex text-yellow-400 text-sm gap-1">⭐⭐⭐⭐⭐</div>
+						<span class="bg-blue-600 text-[10px] font-bold px-2 py-1 rounded-full text-white shadow-sm uppercase tracking-wider">Verified</span>
+					</div>
+					<p class="text-slate-400 mb-8 italic leading-relaxed transition-colors duration-500 flex-1">"Integrasi AI Agent-nya luar biasa. Bot dari Alif.Tech handle chat pelanggan otomatis. Toko kosmetik saya beroperasi 24 jam nonstop."</p>
+					<div class="flex items-center gap-4 mt-auto">
+						<div class="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center font-bold text-white shadow-md">SA</div>
+						<div>
+							<h4 class="text-white font-bold transition-colors duration-500">Sarah Amalia</h4>
+							<p class="text-xs text-slate-500 transition-colors duration-500">CEO, BeautyStudio</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="snap-center shrink-0 w-[300px] md:w-[400px] bg-slate-800 p-8 transition-colors pointer-events-none shadow-lg duration-500 rounded-[1.5rem] flex flex-col h-auto">
+					<div class="flex text-yellow-400 mb-4 text-sm gap-1">⭐⭐⭐⭐⭐</div>
+					<p class="text-slate-400 mb-8 italic leading-relaxed transition-colors duration-500 flex-1">"Tim engineer-nya paham infrastruktur jaringan. Website perusahaan enterprise kami sangat stabil dan tidak pernah down."</p>
+					<div class="flex items-center gap-4 mt-auto">
+						<div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center font-bold text-white shadow-md">RW</div>
+						<div>
+							<h4 class="text-white font-bold transition-colors duration-500">Reza Wijaya</h4>
+							<p class="text-xs text-slate-500 transition-colors duration-500">Direktur IT, PT Maju Abadi</p>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			
+			<div class="text-center mt-2 flex justify-center items-center gap-2">
+				<span class="text-xs text-slate-500 font-medium animate-pulse transition-colors duration-500">Geser untuk melihat lebih banyak</span>
+				<svg class="w-4 h-4 text-slate-500 animate-pulse transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+			</div>
+		</section>
+
+		<section class="py-24 transition-colors duration-500">
+			<div class="container mx-auto px-6 max-w-4xl">
+				<div class="text-center mb-16">
+					<h2 class="text-4xl font-black text-white mb-4 transition-colors duration-500">Pertanyaan Umum</h2>
+					<p class="text-slate-400 transition-colors duration-500">Jawaban cepat untuk keraguan Anda.</p>
+				</div>
+				<div class="space-y-4">
+					<details class="group bg-slate-800 p-6 cursor-pointer transition-all duration-500 rounded-2xl shadow-sm">
+						<summary class="flex justify-between items-center font-bold text-lg text-white outline-none">
+							Berapa lama waktu pembuatan website?
+							<span class="text-blue-500 group-open:rotate-45 transition-transform duration-300 text-2xl">+</span>
+						</summary>
+						<div class="mt-4 text-slate-400 text-sm leading-relaxed transition-colors duration-500">Untuk template siap pakai, website meluncur dalam 24-48 jam setelah pembayaran.</div>
+					</details>
+					<details class="group bg-slate-800 p-6 cursor-pointer transition-all duration-500 rounded-2xl shadow-sm">
+						<summary class="flex justify-between items-center font-bold text-lg text-white outline-none">
+							Apakah bisa membuat website untuk jualan makanan?
+							<span class="text-blue-500 group-open:rotate-45 transition-transform duration-300 text-2xl">+</span>
+						</summary>
+						<div class="mt-4 text-slate-400 text-sm leading-relaxed transition-colors duration-500">Tentu saja! Sistem kami dilengkapi fitur katalog, keranjang belanja, hingga opsi pesanan langsung dihubungkan ke WhatsApp Anda berserta total harga dan ongkir.</div>
+					</details>
+					<details class="group bg-slate-800 p-6 cursor-pointer transition-all duration-500 rounded-2xl shadow-sm">
+						<summary class="flex justify-between items-center font-bold text-lg text-white outline-none">
+							Apakah ada biaya perpanjangan setiap bulan?
+							<span class="text-blue-500 group-open:rotate-45 transition-transform duration-300 text-2xl">+</span>
+						</summary>
+						<div class="mt-4 text-slate-400 text-sm leading-relaxed transition-colors duration-500">Tidak ada langganan bulanan. Anda hanya perlu membayar biaya perpanjangan Domain dan Hosting setiap 1 tahun sekali secara transparan.</div>
+					</details>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-20 transition-colors duration-500">
+			<div class="container mx-auto px-6 max-w-5xl">
+				<div class="bg-slate-800 p-12 md:p-16 text-center relative overflow-hidden transition-colors duration-500 rounded-[2.5rem] shadow-xl">
+					<h2 class="text-4xl md:text-5xl font-black text-white mb-8 relative z-10 transition-colors duration-500">Siap Mendominasi Pasar Online?</h2>
+					<div class="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
+						<a href="/harga" class="bg-blue-600 text-white px-10 py-5 rounded-full font-black text-lg hover:scale-105 transition-all shadow-md inline-block btn-magnet">Lihat Harga Spesial</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<footer class="bg-slate-950 pt-20 pb-10 mt-auto relative z-10 transition-colors duration-500">
+			<div class="container mx-auto px-6">
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
+					<div>
+						<h4 class="text-white font-bold mb-6 text-lg transition-colors duration-500">Layanan Alif.Tech</h4>
+						<ul class="space-y-4 text-sm font-medium text-slate-400">
+							<li><a href="#" class="hover:text-blue-500 transition">Website Katalog</a></li>
+							<li><a href="#" class="hover:text-blue-500 transition">Paket E-Commerce</a></li>
+							<li><a href="#" class="hover:text-blue-500 transition">Integrasi Sistem AI</a></li>
+						</ul>
+					</div>
+					<div>
+						<h4 class="text-white font-bold mb-6 text-lg transition-colors duration-500">Perusahaan</h4>
+						<ul class="space-y-4 text-sm font-medium text-slate-400">
+							<li><a href="#" class="hover:text-blue-500 transition">Tentang Kami</a></li>
+							<li><a href="#" class="hover:text-blue-500 transition">Hubungi Kami</a></li>
+						</ul>
+					</div>
+					
+					<div class="lg:col-span-3 flex flex-col lg:items-end lg:text-right">
+						<div class="text-3xl font-black text-white tracking-tight flex items-center justify-start lg:justify-end gap-2 mb-4 transition-colors duration-500">
+							<div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm text-white shadow-sm transition-colors duration-500">🚀</div>
+							Alif.Tech
+						</div>
+						<p class="text-sm text-slate-400 max-w-sm transition-colors duration-500">Solusi agensi digital terpercaya untuk membangun masa depan bisnis Anda di internet.</p>
+					</div>
+				</div>
+				
+				<div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-6 transition-colors duration-500">
+					<div class="flex flex-wrap justify-center md:justify-start gap-3 opacity-60 hover:opacity-100 transition-all duration-500">
+						<div class="bg-blue-600/10 px-4 py-2 rounded-lg text-xs font-bold text-blue-500 flex items-center transition-colors duration-500">🏆 Penghargaan Bisnis</div>
+						<div class="bg-blue-600/10 px-4 py-2 rounded-lg text-xs font-bold text-blue-500 flex items-center transition-colors duration-500">🔒 SECURE SSL</div>
+					</div>
+					<div class="text-slate-500 text-xs font-medium transition-colors duration-500">
+						© 2026 Alif.Tech Agency. All rights reserved.
+					</div>
+				</div>
+			</div>
+		</footer>
+
+		<a href="https://wa.me/6281234567890" target="_blank" class="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[100] bg-[#25D366] text-white p-4 rounded-full shadow-[0_4px_14px_0_rgba(37,211,102,0.39)] hover:shadow-[0_6px_20px_rgba(37,211,102,0.23)] hover:scale-110 hover:-translate-y-2 transition-all duration-300 flex items-center justify-center">
+			<svg class="w-8 h-8 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+			<span class="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30"></span>
+		</a>
+
+		<script is:inline>
+			// SISTEM TOGGLE TEMA (Wajib Default Light Mode Pertama Kali)
+			const btnDesktop = document.getElementById('theme-toggle-desktop');
+			const btnMobile = document.getElementById('theme-toggle-mobile');
+			const html = document.documentElement;
+			
+			let isLight = true; 
+
+			function toggleTheme() {
+				isLight = !isLight;
+				if(isLight) {
+					html.setAttribute('data-theme', 'light');
+					if(btnDesktop) btnDesktop.innerText = '🌙';
+					if(btnMobile) btnMobile.innerText = '🌙';
+				} else {
+					html.removeAttribute('data-theme');
+					if(btnDesktop) btnDesktop.innerText = '☀️';
+					if(btnMobile) btnMobile.innerText = '☀️';
+				}
+			}
+			if(btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
+			if(btnMobile) btnMobile.addEventListener('click', toggleTheme);
+			
+			// Pastikan saat browser me-load halamannya akan dipaksa Light Mode
+			window.addEventListener('DOMContentLoaded', () => {
+				html.setAttribute('data-theme', 'light');
+				if(btnDesktop) btnDesktop.innerText = '🌙';
+				if(btnMobile) btnMobile.innerText = '🌙';
+			});
+
+			// MOBILE MENU TOGGLE
+			const btnMenu = document.getElementById('mobile-menu-btn');
+			const menu = document.getElementById('mobile-menu');
+			let menuOpen = false;
+			if(btnMenu) {
+				btnMenu.addEventListener('click', () => {
+					menuOpen = !menuOpen;
+					if(menuOpen) {
+						menu.classList.remove('translate-x-full');
+						btnMenu.innerHTML = '<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+					} else {
+						menu.classList.add('translate-x-full');
+						btnMenu.innerHTML = '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>';
+					}
+				});
+			}
+
+			// LIVE COUNTER STATS
+			const counters = document.querySelectorAll('.counter');
+			const speed = 200;
+			const startCounters = (entries, observer) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						const target = entry.target;
+						const updateCount = () => {
+							const targetNum = +target.getAttribute('data-target');
+							const count = +target.innerText;
+							const inc = targetNum / speed;
+							if (count < targetNum) { 
+								target.innerText = Math.ceil(count + inc); 
+								setTimeout(updateCount, 15); 
+							} else { 
+								target.innerText = targetNum; 
+							}
+						};
+						updateCount();
+						observer.unobserve(target);
+					}
+				});
+			};
+			if(counters.length > 0) {
+				const counterObserver = new IntersectionObserver(startCounters, { threshold: 0.5 });
+				counters.forEach(counter => { counterObserver.observe(counter); });
+			}
+
+			// EFEK MESIN KETIK
+			const words = ["Bisnis Digital", "Toko Online", "Sistem Kasir"];
+			let wordIndex = 0; let charIndex = words[0].length;
+			let isDeleting = true;
+			const typewriterElement = document.getElementById("typewriter");
+			function typeEffect() {
+				const currentWord = words[wordIndex];
+				if (isDeleting) {
+					typewriterElement.textContent = currentWord.substring(0, charIndex - 1);
+					charIndex--;
+				} else {
+					typewriterElement.textContent = currentWord.substring(0, charIndex + 1);
+					charIndex++;
+				}
+				let typeSpeed = isDeleting ? 40 : 100;
+				if (!isDeleting && charIndex === currentWord.length) {
+					typeSpeed = 2500; isDeleting = true;
+				} else if (isDeleting && charIndex === 0) {
+					isDeleting = false; wordIndex = (wordIndex + 1) % words.length;
+					typeSpeed = 400;
+				}
+				setTimeout(typeEffect, typeSpeed);
+			}
+			if(typewriterElement) { setTimeout(typeEffect, 2000); }
+
+			// DRAG TO SCROLL TESTIMONI
+			const slider = document.getElementById('slider-testimoni');
+			if(slider) {
+				let isDown = false; let startX; let scrollLeft;
+				slider.addEventListener('mousedown', (e) => { 
+					isDown = true; 
+					slider.classList.add('active'); 
+					startX = e.pageX - slider.offsetLeft; 
+					scrollLeft = slider.scrollLeft; 
+				});
+				slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
+				slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
+				slider.addEventListener('mousemove', (e) => { 
+					if (!isDown) return; 
+					e.preventDefault(); 
+					const x = e.pageX - slider.offsetLeft; 
+					const walk = (x - startX) * 2; 
+					slider.scrollLeft = scrollLeft - walk; 
+				});
+			}
+
+			// TOMBOL MAGNETIK CTA
+			const magnetButtons = document.querySelectorAll('.btn-magnet');
+			magnetButtons.forEach(btn => {
+				btn.addEventListener('mousemove', (e) => {
+					const rect = btn.getBoundingClientRect(); 
+					const x = e.clientX - rect.left - rect.width / 2; 
+					const y = e.clientY - rect.top - rect.height / 2;
+					btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px) scale(1.05)`;
+				});
+				btn.addEventListener('mouseleave', () => { 
+					btn.style.transform = 'translate(0px, 0px) scale(1)'; 
+				});
+			});
+		</script>
 	</body>
 </html>
