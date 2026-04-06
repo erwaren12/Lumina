@@ -1,9 +1,14 @@
 import mysql from 'mysql2/promise';
 
-// Konfigurasi koneksi ke MySQL XAMPP bawaan
-export const db = mysql.createPool({
-    host: 'localhost',
-    user: 'root',        // User default XAMPP
-    password: '',        // Password default XAMPP (kosong)
-    database: 'aliftech_db' // Nama database yang kamu buat di phpMyAdmin
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  ssl: {
+    rejectUnauthorized: false // Baris ini wajib ada agar Aiven mengizinkan koneksi dari Vercel
+  }
 });
+
+export default pool;
