@@ -3,9 +3,12 @@ import bcrypt from 'bcryptjs';
 
 export const POST = async ({ request }) => {
     try {
-        // 1. Ambil data yang dikirim dari form Frontend
+        // 1. Ambil data yang dikirim dari form Frontend (Ganti const jadi let agar bisa dimodifikasi)
         const data = await request.json();
-        const { nama, email, password } = data;
+        let { nama, email, password } = data;
+
+        // NORMALISASI: Paksa email menjadi huruf kecil semua agar kebal salah ketik
+        email = email.toLowerCase();
 
         // 2. Cek apakah email sudah terdaftar sebelumnya
         const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
@@ -17,7 +20,7 @@ export const POST = async ({ request }) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // 4. Simpan data ke database XAMPP
+        // 4. Simpan data ke database Cloud (TiDB)
         await db.query(
             'INSERT INTO users (nama, email, password) VALUES (?, ?, ?)', 
             [nama, email, hashedPassword]

@@ -4,7 +4,10 @@ import bcrypt from 'bcryptjs';
 export const POST = async ({ request, cookies }) => {
     try {
         const data = await request.json();
-        const { email, password } = data;
+        let { email, password } = data; // Gunakan let agar bisa dimodifikasi
+
+        // NORMALISASI: Paksa email menjadi huruf kecil semua untuk pencocokan yang akurat
+        email = email.toLowerCase();
 
         // 1. Cari user di database berdasarkan email
         const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
