@@ -43,7 +43,7 @@ export const POST = async ({ request, cookies }) => {
         return new Response(JSON.stringify({ 
             message: "Login berhasil!", 
             nama: user.nama,
-            role: user.role  // <-- Ini tambahan kuncinya!
+            role: user.role // <--- INI BIANG KEROKNYA KALAU BELUM ADA
         }), { status: 200 });
     }
 };
