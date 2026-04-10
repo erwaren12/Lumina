@@ -5,7 +5,7 @@ import '../styles/global.css';
 const session = Astro.cookies.get('user_session');
 const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belum
 ---
-<html lang="id" data-theme="light">
+<html lang="id">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
@@ -13,7 +13,11 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         
         <script is:inline>
-            document.documentElement.setAttribute('data-theme', 'light');
+            // --- PERBAIKAN 1: Mencegah Flashbang Putih saat Pindah Halaman ---
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
         </script>
 
         <style is:global>
@@ -362,17 +366,16 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         </footer>
 
         <script is:inline>
-            // SISTEM TOGGLE TEMA
+            // --- PERBAIKAN 2: Sistem Memori Tema ---
             const btnDesktop = document.getElementById('theme-toggle-desktop');
             const btnMobile = document.getElementById('theme-toggle-mobile');
             const html = document.documentElement;
             
-            // Default diset True (Light Mode)
-            let isLight = true; 
+            // Mengambil ingatan dari localStorage (default light)
+            let currentTheme = localStorage.getItem('theme') || 'light'; 
 
-            function toggleTheme() {
-                isLight = !isLight;
-                if(isLight) {
+            function applyTheme(theme) {
+                if(theme === 'light') {
                     html.setAttribute('data-theme', 'light');
                     if(btnDesktop) btnDesktop.innerText = '🌙';
                     if(btnMobile) btnMobile.innerText = '🌙';
@@ -382,15 +385,18 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                     if(btnMobile) btnMobile.innerText = '☀️';
                 }
             }
+
+            // Terapkan tema segera saat di-load
+            applyTheme(currentTheme);
+
+            function toggleTheme() {
+                currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+                localStorage.setItem('theme', currentTheme); // Simpan pilihan!
+                applyTheme(currentTheme);
+            }
+
             if(btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
             if(btnMobile) btnMobile.addEventListener('click', toggleTheme);
-            
-            window.addEventListener('DOMContentLoaded', () => {
-                // Memastikan button iconnya sinkron pas pertama kali load
-                html.setAttribute('data-theme', 'light');
-                if(btnDesktop) btnDesktop.innerText = '🌙';
-                if(btnMobile) btnMobile.innerText = '🌙';
-            });
 
             // MOBILE MENU TOGGLE
             const btnMenu = document.getElementById('mobile-menu-btn');

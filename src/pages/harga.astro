@@ -146,8 +146,13 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             /* Lencana Rekomendasi Light Mode */
             [data-theme="light"] .badge-popular { background-color: #EA580C !important; color: #F5EEDB !important;}
         </style>
+        
         <script is:inline>
-            document.documentElement.setAttribute('data-theme', 'light');
+            // --- PERBAIKAN 1: Mencegah Flashbang Putih ---
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
         </script>
     </head>
     <body class="bg-slate-900 text-slate-300 font-sans antialiased selection:bg-blue-500 selection:text-white flex flex-col min-h-screen transition-colors duration-500" style="font-family: 'Inter', sans-serif;">
@@ -405,17 +410,16 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         </footer>
 
         <script is:inline>
-            // SISTEM TOGGLE TEMA
+            // --- PERBAIKAN 2: Sistem Memori Tema ---
             const btnDesktop = document.getElementById('theme-toggle-desktop');
             const btnMobile = document.getElementById('theme-toggle-mobile');
             const html = document.documentElement;
             
-            // Default diset True (Light Mode)
-            let isLight = true; 
+            // Mengambil ingatan dari localStorage (default light)
+            let currentTheme = localStorage.getItem('theme') || 'light'; 
 
-            function toggleTheme() {
-                isLight = !isLight;
-                if(isLight) {
+            function applyTheme(theme) {
+                if(theme === 'light') {
                     html.setAttribute('data-theme', 'light');
                     if(btnDesktop) btnDesktop.innerText = '🌙';
                     if(btnMobile) btnMobile.innerText = '🌙';
@@ -425,14 +429,18 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                     if(btnMobile) btnMobile.innerText = '☀️';
                 }
             }
+
+            // Terapkan tema segera saat di-load
+            applyTheme(currentTheme);
+
+            function toggleTheme() {
+                currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+                localStorage.setItem('theme', currentTheme); // Simpan pilihan!
+                applyTheme(currentTheme);
+            }
+
             if(btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
             if(btnMobile) btnMobile.addEventListener('click', toggleTheme);
-            
-            window.addEventListener('DOMContentLoaded', () => {
-                html.setAttribute('data-theme', 'light');
-                if(btnDesktop) btnDesktop.innerText = '🌙';
-                if(btnMobile) btnMobile.innerText = '🌙';
-            });
 
             // MOBILE MENU TOGGLE
             const btnMenu = document.getElementById('mobile-menu-btn');
