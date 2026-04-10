@@ -35,15 +35,14 @@ export const POST = async ({ request, cookies }) => {
         });
 
         // 4. Kirim respons sukses
-        return new Response(JSON.stringify({ message: "Login berhasil!", nama: user.nama }), { status: 200 });
-
-    } catch (error) {
-        console.error(error);
-        // 4. Kirim respons sukses
         return new Response(JSON.stringify({ 
             message: "Login berhasil!", 
             nama: user.nama,
             role: user.role // <--- INI BIANG KEROKNYA KALAU BELUM ADA
         }), { status: 200 });
+
+    } catch (error) {
+        console.error(error);
+        return new Response(JSON.stringify({ message: "Terjadi kesalahan pada server." }), { status: 500 });
     }
 };
