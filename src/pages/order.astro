@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 
-// CEK SESI (PROTECTED ROUTE): Hanya klien yang login yang bisa buka halaman ini
+// Hanya klien yang login yang bisa buka halaman ini
 const session = Astro.cookies.get('user_session');
 
 if (!session) {

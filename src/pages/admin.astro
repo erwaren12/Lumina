@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import { db } from '../lib/db.js';
 
-// 1. CEK SESI LOGIN
+// 1. Cek Sesi
 const session = Astro.cookies.get('user_session');
 
 if (!session) {
@@ -11,15 +11,14 @@ if (!session) {
 
 const userId = session.value;
 
-// 2. CEK OTORISASI ROLE (KEAMANAN BARU 🛡️)
+// 2. Cek Otoritas
 const [userRows] = await db.query('SELECT role FROM users WHERE id = ?', [userId]) as any;
 
-// Jika user tidak ada di DB, atau role-nya BUKAN admin, tendang ke dashboard klien!
 if (userRows.length === 0 || userRows[0].role !== 'admin') {
     return Astro.redirect('/dashboard');
 }
 
-// 3. JIKA LOLOS PENGECEKAN, AMBIL SEMUA DATA PESANAN
+// 3. Admin, Ambil Data Pesananan
 const [orders] = await db.query(`
     SELECT 
         orders.id as order_id, 
@@ -117,17 +116,14 @@ const [orders] = await db.query(`
         </main>
 
         <script is:inline>
-            // Ambil semua tombol update di dalam tabel
             const updateButtons = document.querySelectorAll('.btn-update');
 
             updateButtons.forEach(button => {
                 button.addEventListener('click', async (e) => {
-                    // Cari elemen <select> yang posisinya bersebelahan dengan tombol yang diklik
                     const selectElement = e.target.previousElementSibling;
                     const order_id = selectElement.getAttribute('data-id');
                     const status_baru = selectElement.value;
 
-                    // Animasi tombol loading
                     const originalText = e.target.innerHTML;
                     e.target.innerHTML = "⏳";
                     e.target.disabled = true;
@@ -146,7 +142,6 @@ const [orders] = await db.query(`
                             e.target.innerHTML = "OK!";
                             e.target.classList.replace('bg-[#2E1F1A]', 'bg-green-600');
                             
-                            // Kembalikan tombol ke semula setelah 2 detik
                             setTimeout(() => {
                                 e.target.innerHTML = originalText;
                                 e.target.classList.replace('bg-green-600', 'bg-[#2E1F1A]');

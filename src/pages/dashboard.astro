@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import { db } from '../lib/db.js';
 
-// 1. CEK SESI
+// 1. Cek Sesi
 const session = Astro.cookies.get('user_session');
 
 if (!session) {
@@ -11,7 +11,7 @@ if (!session) {
 
 const userId = session.value;
 
-// 2. AMBIL DATA USER
+// 2. Ambil Data USer
 const [userRows] = await db.query('SELECT nama, email, role FROM users WHERE id = ?', [userId]) as any;
 
 if (userRows.length === 0) {
@@ -21,11 +21,11 @@ if (userRows.length === 0) {
 
 const user = userRows[0];
 
-// 3. AMBIL DATA PESANAN TERBARU (LANGKAH BARU!)
+// 3. Ambil Data Pesanan Terbaru
 // Mencari apakah klien ini punya data di tabel orders
 const [orderRows] = await db.query('SELECT * FROM orders WHERE user_id = ? ORDER BY tanggal_order DESC LIMIT 1', [userId]) as any;
 
-// Cek status: true kalau ada pesanan, false kalau kosong
+// Cek status
 const hasOrder = orderRows.length > 0;
 const order = hasOrder ? orderRows[0] : null;
 ---

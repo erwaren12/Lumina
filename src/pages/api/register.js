@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 
 export const POST = async ({ request }) => {
     try {
-        // 1. Ambil data yang dikirim dari form Frontend (Ganti const jadi let agar bisa dimodifikasi)
+        // 1. Ambil data yang dikirim dari form Frontend
         const data = await request.json();
         let { nama, email, password } = data;
 
@@ -16,11 +16,11 @@ export const POST = async ({ request }) => {
             return new Response(JSON.stringify({ message: "Email sudah terdaftar!" }), { status: 400 });
         }
 
-        // 3. Enkripsi (Hash) password demi keamanan
+        // 3. Enkripsi password demi keamanan
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // 4. Simpan data ke database Cloud (TiDB)
+        // 4. Simpan data ke database Cloud
         await db.query(
             'INSERT INTO users (nama, email, password) VALUES (?, ?, ?)', 
             [nama, email, hashedPassword]

@@ -13,7 +13,6 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         
         <script is:inline>
-            // Mencegah kedipan tema saat halaman pertama dimuat
             const savedTheme = localStorage.getItem('theme') || 'light';
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
@@ -30,9 +29,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             .kursor-tarik:active { cursor: grabbing; }
             @keyframes blink { 0%, 100% { border-color: transparent; } 50% { border-color: #EA580C; } }
             
-            /* ========================================================
-               🌟 PREMIUM SCROLLBAR
-               ======================================================== */
+            /* Scrollbar */
             ::-webkit-scrollbar { width: 10px; }
             ::-webkit-scrollbar-track { background: #0F172A; }
             ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; border: 2px solid #0F172A; }
@@ -42,9 +39,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             [data-theme="light"] ::-webkit-scrollbar-thumb { background: #C8B8A3 !important; border: 2px solid #F5EEDB !important; }
             [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #EA580C !important; }
 
-            /* ========================================================
-               🏗️ GLOBAL STRUCTURE & SHAPES 
-               ======================================================== */
+            /* Semua Struktur */
             .bg-slate-800, .mockup-container, #terminal-card, #stats-container, section div.bg-gradient-to-r {
                 border-radius: 1.5rem !important;
                 transition: all 0.4s ease-in-out !important;
@@ -68,9 +63,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             #hero-glow { display: block !important; filter: blur(80px) !important; transition: all 0.7s ease !important; }
             footer { border-top: none !important; }
 
-            /* ========================================================
-               🌙 DARK MODE COLORS
-               ======================================================== */
+            /* Dark Mode */
             body { background-color: #0F172A; } 
             
             .bg-slate-800, #terminal-card, #stats-container, section div.bg-gradient-to-r {
@@ -121,9 +114,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             
             section, .border-t, .border-b, .border-y { border-color: transparent !important; }
 
-            /* ========================================================
-               ☀️ LIGHT MODE COLORS (TERRACOTTA & BEIGE)
-               ======================================================== */
+            /* Light Mode */
             [data-theme="light"] body { background-color: #F5EEDB !important; color: #2E1F1A !important; }
             
             [data-theme="light"] .bg-slate-900, [data-theme="light"] .bg-slate-950, 
@@ -430,15 +421,12 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         </footer>
 
         <script is:inline>
-            // SISTEM TOGGLE TEMA DENGAN MEMORI
             const btnDesktop = document.getElementById('theme-toggle-desktop');
             const btnMobile = document.getElementById('theme-toggle-mobile');
             const html = document.documentElement;
             
-            // 1. Cek ingatan browser
             let currentTheme = localStorage.getItem('theme') || 'light';
 
-            // 2. Fungsi penyesuaian tampilan
             function applyTheme(theme) {
                 if(theme === 'light') {
                     html.setAttribute('data-theme', 'light');
@@ -451,20 +439,19 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                 }
             }
 
-            // 3. Pasang tema seketika saat halaman dimuat
             applyTheme(currentTheme);
 
-            // 4. Reaksi saat tombol bulan/matahari diklik
+            // Reaksi Tombol Light Mode/Dark Mode
             function toggleTheme() {
                 currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-                localStorage.setItem('theme', currentTheme); // Simpan pilihan ke memori
+                localStorage.setItem('theme', currentTheme);
                 applyTheme(currentTheme);
             }
 
             if(btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
             if(btnMobile) btnMobile.addEventListener('click', toggleTheme);
             
-            // MOBILE MENU TOGGLE
+            // HP Menu Toggle
             const btnMenu = document.getElementById('mobile-menu-btn');
             const menu = document.getElementById('mobile-menu');
             let menuOpen = false;

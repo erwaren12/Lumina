@@ -144,19 +144,18 @@ import '../styles/global.css';
 
         <script is:inline>
             document.getElementById('formRegister').addEventListener('submit', async function(e) {
-                e.preventDefault(); // Mencegah halaman refresh otomatis
+                e.preventDefault();
 
                 const nama = document.getElementById('nama').value;
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
                 const btn = document.getElementById('btnRegister');
 
-                // Ubah tampilan tombol saat loading
+                // Tampilan Tombol Loading
                 btn.innerHTML = "Memproses... ⏳";
                 btn.disabled = true;
 
                 try {
-                    // Mengirim request POST ke file /api/register.js
                     const response = await fetch('/api/register', {
                         method: 'POST',
                         headers: {
@@ -167,11 +166,12 @@ import '../styles/global.css';
 
                     const result = await response.json();
 
+                    // Pindah ke Login
                     if (response.ok) {
                         alert("🎉 " + result.message + " Silakan login dengan akun Anda.");
-                        window.location.href = "/login"; // Otomatis pindah ke halaman login
+                        window.location.href = "/login";
                     } else {
-                        // Jika gagal (misal: email sudah terdaftar)
+                        // Gagal
                         alert("❌ Pendaftaran Gagal: " + result.message);
                         btn.innerHTML = '<span>Daftar Sekarang</span><svg class="w-4 h-4 text-[#E3D5C1]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>';
                         btn.disabled = false;

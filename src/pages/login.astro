@@ -8,7 +8,6 @@ import '../styles/global.css';
 		<title>Masuk | Alif.Tech</title>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 		<style is:global>
-			/* Palet Light Mode Alif.Tech */
 			:root {
 				--bg-card: #F5EEDB;      
 				--text-dark: #2E1F1A;    
@@ -139,15 +138,12 @@ import '../styles/global.css';
                     if (response.ok) {
 						alert("✅ Login Sukses!");
                         
-                        // --- POLISI LALU LINTAS ---
+                        // Admin dan Klien
                         if (result.role === 'admin') {
-                            // Buka pintu khusus Admin
                             window.location.href = "/admin";
                         } else {
-                            // Buka pintu Dashboard Klien
                             window.location.href = "/dashboard";
                         }
-                        // --------------------------
                         
                     } else {
                         alert("❌ Gagal Masuk: " + result.message);

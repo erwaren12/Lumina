@@ -1,9 +1,9 @@
 ---
 import '../styles/global.css';
 
-// CEK APAKAH ADA USER YANG SEDANG LOGIN
+// Cek Sudah Login
 const session = Astro.cookies.get('user_session');
-const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belum
+const isLoggedIn = !!session;
 ---
 <html lang="id">
     <head>
@@ -21,9 +21,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             .kursor-tarik:active { cursor: grabbing; }
             @keyframes blink { 0%, 100% { border-color: transparent; } 50% { border-color: #EA580C; } }
             
-            /* ========================================================
-               🌟 PREMIUM SCROLLBAR
-               ======================================================== */
+            /* Scrollbar */
             ::-webkit-scrollbar { width: 10px; }
             ::-webkit-scrollbar-track { background: #0F172A; }
             ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; border: 2px solid #0F172A; }
@@ -33,24 +31,18 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             [data-theme="light"] ::-webkit-scrollbar-thumb { background: #C8B8A3 !important; border: 2px solid #F5EEDB !important; }
             [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #EA580C !important; }
 
-            /* ========================================================
-               ☕ LIGHT MODE: WARM TERRACOTTA & BEIGE LINES EDITION
-               ======================================================== */
+            /* Light Mode */
             
-            /* 1. Latar Belakang Dasar */
             [data-theme="light"] body { background-color: #F5EEDB !important; color: #2E1F1A !important; }
             
-            /* Hapus background pembungkus bawaan dark mode */
             [data-theme="light"] .bg-slate-900, [data-theme="light"] .bg-slate-950, 
             [data-theme="light"] .bg-slate-900\/50, [data-theme="light"] .bg-slate-800\/30 { 
                 background-color: transparent !important; }
             
-            /* 2. Navigasi & Header */
             [data-theme="light"] header .bg-slate-950 { background-color: #F5EEDB !important; border: none !important; }
             [data-theme="light"] nav.bg-slate-900\/85 { background-color: rgba(245, 238, 219, 0.85) !important; border: none !important; backdrop-filter: blur(12px) !important; }
             [data-theme="light"] #mobile-menu { background-color: rgba(245, 238, 219, 0.98) !important; }
 
-            /* 3. KOTAK/BOX: KREM KECOKELATAN */
             [data-theme="light"] .bg-slate-800,
             [data-theme="light"] .bg-slate-800\/40,
             [data-theme="light"] .bg-slate-800\/50,
@@ -62,7 +54,6 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                 border-radius: 1.5rem !important;
                 box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important; }
 
-            /* Efek Hover Pricing Card di Light Mode */
             [data-theme="light"] .pricing-card.popular {
                 border-color: #EA580C !important; border-width: 2px !important;
                 box-shadow: 0 10px 25px rgba(234, 88, 12, 0.15) !important; }
@@ -78,20 +69,17 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                 border-color: #C8B8A3 !important;
             }
             
-            /* PEMUSNAH GARIS SEKAT DI KOTAK STATISTIK */
             [data-theme="light"] div#stats-grid > * { 
                 border-left-width: 0px !important; border-right-width: 0px !important;
                 border-top-width: 0px !important;
                 border-bottom-width: 0px !important;
                 border-color: transparent !important; }
 
-            /* 5. TEKS GLOBAL JADI COKELAT TUA */
             [data-theme="light"] .text-white { color: #2E1F1A !important; }
             [data-theme="light"] .text-slate-300 { color: #2E1F1A !important; font-weight: 600 !important; }
             [data-theme="light"] .text-slate-400 { color: #7B6153 !important; font-weight: 500 !important; }
             [data-theme="light"] .text-slate-500 { color: #8A8173 !important; font-weight: 500 !important; }
 
-            /* 6. Aksen Warna: Oranye Terracotta Halus */
             [data-theme="light"] .bg-blue-500\/10, [data-theme="light"] .bg-yellow-500\/10, [data-theme="light"] .bg-indigo-500\/10 { background-color: transparent !important; color: #EA580C !important; border: 1px solid #EA580C !important; border-radius: 0.5rem !important; }
             [data-theme="light"] .text-blue-500, [data-theme="light"] .text-blue-400 { color: #EA580C !important; font-weight: 800; } 
             [data-theme="light"] #typewriter { color: #EA580C !important; -webkit-text-fill-color: #EA580C !important; background: none !important; padding: 0; }
@@ -99,25 +87,21 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             [data-theme="light"] .decoration-blue-500 { text-decoration-color: #2E1F1A !important; text-decoration-thickness: 2px !important; }
             [data-theme="light"] .text-emerald-500 { color: #2E1F1A !important; }
 
-            /* 7. Tombol CTA Utama */
             [data-theme="light"] .bg-blue-600, [data-theme="light"] .btn-primary { background-color: #2E1F1A !important; color: #E3D5C1 !important; border: none !important; border-radius: 9999px !important; }
             [data-theme="light"] .bg-blue-600:hover, [data-theme="light"] .btn-primary:hover { background-color: #524840 !important; }
             [data-theme="light"] .bg-blue-600 .text-white, [data-theme="light"] .btn-primary .text-white { color: #E3D5C1 !important; }
             [data-theme="light"] nav a.bg-blue-600 { background-color: #2E1F1A !important; color: #E3D5C1 !important; } 
             [data-theme="light"] .bg-white.text-blue-600 { background-color: #E3D5C1 !important; color: #2E1F1A !important; border: 1px solid #C8B8A3 !important; }
 
-            /* Tombol outline di Harga */
             [data-theme="light"] .btn-outline { background-color: transparent !important; color: #2E1F1A !important; border: 2px solid #C8B8A3 !important; border-radius: 9999px !important;}
             [data-theme="light"] .btn-outline:hover { border-color: #EA580C !important; color: #EA580C !important; }
 
-            /* 8. Elemen UI (Theme Toggle, WhatsApp melayang) */
             [data-theme="light"] #theme-toggle-desktop, [data-theme="light"] #theme-toggle-mobile { 
                 background-color: transparent !important; border: 1px solid #C8B8A3 !important; color: #2E1F1A !important; 
             }
             [data-theme="light"] #theme-toggle-desktop:hover, [data-theme="light"] #theme-toggle-mobile:hover { background-color: #E5E7EB !important; color: #EA580C !important; }
             [data-theme="light"] a.fixed.bottom-6.right-6 svg.w-8.h-8 { color: #FFFFFF !important; }
 
-            /* 9. Big CTA Banner Bawah */
             [data-theme="light"] section.py-20 div.bg-gradient-to-r {
                 background: #E3D5C1 !important; border: 1px solid #C8B8A3 !important;
                 border-radius: 2rem !important;
@@ -125,19 +109,16 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             [data-theme="light"] section.py-20 div.bg-gradient-to-r .text-white { color: #2E1F1A !important; }
             [data-theme="light"] section.py-20 div.bg-white.text-blue-600 { background-color: #2E1F1A !important; color: #E3D5C1 !important; border: none !important; }
 
-            /* 10. Mockup Etalase Toko */
             [data-theme="light"] div.bg-slate-900.px-4.py-3 { background-color: #E3D5C1 !important; border-bottom: 1px solid #C8B8A3 !important; }
             [data-theme="light"] div.bg-slate-800.px-3.py-1.rounded { background-color: transparent !important; color: #2E1F1A !important; border: 1px solid #C8B8A3 !important; }
             [data-theme="light"] .bg-slate-700\/50 { background-color: #F5EEDB !important; border: 1px solid #C8B8A3 !important; color: #7B6153 !important; }
             [data-theme="light"] .bg-slate-700\/30 { background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; }
 
-            /* 11. CUSTOM STATS CONTAINER */
             [data-theme="light"] #stats-container {
                 background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; 
                 border-radius: 1.5rem !important; 
                 box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important; }
 
-            /* 12. PITA KLIEN UMKM */
             [data-theme="light"] #klien-banner {
                 background-color: #2E1F1A !important; border-top: 1px solid #C8B8A3 !important;
                 border-bottom: 1px solid #C8B8A3 !important; }
@@ -146,7 +127,6 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             [data-theme="light"] #klien-logos div { color: #E3D5C1 !important; }
             [data-theme="light"] #klien-logos span { color: #EA580C !important; }
 
-            /* Miscellaneous */
             [data-theme="light"] .bg-blue-600\/20 { display: none !important; } 
             [data-theme="light"] .text-yellow-400 { color: #F59E0B !important; } 
             [data-theme="light"] #slider-testimoni .text-white { color: #2E1F1A !important; }
@@ -155,10 +135,8 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             [data-theme="light"] section.py-12 span.text-purple-500 { color: #2E1F1A !important; }
             [data-theme="light"] section.py-12 span.counter { color: #2E1F1A !important; }
             
-            /* Lencana Rekomendasi Light Mode */
             [data-theme="light"] .badge-popular { background-color: #EA580C !important; color: #F5EEDB !important;}
 
-            /* FOOTER WARNA HITAM PEKAT & TEKS KREM */
             [data-theme="light"] footer.bg-slate-950 { background-color: #2E1F1A !important; border-top: none !important; }
             [data-theme="light"] footer h4, 
             [data-theme="light"] footer p, 
@@ -175,7 +153,6 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         </style>
         
         <script is:inline>
-            // --- PERBAIKAN 1: Mencegah Flashbang Putih ---
             const savedTheme = localStorage.getItem('theme') || 'light';
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
@@ -437,12 +414,10 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         </footer>
 
         <script is:inline>
-            // --- PERBAIKAN 2: Sistem Memori Tema ---
             const btnDesktop = document.getElementById('theme-toggle-desktop');
             const btnMobile = document.getElementById('theme-toggle-mobile');
             const html = document.documentElement;
             
-            // Mengambil ingatan dari localStorage (default light)
             let currentTheme = localStorage.getItem('theme') || 'light'; 
 
             function applyTheme(theme) {
@@ -457,19 +432,18 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                 }
             }
 
-            // Terapkan tema segera saat di-load
             applyTheme(currentTheme);
 
             function toggleTheme() {
                 currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-                localStorage.setItem('theme', currentTheme); // Simpan pilihan!
+                localStorage.setItem('theme', currentTheme);
                 applyTheme(currentTheme);
             }
 
             if(btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
             if(btnMobile) btnMobile.addEventListener('click', toggleTheme);
 
-            // MOBILE MENU TOGGLE
+            // HP Toggle
             const btnMenu = document.getElementById('mobile-menu-btn');
             const menu = document.getElementById('mobile-menu');
             let menuOpen = false;

@@ -1,9 +1,9 @@
 ---
 import '../styles/global.css';
 
-// CEK APAKAH ADA USER YANG SEDANG LOGIN
+// Cek Sudah Login
 const session = Astro.cookies.get('user_session');
-const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belum
+const isLoggedIn = !!session;
 ---
 <html lang="id">
     <head>
@@ -13,7 +13,6 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         
         <script is:inline>
-            // --- PERBAIKAN 1: Mencegah Flashbang Putih saat Pindah Halaman ---
             const savedTheme = localStorage.getItem('theme') || 'light';
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
@@ -35,9 +34,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; border: 2px solid #0F172A; }
             ::-webkit-scrollbar-thumb:hover { background: #3B82F6; }
             
-            /* ========================================================
-               ☕ LIGHT MODE: WARM TERRACOTTA & BEIGE LINES EDITION
-               ======================================================== */
+            /* Light Mode */
             [data-theme="light"] body { background-color: #F5EEDB !important; color: #2E1F1A !important; }
             
             [data-theme="light"] ::-webkit-scrollbar-track { background: #F5EEDB !important; }
@@ -53,7 +50,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             [data-theme="light"] nav.bg-slate-900\/85 { background-color: rgba(245, 238, 219, 0.85) !important; border: none !important; backdrop-filter: blur(12px) !important; }
             [data-theme="light"] #mobile-menu { background-color: rgba(245, 238, 219, 0.98) !important; }
 
-            /* Boks Card Portofolio */
+            /* Kotak Portofolio */
             [data-theme="light"] .bg-slate-800 {
                 background: #E3D5C1 !important; 
                 border: 1px solid #C8B8A3 !important; 
@@ -92,7 +89,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             [data-theme="light"] #theme-toggle-desktop:hover, [data-theme="light"] #theme-toggle-mobile:hover { background-color: #E5E7EB !important; color: #EA580C !important; }
             [data-theme="light"] a.fixed.bottom-6.right-6 svg.w-8.h-8 { color: #FFFFFF !important; }
 
-            /* CSS KHUSUS HALAMAN PORTOFOLIO */
+            /* CSS Portofolio */
             .portfolio-img-bg { background-color: #0F172A !important; }
             .portfolio-btn { background-color: #3B82F6 !important; color: #FFFFFF !important; }
             .portfolio-btn:hover { background-color: #2563EB !important; }
@@ -101,7 +98,6 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             [data-theme="light"] .portfolio-btn { background-color: #EA580C !important; color: #F5EEDB !important; border: none !important; }
             [data-theme="light"] .portfolio-btn:hover { background-color: #C0470A !important; }
 
-            /* PERBAIKAN BANNER CTA BIRU AGAR BERUBAH JADI KREM (Khusus section.py-10) */
             [data-theme="light"] section.py-10 div.bg-gradient-to-r {
                 background: #E3D5C1 !important;
                 background-image: none !important;
@@ -366,12 +362,10 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         </footer>
 
         <script is:inline>
-            // --- PERBAIKAN 2: Sistem Memori Tema ---
             const btnDesktop = document.getElementById('theme-toggle-desktop');
             const btnMobile = document.getElementById('theme-toggle-mobile');
             const html = document.documentElement;
             
-            // Mengambil ingatan dari localStorage (default light)
             let currentTheme = localStorage.getItem('theme') || 'light'; 
 
             function applyTheme(theme) {
@@ -386,19 +380,18 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                 }
             }
 
-            // Terapkan tema segera saat di-load
             applyTheme(currentTheme);
 
             function toggleTheme() {
                 currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-                localStorage.setItem('theme', currentTheme); // Simpan pilihan!
+                localStorage.setItem('theme', currentTheme);
                 applyTheme(currentTheme);
             }
 
             if(btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
             if(btnMobile) btnMobile.addEventListener('click', toggleTheme);
 
-            // MOBILE MENU TOGGLE
+            // HP Toggle
             const btnMenu = document.getElementById('mobile-menu-btn');
             const menu = document.getElementById('mobile-menu');
             let menuOpen = false;
