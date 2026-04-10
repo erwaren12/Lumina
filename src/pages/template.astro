@@ -5,7 +5,7 @@ import '../styles/global.css';
 const session = Astro.cookies.get('user_session');
 const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belum
 ---
-<html lang="id" data-theme="light">
+<html lang="id">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
@@ -13,7 +13,11 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         
         <script is:inline>
-            document.documentElement.setAttribute('data-theme', 'light');
+            // Mencegah kedipan tema saat halaman pertama dimuat
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
         </script>
 
         <style is:global>
@@ -70,15 +74,18 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             body { background-color: #0F172A; } 
             
             .bg-slate-800, #terminal-card, #stats-container, section div.bg-gradient-to-r {
-                background-color: #1E293B !important; border: 1px solid #334155 !important;
+                background-color: #1E293B !important;
+                border: 1px solid #334155 !important;
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
             }
             .bg-slate-800:hover, .mockup-container:hover {
-                box-shadow: 0 12px 25px rgba(59, 130, 246, 0.15) !important; border-color: #3B82F6 !important;
+                box-shadow: 0 12px 25px rgba(59, 130, 246, 0.15) !important;
+                border-color: #3B82F6 !important;
             }
             
             .border-slate-800, .border-slate-700, .border-2, .border-t-2, .border-b-2 {
-                border-color: #334155 !important; border-width: 1px !important;
+                border-color: #334155 !important;
+                border-width: 1px !important;
             }
             .divide-slate-700 > :not([hidden]) ~ :not([hidden]) { border-color: transparent !important; }
 
@@ -105,7 +112,8 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             #btn-portofolio:hover { border-color: #3B82F6 !important; color: #3B82F6 !important; }
 
             #arsitektur-section .w-12.h-12, #arsitektur-section .w-14.h-14 {
-                background-color: #1E293B !important; border: 1px solid #334155 !important; color: #3B82F6 !important;
+                background-color: #1E293B !important;
+                border: 1px solid #334155 !important; color: #3B82F6 !important;
             }
 
             footer { background-color: #020617 !important; border-top: 1px solid #1E293B !important; }
@@ -197,7 +205,8 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
             [data-theme="light"] footer .text-white,
             [data-theme="light"] footer .text-slate-400,
             [data-theme="light"] footer .text-slate-500 { 
-                color: #F5EEDB !important; }
+                color: #F5EEDB !important;
+            }
             [data-theme="light"] footer .bg-blue-600 { background-color: #EA580C !important; color: #F5EEDB !important; }
             [data-theme="light"] footer .bg-blue-600\/10 { background-color: transparent !important; border: 1px solid #F5EEDB !important; color: #F5EEDB !important; }
 
@@ -297,7 +306,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                         <div class="absolute inset-0 bg-gradient-to-tr from-orange-500/10 to-transparent"></div>
                         <span class="text-8xl z-10 transition-transform duration-500 group-hover:-translate-y-4">🛒</span>
                         <div class="absolute bottom-8 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 translate-y-4 group-hover:translate-y-0">
-                            <a href="https://raffynadjib.github.io/template-website1/" target="_blank" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Lihat Demo</a>
+                            <a href="https://raffynadjib.github.io/template-website3/" target="_blank" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Lihat Demo</a>
                         </div>
                     </div>
                     <div class="p-8 flex-1 flex flex-col">
@@ -314,7 +323,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                         <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent"></div>
                         <span class="text-8xl z-10 transition-transform duration-500 group-hover:-translate-y-4">👗</span>
                         <div class="absolute bottom-8 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 translate-y-4 group-hover:translate-y-0">
-                            <a href="https://raffynadjib.github.io/template-website2/" target="_blank" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Lihat Demo</a>
+                            <a href="https://raffynadjib.github.io/template-website1/" target="_blank" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Lihat Demo</a>
                         </div>
                     </div>
                     <div class="p-8 flex-1 flex flex-col">
@@ -331,7 +340,7 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                         <div class="absolute inset-0 bg-gradient-to-tr from-purple-500/10 to-transparent"></div>
                         <span class="text-8xl z-10 transition-transform duration-500 group-hover:-translate-y-4">📱</span>
                         <div class="absolute bottom-8 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 translate-y-4 group-hover:translate-y-0">
-                            <a href="https://raffynadjib.github.io/template-website3/" target="_blank" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Lihat Demo</a>
+                            <a href="https://raffynadjib.github.io/template-website2/" target="_blank" class="portfolio-btn px-6 py-3 rounded-full font-bold shadow-lg text-sm">Lihat Demo</a>
                         </div>
                     </div>
                     <div class="p-8 flex-1 flex flex-col">
@@ -421,16 +430,17 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
         </footer>
 
         <script is:inline>
-            // SISTEM TOGGLE TEMA
+            // SISTEM TOGGLE TEMA DENGAN MEMORI
             const btnDesktop = document.getElementById('theme-toggle-desktop');
             const btnMobile = document.getElementById('theme-toggle-mobile');
             const html = document.documentElement;
             
-            // Default diset True (Light Mode)
-            let isLight = true;
-            function toggleTheme() {
-                isLight = !isLight;
-                if(isLight) {
+            // 1. Cek ingatan browser
+            let currentTheme = localStorage.getItem('theme') || 'light';
+
+            // 2. Fungsi penyesuaian tampilan
+            function applyTheme(theme) {
+                if(theme === 'light') {
                     html.setAttribute('data-theme', 'light');
                     if(btnDesktop) btnDesktop.innerText = '🌙';
                     if(btnMobile) btnMobile.innerText = '🌙';
@@ -440,15 +450,20 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                     if(btnMobile) btnMobile.innerText = '☀️';
                 }
             }
+
+            // 3. Pasang tema seketika saat halaman dimuat
+            applyTheme(currentTheme);
+
+            // 4. Reaksi saat tombol bulan/matahari diklik
+            function toggleTheme() {
+                currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+                localStorage.setItem('theme', currentTheme); // Simpan pilihan ke memori
+                applyTheme(currentTheme);
+            }
+
             if(btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
             if(btnMobile) btnMobile.addEventListener('click', toggleTheme);
             
-            window.addEventListener('DOMContentLoaded', () => {
-                // Memastikan button iconnya sinkron pas pertama kali load
-                html.setAttribute('data-theme', 'light');
-                if(btnDesktop) btnDesktop.innerText = '🌙';
-                if(btnMobile) btnMobile.innerText = '🌙';
-            });
             // MOBILE MENU TOGGLE
             const btnMenu = document.getElementById('mobile-menu-btn');
             const menu = document.getElementById('mobile-menu');
