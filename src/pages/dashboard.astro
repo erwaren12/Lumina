@@ -12,7 +12,7 @@ if (!session) {
 const userId = session.value;
 
 // 2. AMBIL DATA USER
-const [userRows] = await db.query('SELECT nama, email FROM users WHERE id = ?', [userId]) as any;
+const [userRows] = await db.query('SELECT nama, email, role FROM users WHERE id = ?', [userId]) as any;
 
 if (userRows.length === 0) {
     Astro.cookies.delete('user_session');
@@ -61,6 +61,18 @@ const order = hasOrder ? orderRows[0] : null;
                     <a href="#" class="block px-4 py-3 rounded-xl bg-[#EA580C] text-white font-bold shadow-md">Ringkasan</a>
                     <a href="/order" class="block px-4 py-3 rounded-xl font-semibold hover:bg-[#4A332A] transition-colors">Pesanan Baru</a>
                     <a href="#" class="block px-4 py-3 rounded-xl font-semibold hover:bg-[#4A332A] transition-colors">Pengaturan Akun</a>
+                    
+                    <div class="h-px bg-[#4A332A] my-4"></div>
+
+                    <a href="/" class="block px-4 py-3 rounded-xl font-semibold hover:bg-[#4A332A] transition-colors flex items-center gap-2">
+                        🏠 Kembali ke Home
+                    </a>
+
+                    {user.role === 'admin' && (
+                        <a href="/admin" class="block px-4 py-3 rounded-xl bg-red-600/20 text-red-500 font-bold hover:bg-red-600 hover:text-white transition-colors border border-red-600/30 flex items-center gap-2 mt-2">
+                            👑 Kembali ke Mode Admin
+                        </a>
+                    )}
                 </nav>
 
                 <div class="p-4 border-t border-[#4A332A]">
