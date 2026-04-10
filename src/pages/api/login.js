@@ -39,6 +39,11 @@ export const POST = async ({ request, cookies }) => {
 
     } catch (error) {
         console.error(error);
-        return new Response(JSON.stringify({ message: "Terjadi kesalahan pada server." }), { status: 500 });
+        // 4. Kirim respons sukses
+        return new Response(JSON.stringify({ 
+            message: "Login berhasil!", 
+            nama: user.nama,
+            role: user.role  // <-- Ini tambahan kuncinya!
+        }), { status: 200 });
     }
 };

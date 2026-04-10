@@ -138,8 +138,17 @@ import '../styles/global.css';
 
                     if (response.ok) {
                         alert("✅ " + result.message + " Selamat datang kembali, " + result.nama + "!");
-                        // Arahkan ke halaman utama (Home) setelah berhasil login
-                        window.location.href = "/"; 
+                        
+                        // --- POLISI LALU LINTAS ---
+                        if (result.role === 'admin') {
+                            // Buka pintu khusus Admin
+                            window.location.href = "/admin";
+                        } else {
+                            // Buka pintu Dashboard Klien
+                            window.location.href = "/dashboard";
+                        }
+                        // --------------------------
+                        
                     } else {
                         alert("❌ Gagal Masuk: " + result.message);
                         btn.innerHTML = "Masuk";
