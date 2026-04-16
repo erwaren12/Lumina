@@ -14,7 +14,7 @@ export const POST = async ({ request, cookies }) => {
         const data = await request.json();
         const { jenis_paket, nama_bisnis, catatan } = data;
 
-        // 3. Simpan ke database XAMPP
+        // 3. Simpan ke database
         await db.query(
             'INSERT INTO orders (user_id, jenis_paket, nama_bisnis, catatan) VALUES (?, ?, ?, ?)',
             [userId, jenis_paket, nama_bisnis, catatan]
