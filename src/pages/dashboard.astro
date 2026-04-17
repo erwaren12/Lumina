@@ -34,9 +34,18 @@ const order = hasOrder ? orderRows[0] : null;
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
-        <title>Dashboard Klien | Alif.Tech</title>
+        <title>Dashboard Klien | PyntaDev</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
         <style is:global>
+            @import "tailwindcss";
+
+            /* --- TOGLE LOGO GAMBAR --- */
+            .logo-dark-mode { display: block; }
+            .logo-light-mode { display: none; }
+            
+            [data-theme="light"] .logo-dark-mode { display: none !important; }
+            [data-theme="light"] .logo-light-mode { display: block !important; }
+
             body { font-family: 'Inter', sans-serif; background-color: #F5EEDB; color: #2E1F1A; margin: 0; padding: 0; }
             main::-webkit-scrollbar { width: 8px; }
             main::-webkit-scrollbar-track { background: #F5EEDB; }
@@ -52,8 +61,11 @@ const order = hasOrder ? orderRows[0] : null;
             <aside class="w-[280px] flex-shrink-0 bg-[#2E1F1A] text-[#E3D5C1] flex flex-col shadow-2xl z-20 h-full">
                 <div class="p-8">
                     <div class="text-2xl font-black flex items-center gap-2">
-                        <div class="w-8 h-8 bg-[#EA580C] rounded-lg flex items-center justify-center text-sm text-white shadow-md">🚀</div>
-                        Alif<span class="text-[#EA580C]">.Tech</span>
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <img src="/logo-biru.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-dark-mode" />
+                            <img src="/logo-orange.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-light-mode" />
+                        </div>
+                        Pynta<span class="text-[#EA580C]">Dev</span>
                     </div>
                 </div>
                 
@@ -86,7 +98,7 @@ const order = hasOrder ? orderRows[0] : null;
                 <header class="flex justify-between items-center mb-10">
                     <div>
                         <h1 class="text-3xl lg:text-4xl font-black mb-2 text-[#2E1F1A]">Selamat Datang, {user.nama}!</h1>
-                        <p class="text-[#7B6153] font-medium">Dashboard eksklusif Klien Alif.Tech</p>
+                        <p class="text-[#7B6153] font-medium">Dashboard eksklusif Klien PyntaDev</p>
                     </div>
                 </header>
 
@@ -117,7 +129,7 @@ const order = hasOrder ? orderRows[0] : null;
                             <>
                                 <h3 class="text-2xl font-black mb-3 text-[#2E1F1A]">Pesanan Sedang Diproses! 🚀</h3>
                                 <p class="text-[#7B6153] mb-8 leading-relaxed max-w-2xl font-medium">
-                                    Terima kasih telah mempercayakan bisnis <b>{order.nama_bisnis}</b> kepada kami. Tim Alif.Tech akan segera menghubungi Anda untuk proses selanjutnya.
+                                    Terima kasih telah mempercayakan bisnis <b>{order.nama_bisnis}</b> kepada kami. Tim PyntaDev akan segera menghubungi Anda untuk proses selanjutnya.
                                 </p>
                             </>
                         ) : (
