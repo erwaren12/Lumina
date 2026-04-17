@@ -5,9 +5,11 @@ import '../styles/global.css';
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
-        <title>Buat Akun | Alif.Tech</title>
+        <title>Buat Akun | PyntaDev</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         <style is:global>
+            @import "tailwindcss";
+
             :root {
                 --bg-card: #F5EEDB;      
                 --text-dark: #2E1F1A;    
@@ -51,7 +53,7 @@ import '../styles/global.css';
                 <div class="absolute inset-0 z-0">
                     <img 
                         src="/gambar-daftar.jpg" 
-                        alt="Background Register" 
+                        alt="Background Register PyntaDev" 
                         class="w-full h-full object-cover object-[center_20%]"
                     />
                     <div class="absolute inset-0 bg-gradient-to-t from-[#F5EEDB]/40 via-transparent to-transparent"></div>
@@ -67,7 +69,7 @@ import '../styles/global.css';
                     </h1>
                     
                     <p class="text-[#2E1F1A] font-bold text-xs lg:text-sm leading-relaxed mb-6 teks-glow-putih">
-                        Bergabunglah dengan ratusan pemilik bisnis lainnya yang telah mempercayakan infrastruktur digital mereka kepada Alif.Tech.
+                        Bergabunglah dengan ratusan pemilik bisnis lainnya yang telah mempercayakan infrastruktur digital mereka kepada PyntaDev.
                     </p>
 
                     <ul class="space-y-3">
@@ -120,7 +122,7 @@ import '../styles/global.css';
                             <label class="block text-xs font-bold text-[#2E1F1A] mb-1">Kata Sandi Baru</label>
                             <div class="relative">
                                 <input type="password" id="password" placeholder="Minimal 8 karakter" class="w-full px-4 py-2.5 rounded-lg border border-[#C8B8A3] bg-white text-[#2E1F1A] placeholder-[#8A8173] transition-all" required minlength="8" />
-                                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#7B6153] hover:text-[#EA580C] transition-colors">
+                                <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#7B6153] hover:text-[#EA580C] transition-colors focus:outline-none">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
                                 </button>
                             </div>
@@ -143,6 +145,24 @@ import '../styles/global.css';
         </div>
 
         <script is:inline>
+            // --- LOGIKA TOMBOL MATA (SHOW/HIDE PASSWORD) ---
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                if (type === 'text') {
+                    // Mata Terbuka
+                    this.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+                } else {
+                    // Mata Tercoret
+                    this.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>`;
+                }
+            });
+
+            // --- LOGIKA FORM REGISTER ---
             document.getElementById('formRegister').addEventListener('submit', async function(e) {
                 e.preventDefault();
 
