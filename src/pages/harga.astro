@@ -189,7 +189,7 @@ const isLoggedIn = !!session;
     </head>
     <body class="bg-slate-900 text-slate-300 font-sans antialiased selection:bg-blue-500 selection:text-white flex flex-col min-h-screen transition-colors duration-500" style="font-family: 'Inter', sans-serif;">
         
-        <header class="fixed w-full top-0 z-50 transition-all shadow-lg">
+        <header class="fixed w-full top-0 z-50 transition-all shadow-sm backdrop-blur-lg">
             <div class="bg-slate-950 border-b border-slate-800 hidden lg:block transition-colors duration-500">
                 <div class="container mx-auto px-6 py-2 flex justify-between items-center text-xs text-slate-400 font-medium">
                     <div class="flex items-center gap-6">
@@ -199,7 +199,8 @@ const isLoggedIn = !!session;
                     <div class="flex items-center gap-1 cursor-pointer hover:text-blue-500 transition">🌐 ID</div>
                 </div>
             </div>
-            <nav class="bg-slate-900/85 backdrop-blur-lg border-b border-slate-700/50 relative z-50 transition-colors duration-500">
+            
+            <nav class="bg-slate-900/85 relative z-50 transition-colors duration-500 border-b border-slate-800/50">
                 <div class="container mx-auto px-6 py-4 md:py-5 flex justify-between items-center">
                     <a href="/" class="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2 hover:opacity-80 transition z-50">
                         <div class="w-10 h-10 flex items-center justify-center">
@@ -210,29 +211,26 @@ const isLoggedIn = !!session;
                     </a>
                     
                     <div class="hidden lg:flex space-x-8 xl:space-x-10 text-sm xl:text-base font-medium text-slate-300">
-                        <a href="/" class="hover:text-blue-500 transition-all">Home</a>
+                        <a href="/" class="text-white underline decoration-blue-500 decoration-4 underline-offset-8">Home</a>
                         <a href="/template" class="hover:text-blue-500 transition-all">Template</a>
                         <a href="/portofolio" class="hover:text-blue-500 transition-all">Portofolio</a>
-                        <a href="/harga" class="text-white font-bold underline decoration-blue-500 decoration-4 underline-offset-8">Harga</a>
+                        <a href="/harga" class="hover:text-blue-500 transition-all">Harga</a>
                     </div>
                     
                     <div class="hidden lg:flex items-center gap-4 md:gap-5">
-                        
                         <button id="theme-toggle-desktop" class="w-9 h-9 rounded-xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-slate-300 hover:text-yellow-400 hover:bg-slate-700 transition-all shadow-sm">
                             ☀️
                         </button>
-
                         <div class="flex items-center gap-3 text-sm font-bold">
-                            {isLoggedIn ?
-                            (
+                            {isLoggedIn ? (
                                 <a href="/dashboard" class="text-blue-500 hover:text-blue-400 transition-colors">
                                     Dashboard Saya
                                 </a>
                             ) : (
-                                <>
+                                <div class="flex items-center gap-3">
                                     <a href="/login" class="text-slate-300 hover:text-blue-500 transition-colors">Login</a>
                                     <a href="/register" class="text-blue-500 hover:text-blue-400 transition-colors">Daftar</a>
-                                </>
+                                </div>
                             )}
                         </div>
                         <a href="https://wa.me/6285177453386" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-600/30 transition-all transform hover:-translate-y-1">
@@ -245,29 +243,29 @@ const isLoggedIn = !!session;
                     </button>
                 </div>
             </nav>
-
-            <div id="mobile-menu" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 transform translate-x-full transition-transform duration-300 flex flex-col items-center justify-center space-y-6 text-xl font-extrabold lg:hidden">
-                
-                <button id="theme-toggle-mobile" class="absolute top-24 w-12 h-12 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-2xl text-slate-300 hover:text-yellow-400">
-                    ☀️
-                </button>
-
-                <a href="/" class="text-slate-300 hover:text-blue-500 transition-colors mt-10">Home</a>
-                <a href="/template" class="text-slate-300 hover:text-blue-500 transition-colors">Template</a>
-                <a href="/portofolio" class="text-slate-300 hover:text-blue-500 transition-colors">Portofolio</a>
-                <a href="/harga" class="text-white hover:text-blue-500 transition-colors">Harga</a>
-                <div class="w-16 h-px bg-slate-700 my-2"></div>
-                {isLoggedIn ? (
-                    <a href="/dashboard" class="text-blue-500 transition-colors">Dashboard Saya</a>
-                ) : (
-                    <>
-                        <a href="/login" class="text-slate-300 hover:text-blue-500 transition-colors">Login</a>
-                        <a href="/register" class="text-blue-500 transition-colors">Daftar Klien Baru</a>
-                    </>
-                )}
-                <a href="https://wa.me/6285177453386" class="mt-4 bg-blue-600 text-white px-8 py-3 rounded-full text-base">Konsultasi WA</a>
-            </div>
         </header>
+
+        <div id="mobile-menu" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 transform translate-x-full transition-transform duration-300 flex flex-col items-center justify-center space-y-6 text-xl font-extrabold lg:hidden">
+            
+            <button id="theme-toggle-mobile" class="w-12 h-12 mb-4 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-2xl text-slate-300 hover:text-yellow-400">
+                ☀️
+            </button>
+
+            <a href="/" class="text-white hover:text-blue-500 transition-colors">Home</a>
+            <a href="/template" class="text-slate-300 hover:text-blue-500 transition-colors">Template</a>
+            <a href="/portofolio" class="text-slate-300 hover:text-blue-500 transition-colors">Portofolio</a>
+            <a href="/harga" class="text-slate-300 hover:text-blue-500 transition-colors">Harga</a>
+            <div class="w-16 h-px bg-slate-700 my-2"></div>
+            {isLoggedIn ? (
+                <a href="/dashboard" class="text-blue-500 transition-colors">Dashboard Saya</a>
+            ) : (
+                <div class="flex flex-col items-center space-y-6">
+                    <a href="/login" class="text-slate-300 hover:text-blue-500 transition-colors">Login</a>
+                    <a href="/register" class="text-blue-500 transition-colors">Daftar Klien Baru</a>
+                </div>
+            )}
+            <a href="https://wa.me/6285177453386" class="mt-4 bg-blue-600 text-white px-8 py-3 rounded-full text-base">Konsultasi WA</a>
+        </div>
 
         <main class="container mx-auto px-6 pt-48 pb-16 md:pt-56 md:pb-24 transition-colors duration-500 flex-1">
             
