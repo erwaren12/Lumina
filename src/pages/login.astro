@@ -46,11 +46,16 @@ import '../styles/global.css';
             }
         </style>
     </head>
-    <body class="h-screen w-full antialiased selection:bg-[#EA580C] selection:text-white overflow-hidden">
+    <body class="min-h-screen w-full antialiased selection:bg-[#EA580C] selection:text-white">
         
-        <div class="flex w-full h-screen bg-[#F5EEDB]">
+        <div class="flex w-full min-h-screen bg-[#F5EEDB] relative">
             
-            <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-center items-center text-center p-10 lg:p-16 bg-white">
+            <div class="absolute inset-0 z-0 lg:hidden">
+                <img src="/gambar-login.jpg" alt="Background Mobile" class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+            </div>
+
+            <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-center items-center text-center p-10 lg:p-16 bg-white z-10">
                 <div class="absolute inset-0 z-0">
                     <img 
                         src="/gambar-login.jpg" 
@@ -67,26 +72,35 @@ import '../styles/global.css';
                 </div>
             </div>
 
-            <div class="w-full lg:w-1/2 relative flex flex-col bg-[#F5EEDB] h-screen overflow-y-auto px-6 sm:px-12 lg:px-20">
+            <div class="w-full lg:w-1/2 relative flex flex-col bg-transparent lg:bg-[#F5EEDB] min-h-screen px-6 sm:px-12 lg:px-20 z-10">
                 
-                <a href="/" class="absolute top-6 left-6 lg:top-8 lg:left-8 text-[#7B6153] hover:text-[#EA580C] font-bold text-sm flex items-center gap-2 transition-colors z-50">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Kembali ke Home
-                </a>
+                <div class="pt-8 pb-4">
+                    <a href="/" class="text-[#7B6153] hover:text-[#EA580C] font-bold text-sm flex items-center gap-2 transition-colors w-fit">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        Kembali ke Home
+                    </a>
+                </div>
 
-                <div class="max-w-md mx-auto w-full py-16 my-auto">
+                <div class="max-w-md mx-auto w-full flex-1 flex flex-col justify-center pb-12">
+                    
+                    <div class="flex lg:hidden justify-center mb-6">
+                        <div class="w-16 h-16 flex items-center justify-center">
+                            <img src="/logo-orange.png" alt="Logo PyntaDev" class="w-full h-full object-cover" />
+                        </div>
+                    </div>
+
                     <h2 class="text-3xl font-black text-center mb-8 text-[#2E1F1A]">Masuk</h2>
 
                     <form id="formLogin" class="space-y-4">
                         <div>
                             <label class="block text-sm font-semibold text-[#2E1F1A] mb-1">Email Klien</label>
-                            <input type="email" id="email" placeholder="nama@email.com" class="w-full px-4 py-3 rounded-xl border border-[#C8B8A3] bg-white text-[#2E1F1A] placeholder-[#8A8173] transition-all" required />
+                            <input type="email" id="email" placeholder="nama@email.com" class="w-full px-4 py-3 rounded-xl border border-[#C8B8A3] bg-white/80 backdrop-blur-md text-[#2E1F1A] placeholder-[#8A8173] transition-all" required />
                         </div>
 
                         <div>
                             <label class="block text-sm font-semibold text-[#2E1F1A] mb-1">Kata sandi</label>
                             <div class="relative">
-                                <input type="password" id="password" placeholder="Kata sandi" class="w-full px-4 py-3 rounded-xl border border-[#C8B8A3] bg-white text-[#2E1F1A] placeholder-[#8A8173] transition-all" required />
+                                <input type="password" id="password" placeholder="Kata sandi" class="w-full px-4 py-3 rounded-xl border border-[#C8B8A3] bg-white/80 backdrop-blur-md text-[#2E1F1A] placeholder-[#8A8173] transition-all" required />
                                 <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-[#7B6153] hover:text-[#EA580C] transition-colors focus:outline-none">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
                                 </button>
@@ -106,7 +120,7 @@ import '../styles/global.css';
                     </div>
 
                     <div class="text-center">
-                        <a href="/register" class="flex justify-center items-center w-full py-3 border border-[#C8B8A3] bg-transparent text-[#2E1F1A] rounded-xl font-bold hover:bg-[#E3D5C1] hover:border-[#2E1F1A] transition-all text-sm">
+                        <a href="/register" class="flex justify-center items-center w-full py-3 border border-[#C8B8A3] bg-white/50 backdrop-blur-sm text-[#2E1F1A] rounded-xl font-bold hover:bg-[#E3D5C1] hover:border-[#2E1F1A] transition-all text-sm">
                             Buat akun baru
                         </a>
                     </div>
@@ -121,16 +135,12 @@ import '../styles/global.css';
             const passwordInput = document.getElementById('password');
 
             togglePassword.addEventListener('click', function () {
-                // Periksa tipe input saat ini (password atau text)
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
                 
-                // Ubah SVG Mata sesuai status
                 if (type === 'text') {
-                    // SVG Mata Terbuka
                     this.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
                 } else {
-                    // SVG Mata Tertutup (Tercoret)
                     this.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>`;
                 }
             });
@@ -159,14 +169,11 @@ import '../styles/global.css';
 
                     if (response.ok) {
                         alert("✅ Login Sukses!");
-                        
-                        // Cek Role Admin / Klien
                         if (result.role === 'admin') {
                             window.location.href = "/admin";
                         } else {
                             window.location.href = "/dashboard";
                         }
-                        
                     } else {
                         alert("❌ Gagal Masuk: " + result.message);
                         btn.innerHTML = "Masuk";
