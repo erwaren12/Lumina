@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import { db } from '../lib/db.js';
 
-// 1. Cek Sesi
+// 1. Cek Sesi (Hanya user login yang bisa akses)
 const session = Astro.cookies.get('user_session');
 
 if (!session) {
@@ -11,7 +11,7 @@ if (!session) {
 
 const userId = session.value;
 
-// 2. Ambil Data USer
+// 2. Ambil Data User dari Database
 const [userRows] = await db.query('SELECT nama, email, role FROM users WHERE id = ?', [userId]) as any;
 
 if (userRows.length === 0) {
@@ -21,10 +21,10 @@ if (userRows.length === 0) {
 
 const user = userRows[0];
 
-// 3. Ambil Data Pesanan Terbaru
+// 3. Ambil Data Pesanan Terbaru Klien
 const [orderRows] = await db.query('SELECT * FROM orders WHERE user_id = ? ORDER BY tanggal_order DESC LIMIT 1', [userId]) as any;
 
-// Cek status
+// Cek apakah user sudah punya pesanan
 const hasOrder = orderRows.length > 0;
 const order = hasOrder ? orderRows[0] : null;
 ---
@@ -38,14 +38,22 @@ const order = hasOrder ? orderRows[0] : null;
         <style is:global>
             @import "tailwindcss";
 
-            /* --- TOGLE LOGO GAMBAR --- */
+            /* --- LOGO TOGGLE SYSTEM --- */
             .logo-dark-mode { display: block; }
             .logo-light-mode { display: none; }
             
             [data-theme="light"] .logo-dark-mode { display: none !important; }
             [data-theme="light"] .logo-light-mode { display: block !important; }
 
-            body { font-family: 'Inter', sans-serif; background-color: #F5EEDB; color: #2E1F1A; margin: 0; padding: 0; }
+            body { 
+                font-family: 'Inter', sans-serif; 
+                background-color: #F5EEDB; 
+                color: #2E1F1A; 
+                margin: 0; 
+                padding: 0; 
+            }
+
+            /* Scrollbar Styling */
             main::-webkit-scrollbar { width: 8px; }
             main::-webkit-scrollbar-track { background: #F5EEDB; }
             main::-webkit-scrollbar-thumb { background: #C8B8A3; border-radius: 10px; }
@@ -58,28 +66,32 @@ const order = hasOrder ? orderRows[0] : null;
         <header class="lg:hidden bg-[#2E1F1A] text-[#E3D5C1] p-4 sm:px-6 flex justify-between items-center shadow-md z-30">
             <div class="font-black flex items-center gap-2 text-xl">
                 <div class="w-8 h-8 flex items-center justify-center">
-                    <img src="/logo-orange.jpg" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md" />
+                    <img src="/logo-orange.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md" />
                 </div>
                 Pynta<span class="text-[#EA580C]">Dev</span>
             </div>
-            <button id="open-sidebar" class="text-[#E3D5C1] hover:text-[#EA580C] focus:outline-none transition-colors">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            <button id="open-sidebar" class="text-[#E3D5C1] hover:text-[#EA580C] focus:outline-none transition-colors p-2">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
             </button>
         </header>
 
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0"></div>
 
-        <aside id="sidebar" class="absolute lg:relative top-0 left-0 w-[280px] bg-[#2E1F1A] text-[#E3D5C1] flex flex-col shadow-2xl z-50 h-full transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0">
+        <aside id="sidebar" class="fixed lg:relative top-0 left-0 w-[280px] bg-[#2E1F1A] text-[#E3D5C1] flex flex-col shadow-2xl z-50 h-full transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0">
             
             <button id="close-sidebar" class="lg:hidden absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-full p-1.5 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
             </button>
 
             <div class="p-8">
                 <div class="text-2xl font-black flex items-center gap-2">
                     <div class="w-8 h-8 flex items-center justify-center">
-                        <img src="/logo-biru.jpg" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-dark-mode" />
-                        <img src="/logo-orange.jpg" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-light-mode" />
+                        <img src="/logo-biru.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-dark-mode" />
+                        <img src="/logo-orange.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-light-mode" />
                     </div>
                     Pynta<span class="text-[#EA580C]">Dev</span>
                 </div>
@@ -98,7 +110,7 @@ const order = hasOrder ? orderRows[0] : null;
 
                 {user.role === 'admin' && (
                     <a href="/admin" class="block px-4 py-3 rounded-xl bg-red-600/20 text-red-500 font-bold hover:bg-red-600 hover:text-white transition-colors border border-red-600/30 flex items-center gap-2 mt-2">
-                        👑 Kembali ke Mode Admin
+                        👑 Mode Admin
                     </a>
                 )}
             </nav>
@@ -111,11 +123,9 @@ const order = hasOrder ? orderRows[0] : null;
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto p-6 sm:p-8 lg:p-12 relative z-10">
-            <header class="flex justify-between items-center mb-8 lg:mb-10">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black mb-1 sm:mb-2 text-[#2E1F1A]">Selamat Datang, {user.nama}!</h1>
-                    <p class="text-sm sm:text-base text-[#7B6153] font-medium">Dashboard eksklusif Klien PyntaDev</p>
-                </div>
+            <header class="mb-8 lg:mb-10">
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black mb-1 sm:mb-2 text-[#2E1F1A]">Selamat Datang, {user.nama}!</h1>
+                <p class="text-sm sm:text-base text-[#7B6153] font-medium">Dashboard eksklusif Klien PyntaDev</p>
             </header>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 lg:mb-10">
@@ -145,7 +155,7 @@ const order = hasOrder ? orderRows[0] : null;
                         <>
                             <h3 class="text-xl sm:text-2xl font-black mb-2 sm:mb-3 text-[#2E1F1A]">Pesanan Sedang Diproses! 🚀</h3>
                             <p class="text-sm sm:text-base text-[#7B6153] mb-6 sm:mb-8 leading-relaxed max-w-2xl font-medium">
-                                Terima kasih telah mempercayakan bisnis <b>{order.nama_bisnis}</b> kepada kami. Tim PyntaDev akan segera menghubungi Anda untuk proses selanjutnya.
+                                Terima kasih telah mempercayakan bisnis <b>{order.nama_bisnis}</b> kepada kami. Tim PyntaDev akan segera menghubungi Anda untuk proses selanjutnya melalui email atau WhatsApp.
                             </p>
                         </>
                     ) : (
@@ -154,7 +164,9 @@ const order = hasOrder ? orderRows[0] : null;
                             <p class="text-sm sm:text-base text-[#7B6153] mb-6 sm:mb-8 leading-relaxed max-w-2xl font-medium">Anda belum memiliki proyek aktif. Pilih template desain terbaik kami dan mulai transformasi digital bisnis Anda hari ini.</p>
                             <a href="/order" class="inline-flex items-center gap-2 bg-[#2E1F1A] text-[#E3D5C1] px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl font-bold hover:bg-[#4A332A] transition-all shadow-md active:scale-95 text-sm sm:text-base w-full sm:w-auto justify-center">
                                 Pesan Website Sekarang
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
                             </a>
                         </>
                     )}
@@ -163,7 +175,7 @@ const order = hasOrder ? orderRows[0] : null;
         </main>
 
         <script is:inline>
-            // --- LOGIKA BUKA/TUTUP SIDEBAR MOBILE ---
+            // --- LOGIKA SIDEBAR MOBILE ---
             const btnOpen = document.getElementById('open-sidebar');
             const btnClose = document.getElementById('close-sidebar');
             const sidebar = document.getElementById('sidebar');
@@ -181,9 +193,9 @@ const order = hasOrder ? orderRows[0] : null;
                 setTimeout(() => overlay.classList.add('hidden'), 300);
             }
 
-            btnOpen.addEventListener('click', openSidebar);
-            btnClose.addEventListener('click', closeSidebar);
-            overlay.addEventListener('click', closeSidebar);
+            if(btnOpen) btnOpen.addEventListener('click', openSidebar);
+            if(btnClose) btnClose.addEventListener('click', closeSidebar);
+            if(overlay) overlay.addEventListener('click', closeSidebar);
 
             // --- LOGIKA LOGOUT ---
             document.getElementById('btnLogout').addEventListener('click', async () => {
