@@ -7,9 +7,17 @@ const isLoggedIn = !!session;
 ---
 <html lang="id">
     <head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-VKX6F25YSC"></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-VKX6F25YSC');
+        </script>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
-        <title>Portofolio | PyntaDev</title>
+        <title>Harga Paket | PyntaDev</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         
         <script is:inline>
@@ -33,10 +41,15 @@ const isLoggedIn = !!session;
             .kursor-tarik { cursor: grab; }
             .kursor-tarik:active { cursor: grabbing; }
             
-            ::-webkit-scrollbar { width: 10px; }
+            /* Scrollbar */
+            ::-webkit-scrollbar { width: 10px; height: 10px; }
             ::-webkit-scrollbar-track { background: #0F172A; }
             ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; border: 2px solid #0F172A; }
             ::-webkit-scrollbar-thumb:hover { background: #3B82F6; }
+            
+            [data-theme="light"] ::-webkit-scrollbar-track { background: #F5EEDB !important; }
+            [data-theme="light"] ::-webkit-scrollbar-thumb { background: #C8B8A3 !important; border: 2px solid #F5EEDB !important; }
+            [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #EA580C !important; }
 
             /* --- TOGLE LOGO GAMBAR --- */
             .logo-dark-mode { display: block; }
@@ -44,30 +57,32 @@ const isLoggedIn = !!session;
             
             [data-theme="light"] .logo-dark-mode { display: none !important; }
             [data-theme="light"] .logo-light-mode { display: block !important; }
-            
-            /* Light Mode */
+
+            /* Light Mode Background & Containers */
             [data-theme="light"] body { background-color: #F5EEDB !important; color: #2E1F1A !important; }
             
-            [data-theme="light"] ::-webkit-scrollbar-track { background: #F5EEDB !important; }
-            [data-theme="light"] ::-webkit-scrollbar-thumb { background: #C8B8A3 !important; border: 2px solid #F5EEDB !important; }
-            [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #EA580C !important; }
-
             [data-theme="light"] .bg-slate-900, [data-theme="light"] .bg-slate-950, 
             [data-theme="light"] .bg-slate-900\/50, [data-theme="light"] .bg-slate-800\/30 { 
-                background-color: transparent !important; 
-            }
+                background-color: transparent !important; }
             
             [data-theme="light"] header .bg-slate-950 { background-color: #F5EEDB !important; border: none !important; }
             [data-theme="light"] nav.bg-slate-900\/85 { background-color: rgba(245, 238, 219, 0.85) !important; border: none !important; backdrop-filter: blur(12px) !important; }
             [data-theme="light"] #mobile-menu { background-color: rgba(245, 238, 219, 0.98) !important; }
 
-            /* Kotak Portofolio */
-            [data-theme="light"] .bg-slate-800 {
-                background: #E3D5C1 !important; 
-                border: 1px solid #C8B8A3 !important; 
+            [data-theme="light"] .bg-slate-800,
+            [data-theme="light"] .bg-slate-800\/40,
+            [data-theme="light"] .bg-slate-800\/50,
+            [data-theme="light"] .bg-slate-800\/80,
+            [data-theme="light"] .pricing-card,
+            [data-theme="light"] #terminal-card,
+            [data-theme="light"] section.py-20 div.bg-gradient-to-r {
+                background: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; 
                 border-radius: 1.5rem !important;
-                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important;
-            }
+                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important; }
+
+            [data-theme="light"] .pricing-card.popular {
+                border-color: #EA580C !important; border-width: 2px !important;
+                box-shadow: 0 10px 25px rgba(234, 88, 12, 0.15) !important; }
 
             [data-theme="light"] .border-slate-800, 
             [data-theme="light"] .border-slate-700, 
@@ -79,49 +94,74 @@ const isLoggedIn = !!session;
             [data-theme="light"] .divide-slate-700 > :not([hidden]) ~ :not([hidden]) { 
                 border-color: #C8B8A3 !important;
             }
+            
+            [data-theme="light"] div#stats-grid > * { 
+                border-left-width: 0px !important; border-right-width: 0px !important;
+                border-top-width: 0px !important;
+                border-bottom-width: 0px !important;
+                border-color: transparent !important; }
 
+            /* Text & Colors Light Mode */
             [data-theme="light"] .text-white { color: #2E1F1A !important; }
             [data-theme="light"] .text-slate-300 { color: #2E1F1A !important; font-weight: 600 !important; }
             [data-theme="light"] .text-slate-400 { color: #7B6153 !important; font-weight: 500 !important; }
             [data-theme="light"] .text-slate-500 { color: #8A8173 !important; font-weight: 500 !important; }
 
-            [data-theme="light"] .bg-blue-500\/10 { background-color: transparent !important; color: #EA580C !important; border: 1px solid #EA580C !important; border-radius: 0.5rem !important; }
+            [data-theme="light"] .bg-blue-500\/10, [data-theme="light"] .bg-yellow-500\/10, [data-theme="light"] .bg-indigo-500\/10 { background-color: transparent !important; color: #EA580C !important; border: 1px solid #EA580C !important; border-radius: 0.5rem !important; }
             [data-theme="light"] .text-blue-500, [data-theme="light"] .text-blue-400 { color: #EA580C !important; font-weight: 800; } 
+            [data-theme="light"] #typewriter { color: #EA580C !important; -webkit-text-fill-color: #EA580C !important; background: none !important; padding: 0; }
             [data-theme="light"] .border-cyan-400 { border-color: #EA580C !important; }
-            [data-theme="light"] .decoration-blue-500 { text-decoration-color: #EA580C !important; text-decoration-thickness: 2px !important; }
+            [data-theme="light"] .decoration-blue-500 { text-decoration-color: #2E1F1A !important; text-decoration-thickness: 2px !important; }
+            [data-theme="light"] .text-emerald-500 { color: #2E1F1A !important; }
 
-            [data-theme="light"] .bg-blue-600 { background-color: #2E1F1A !important; color: #E3D5C1 !important; border: none !important; border-radius: 9999px !important; }
-            [data-theme="light"] .bg-blue-600:hover { background-color: #4A332A !important; }
-            [data-theme="light"] .bg-blue-600 .text-white { color: #E3D5C1 !important; }
+            [data-theme="light"] .bg-blue-600, [data-theme="light"] .btn-primary { background-color: #2E1F1A !important; color: #E3D5C1 !important; border: none !important; border-radius: 9999px !important; }
+            [data-theme="light"] .bg-blue-600:hover, [data-theme="light"] .btn-primary:hover { background-color: #4A332A !important; }
+            [data-theme="light"] .bg-blue-600 .text-white, [data-theme="light"] .btn-primary .text-white { color: #E3D5C1 !important; }
+            [data-theme="light"] nav a.bg-blue-600 { background-color: #2E1F1A !important; color: #E3D5C1 !important; } 
+            [data-theme="light"] .bg-white.text-blue-600 { background-color: #E3D5C1 !important; color: #2E1F1A !important; border: 1px solid #C8B8A3 !important; }
+
+            [data-theme="light"] .btn-outline { background-color: transparent !important; color: #2E1F1A !important; border: 2px solid #C8B8A3 !important; border-radius: 9999px !important;}
+            [data-theme="light"] .btn-outline:hover { border-color: #EA580C !important; color: #EA580C !important; }
 
             [data-theme="light"] #theme-toggle-desktop, [data-theme="light"] #theme-toggle-mobile { 
                 background-color: transparent !important; border: 1px solid #C8B8A3 !important; color: #2E1F1A !important; 
             }
             [data-theme="light"] #theme-toggle-desktop:hover, [data-theme="light"] #theme-toggle-mobile:hover { background-color: #E5E7EB !important; color: #EA580C !important; }
 
-            /* CSS Portofolio */
-            .portfolio-img-bg { background-color: #0F172A !important; }
-            .portfolio-btn { background-color: #3B82F6 !important; color: #FFFFFF !important; transition: background-color 0.3s ease !important; border: none !important;}
-            .portfolio-btn:hover { background-color: #2563EB !important; }
+            [data-theme="light"] section.py-20 div.bg-gradient-to-r {
+                background: #E3D5C1 !important; border: 1px solid #C8B8A3 !important;
+                border-radius: 2rem !important;
+                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important; }
+            [data-theme="light"] section.py-20 div.bg-gradient-to-r .text-white { color: #2E1F1A !important; }
+            [data-theme="light"] section.py-20 div.bg-white.text-blue-600 { background-color: #2E1F1A !important; color: #E3D5C1 !important; border: none !important; }
 
-            [data-theme="light"] .portfolio-img-bg { background-color: #F5EEDB !important; }
-            [data-theme="light"] .portfolio-btn { background-color: #EA580C !important; color: #F5EEDB !important; border: none !important; }
-            [data-theme="light"] .portfolio-btn:hover { background-color: #C0470A !important; }
+            [data-theme="light"] div.bg-slate-900.px-4.py-3 { background-color: #E3D5C1 !important; border-bottom: 1px solid #C8B8A3 !important; }
+            [data-theme="light"] div.bg-slate-800.px-3.py-1.rounded { background-color: transparent !important; color: #2E1F1A !important; border: 1px solid #C8B8A3 !important; }
+            [data-theme="light"] .bg-slate-700\/50 { background-color: #F5EEDB !important; border: 1px solid #C8B8A3 !important; color: #7B6153 !important; }
+            [data-theme="light"] .bg-slate-700\/30 { background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; }
 
-            [data-theme="light"] section.py-10 div.bg-gradient-to-r {
-                background: #E3D5C1 !important;
-                background-image: none !important;
-                border: 1px solid #C8B8A3 !important;
-                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important;
-            }
-            [data-theme="light"] section.py-10 div.bg-gradient-to-r h2 { 
-                color: #2E1F1A !important; 
-            }
-            [data-theme="light"] section.py-10 div.bg-gradient-to-r a.bg-white { 
-                background-color: #2E1F1A !important; 
-                color: #E3D5C1 !important; 
-                border: none !important; 
-            }
+            [data-theme="light"] #stats-container {
+                background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; 
+                border-radius: 1.5rem !important; 
+                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important; }
+
+            [data-theme="light"] #klien-banner {
+                background-color: #2E1F1A !important; border-top: 1px solid #C8B8A3 !important;
+                border-bottom: 1px solid #C8B8A3 !important; }
+            [data-theme="light"] #klien-title { color: #EA580C !important; }
+            [data-theme="light"] #klien-logos { filter: none !important; opacity: 1 !important; }
+            [data-theme="light"] #klien-logos div { color: #E3D5C1 !important; }
+            [data-theme="light"] #klien-logos span { color: #EA580C !important; }
+
+            [data-theme="light"] .bg-blue-600\/20 { display: none !important; } 
+            [data-theme="light"] .text-yellow-400 { color: #F59E0B !important; } 
+            [data-theme="light"] #slider-testimoni .text-white { color: #2E1F1A !important; }
+            [data-theme="light"] section.py-12 span.text-blue-500,
+            [data-theme="light"] section.py-12 span.text-emerald-500,
+            [data-theme="light"] section.py-12 span.text-purple-500 { color: #2E1F1A !important; }
+            [data-theme="light"] section.py-12 span.counter { color: #2E1F1A !important; }
+            
+            [data-theme="light"] .badge-popular { background-color: #EA580C !important; color: #F5EEDB !important;}
 
             /* Footer Warna Light Mode */
             [data-theme="light"] footer.bg-slate-950 { background-color: #2E1F1A !important; border-top: none !important; }
@@ -129,10 +169,12 @@ const isLoggedIn = !!session;
             [data-theme="light"] footer p, 
             [data-theme="light"] footer a, 
             [data-theme="light"] footer span, 
-            [data-theme="light"] footer ul, 
-            [data-theme="light"] footer .text-white, 
-            [data-theme="light"] footer .text-slate-400, 
-            [data-theme="light"] footer .text-slate-500 { color: #F5EEDB !important; }
+            [data-theme="light"] footer ul,
+            [data-theme="light"] footer .text-white,
+            [data-theme="light"] footer .text-slate-400,
+            [data-theme="light"] footer .text-slate-500 { 
+                color: #F5EEDB !important;
+            }
             [data-theme="light"] footer .bg-blue-600 { background-color: #EA580C !important; color: #F5EEDB !important; }
             [data-theme="light"] footer .bg-blue-600\/10 { background-color: transparent !important; border: 1px solid #F5EEDB !important; color: #F5EEDB !important; }
 
@@ -150,6 +192,7 @@ const isLoggedIn = !!session;
                 background-color: #25D366; border-radius: 9999px; opacity: 0.5;
                 z-index: -1; animation: wa-pulse 2s infinite;
             }
+            [data-theme="light"] a.fixed.bottom-6.right-6 svg.w-8.h-8 { color: #FFFFFF !important; }
         </style>
     </head>
     <body class="bg-slate-900 text-slate-300 font-sans antialiased selection:bg-blue-500 selection:text-white flex flex-col min-h-screen transition-colors duration-500" style="font-family: 'Inter', sans-serif;">
