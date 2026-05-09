@@ -154,6 +154,13 @@ const proyekAktif = orders.filter((o: any) => o.status !== 'Selesai / Live' && o
                                 <p class="text-xs sm:text-sm text-[#7B6153] font-bold mb-6">
                                     Dipesan pada: {new Date(order.tanggal_order).toLocaleDateString('id-ID')}
                                 </p>
+                                {/* --- TOMBOL BATAL PESANAN --- */}
+                                {order.status === 'Menunggu Pembayaran' && (
+                                    <button class="btn-cancel-order text-xs font-bold text-red-500 hover:text-red-700 underline mb-6 block transition-colors" data-id={order.id}>
+                                        Batalkan Pesanan Ini
+                                    </button>
+                                )}
+                                {/* ------------------------------ */}
 
                                 {/* --- KOTAK PESAN DARI ADMIN --- */}
                                 {order.catatan && order.catatan.trim() !== "" && (
@@ -214,6 +221,39 @@ const proyekAktif = orders.filter((o: any) => o.status !== 'Selesai / Live' && o
                     await fetch('/api/logout', { method: 'POST' });
                     window.location.href = '/login';
                 }
+            });
+            // --- LOGIKA BATALKAN PESANAN KLIEN ---
+            document.querySelectorAll('.btn-cancel-order').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if(!confirm("Yakin ingin membatalkan pesanan ini?")) return;
+                    
+                    const order_id = e.target.getAttribute('data-id');
+                    const originalText = e.target.innerText;
+                    e.target.innerText = "Membatalkan...";
+                    e.target.disabled = true;
+                    
+                    try {
+                        const res = await fetch('/api/cancel-order', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ order_id })
+                        });
+                        const data = await res.json();
+                        
+                        if(res.ok) {
+                            alert("✅ " + data.message);
+                            window.location.reload(); // Refresh untuk melihat status 'Dibatalkan'
+                        } else {
+                            alert("❌ Gagal: " + data.message);
+                            e.target.innerText = originalText;
+                            e.target.disabled = false;
+                        }
+                    } catch (err) {
+                        alert("Error jaringan/server saat membatalkan.");
+                        e.target.innerText = originalText;
+                        e.target.disabled = false;
+                    }
+                });
             });
         </script>
     </body>
