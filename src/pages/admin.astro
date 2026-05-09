@@ -59,12 +59,18 @@ const [orders] = await db.query(`
                 border-color: #EA580C; 
                 box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
             }
+
+            /* Modal Animation */
+            #modal-client { transition: opacity 0.3s ease, visibility 0.3s ease; }
+            #modal-content { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+            .modal-hidden { opacity: 0; visibility: hidden; }
+            .modal-hidden #modal-content { transform: scale(0.9) translateY(20px); }
         </style>
     </head>
     
-    <body class="min-h-screen w-full">
+    <body class="min-h-screen w-full relative">
         
-        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg">
+        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg sticky top-0 z-40">
             <div class="font-black flex items-center gap-2 text-xl px-4">
                 <div class="w-8 h-8 flex items-center justify-center">
                     <img src="/logo-biru.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-dark-mode" />
@@ -88,45 +94,36 @@ const [orders] = await db.query(`
             </header>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
-                
                 <div class="md:col-span-2 relative overflow-hidden bg-white/50 backdrop-blur-md border border-[#C8B8A3] p-6 rounded-3xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#EA580C]/10 group cursor-default">
                     <div class="absolute -right-10 -top-10 w-40 h-40 bg-[#EA580C]/20 rounded-full blur-3xl group-hover:bg-[#EA580C]/30 transition-all duration-500"></div>
                     <div class="relative z-10">
                         <h3 class="text-[#7B6153] text-xs font-bold mb-2 uppercase tracking-widest flex items-center gap-2">
-                            <svg class="w-4 h-4 text-[#EA580C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Total Pendapatan
+                            📊 Total Pendapatan
                         </h3>
                         <div class="text-4xl lg:text-5xl font-black text-[#2E1F1A] mb-2 tracking-tight">Rp 12.5M</div>
-                        <p class="text-green-600 text-sm font-bold flex items-center gap-1">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                            +15% dari bulan lalu
-                        </p>
+                        <p class="text-green-600 text-sm font-bold flex items-center gap-1">+15% dari bulan lalu</p>
                     </div>
                 </div>
-
                 <div class="relative overflow-hidden bg-white/50 backdrop-blur-md border border-[#C8B8A3] p-6 rounded-3xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#EA580C]/10 group cursor-default">
-                    <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all duration-500"></div>
                     <div class="relative z-10 flex flex-col h-full justify-between">
                         <h3 class="text-[#7B6153] text-xs font-bold mb-2 uppercase tracking-widest">Klien Aktif</h3>
                         <div>
                             <div class="text-4xl font-black text-[#2E1F1A] mb-1">24</div>
-                            <p class="text-[#7B6153] text-sm font-medium">3 proyek dalam antrean</p>
+                            <p class="text-[#7B6153] text-sm font-medium">3 dalam antrean</p>
                         </div>
                     </div>
                 </div>
-
                 <div class="relative overflow-hidden bg-white/50 backdrop-blur-md border border-[#C8B8A3] p-6 rounded-3xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#EA580C]/10 group cursor-default">
-                    <div class="absolute -left-6 -top-6 w-32 h-32 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-all duration-500"></div>
                     <div class="relative z-10 flex flex-col h-full justify-between">
-                        <h3 class="text-[#7B6153] text-xs font-bold mb-2 uppercase tracking-widest">Selesai / Live</h3>
+                        <h3 class="text-[#7B6153] text-xs font-bold mb-2 uppercase tracking-widest">Selesai</h3>
                         <div>
                             <div class="text-4xl font-black text-[#2E1F1A] mb-1">18</div>
-                            <p class="text-green-600 font-bold text-sm">Tingkat sukses 100%</p>
+                            <p class="text-green-600 font-bold text-sm">Sukses 100%</p>
                         </div>
                     </div>
                 </div>
-
             </div>
+
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#C8B8A3]">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -139,55 +136,119 @@ const [orders] = await db.query(`
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#C8B8A3]">
-                            {orders.length === 0 ? (
-                                <tr>
-                                    <td colspan="4" class="p-10 text-center text-[#7B6153] font-bold">Belum ada pesanan masuk.</td>
-                                </tr>
-                            ) : (
-                                orders.map((order: any) => (
-                                    <tr class="hover:bg-[#F5EEDB] transition-colors">
-                                        <td class="p-5">
-                                            <div class="font-black text-[#2E1F1A]">{order.nama}</div>
+                            {orders.map((order: any) => (
+                                <tr class="hover:bg-[#F5EEDB] transition-colors group">
+                                    <td class="p-5">
+                                        <button 
+                                            class="btn-detail text-left outline-none group-hover:translate-x-1 transition-transform" 
+                                            data-nama={order.nama} 
+                                            data-email={order.email} 
+                                            data-bisnis={order.nama_bisnis} 
+                                            data-paket={order.jenis_paket}
+                                            data-status={order.status}
+                                            data-tgl={new Date(order.tanggal_order).toLocaleDateString('id-ID')}
+                                        >
+                                            <div class="font-black text-[#2E1F1A] group-hover:text-[#EA580C] transition-colors">{order.nama}</div>
                                             <div class="text-xs font-semibold text-[#7B6153]">{order.email}</div>
-                                        </td>
-                                        <td class="p-5">
-                                            <div class="font-bold text-[#EA580C]">{order.nama_bisnis}</div>
-                                            <div class="text-sm font-semibold text-[#2E1F1A]">{order.jenis_paket}</div>
-                                        </td>
-                                        <td class="p-5 text-sm font-medium text-[#7B6153]">
-                                            {new Date(order.tanggal_order).toLocaleDateString('id-ID')}
-                                        </td>
-                                        <td class="p-5">
-                                            <div class="flex items-center gap-3">
-                                                <select class="status-dropdown px-3 py-2 rounded-lg border border-[#C8B8A3] bg-white text-sm font-bold text-[#2E1F1A] cursor-pointer transition-all" data-id={order.order_id}>
-                                                    <option value="Menunggu Pembayaran" selected={order.status === "Menunggu Pembayaran"}>Menunggu Pembayaran</option>
-                                                    <option value="Sedang Dikerjakan" selected={order.status === "Sedang Dikerjakan"}>Sedang Dikerjakan</option>
-                                                    <option value="Selesai / Live" selected={order.status === "Selesai / Live"}>Selesai / Live</option>
-                                                    <option value="Dibatalkan" selected={order.status === "Dibatalkan"}>Dibatalkan</option>
-                                                </select>
-                                                <button class="btn-update bg-[#2E1F1A] text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-[#EA580C] transition-colors shadow-md active:scale-95">
-                                                    Update
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
+                                        </button>
+                                    </td>
+                                    <td class="p-5">
+                                        <div class="font-bold text-[#EA580C]">{order.nama_bisnis}</div>
+                                        <div class="text-sm font-semibold text-[#2E1F1A]">{order.jenis_paket}</div>
+                                    </td>
+                                    <td class="p-5 text-sm font-medium text-[#7B6153]">
+                                        {new Date(order.tanggal_order).toLocaleDateString('id-ID')}
+                                    </td>
+                                    <td class="p-5">
+                                        <div class="flex items-center gap-3">
+                                            <select class="status-dropdown px-3 py-2 rounded-lg border border-[#C8B8A3] bg-white text-sm font-bold text-[#2E1F1A]" data-id={order.order_id}>
+                                                <option value="Menunggu Pembayaran" selected={order.status === "Menunggu Pembayaran"}>Menunggu Pembayaran</option>
+                                                <option value="Sedang Dikerjakan" selected={order.status === "Sedang Dikerjakan"}>Sedang Dikerjakan</option>
+                                                <option value="Selesai / Live" selected={order.status === "Selesai / Live"}>Selesai / Live</option>
+                                                <option value="Dibatalkan" selected={order.status === "Dibatalkan"}>Dibatalkan</option>
+                                            </select>
+                                            <button class="btn-update bg-[#2E1F1A] text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-[#EA580C] shadow-md transition-all active:scale-90">Update</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
             </div>
         </main>
 
+        <div id="modal-client" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[#1A110E]/60 backdrop-blur-sm modal-hidden">
+            <div id="modal-content" class="bg-[#F5EEDB] w-full max-w-lg rounded-3xl shadow-2xl border border-[#C8B8A3] overflow-hidden">
+                <div class="bg-[#2E1F1A] p-6 text-[#E3D5C1] flex justify-between items-center">
+                    <div>
+                        <h2 id="m-nama" class="text-2xl font-black">Nama Klien</h2>
+                        <p id="m-email" class="text-sm opacity-70">email@klien.com</p>
+                    </div>
+                    <button id="close-modal" class="p-2 hover:bg-white/10 rounded-full transition-colors text-2xl">&times;</button>
+                </div>
+                
+                <div class="p-8 space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white/50 p-4 rounded-2xl border border-[#C8B8A3]">
+                            <p class="text-[10px] font-bold uppercase text-[#7B6153] mb-1">Nama Bisnis</p>
+                            <p id="m-bisnis" class="font-black text-[#2E1F1A]">Nama Toko</p>
+                        </div>
+                        <div class="bg-white/50 p-4 rounded-2xl border border-[#C8B8A3]">
+                            <p class="text-[10px] font-bold uppercase text-[#7B6153] mb-1">Paket Layanan</p>
+                            <p id="m-paket" class="font-black text-[#EA580C]">Katalog Basic</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="text-xs font-bold uppercase text-[#7B6153] mb-2 flex items-center gap-2">
+                            📝 Catatan Internal (CRM)
+                        </p>
+                        <textarea 
+                            placeholder="Tulis catatan khusus klien di sini... (Contoh: Butuh revisi logo, pembayaran via BCA)" 
+                            class="w-full bg-white border border-[#C8B8A3] rounded-xl p-4 text-sm font-medium focus:ring-2 focus:ring-[#EA580C] outline-none min-h-[120px] transition-all"
+                        ></textarea>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4 border-t border-[#C8B8A3]">
+                        <div class="text-xs font-bold text-[#7B6153]">Tgl Pesan: <span id="m-tgl" class="text-[#2E1F1A]">01/01/2026</span></div>
+                        <div id="m-status-badge" class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase bg-[#EA580C] text-white">Status</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script is:inline>
+            // Logika Modal
+            const modal = document.getElementById('modal-client');
+            const closeBtn = document.getElementById('close-modal');
+            const detailBtns = document.querySelectorAll('.btn-detail');
+
+            detailBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('m-nama').innerText = btn.dataset.nama;
+                    document.getElementById('m-email').innerText = btn.dataset.email;
+                    document.getElementById('m-bisnis').innerText = btn.dataset.bisnis;
+                    document.getElementById('m-paket').innerText = btn.dataset.paket;
+                    document.getElementById('m-tgl').innerText = btn.dataset.tgl;
+                    document.getElementById('m-status-badge').innerText = btn.dataset.status;
+                    
+                    modal.classList.remove('modal-hidden');
+                });
+            });
+
+            closeBtn.addEventListener('click', () => modal.classList.add('modal-hidden'));
+            modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.add('modal-hidden'); });
+
+            // Logika Update Status
             const updateButtons = document.querySelectorAll('.btn-update');
             updateButtons.forEach(button => {
                 button.addEventListener('click', async (e) => {
                     const selectElement = e.target.previousElementSibling;
                     const order_id = selectElement.getAttribute('data-id');
                     const status_baru = selectElement.value;
-
                     const originalText = e.target.innerHTML;
+                    
                     e.target.innerHTML = "⏳";
                     e.target.disabled = true;
 
@@ -197,19 +258,14 @@ const [orders] = await db.query(`
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ order_id, status_baru })
                         });
-
                         const result = await response.json();
-
                         if (response.ok) {
                             alert("✅ " + result.message);
                             e.target.innerHTML = "OK!";
                             e.target.classList.replace('bg-[#2E1F1A]', 'bg-green-600');
-                            e.target.classList.replace('hover:bg-[#EA580C]', 'hover:bg-green-700');
-                            
                             setTimeout(() => {
                                 e.target.innerHTML = originalText;
                                 e.target.classList.replace('bg-green-600', 'bg-[#2E1F1A]');
-                                e.target.classList.replace('hover:bg-green-700', 'hover:bg-[#EA580C]');
                                 e.target.disabled = false;
                             }, 2000);
                         } else {
@@ -218,7 +274,7 @@ const [orders] = await db.query(`
                             e.target.disabled = false;
                         }
                     } catch (error) {
-                        alert("❌ Terjadi kesalahan pada server.");
+                        alert("❌ Error server.");
                         e.target.innerHTML = originalText;
                         e.target.disabled = false;
                     }
