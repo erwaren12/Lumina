@@ -157,6 +157,17 @@ const order = hasOrder ? orderRows[0] : null;
                             <p class="text-sm sm:text-base text-[#7B6153] mb-6 sm:mb-8 leading-relaxed max-w-2xl font-medium">
                                 Terima kasih telah mempercayakan bisnis <b>{order.nama_bisnis}</b> kepada kami. Tim PyntaDev akan segera menghubungi Anda untuk proses selanjutnya melalui email atau WhatsApp.
                             </p>
+
+                            {/* --- KOTAK PESAN DARI ADMIN --- */}
+                            {order.catatan && order.catatan.trim() !== "" && (
+                                <div class="mb-8 p-4 sm:p-5 bg-white/60 backdrop-blur-sm border-l-4 border-[#EA580C] rounded-r-xl shadow-sm max-w-2xl">
+                                    <p class="text-[10px] sm:text-xs font-black text-[#EA580C] uppercase mb-1 flex items-center gap-2">
+                                        <span>📢</span> Pesan dari PyntaDev:
+                                    </p>
+                                    <p class="text-sm sm:text-base text-[#2E1F1A] font-bold italic">"{order.catatan}"</p>
+                                </div>
+                            )}
+                            {/* ------------------------------ */}
                         </>
                     ) : (
                         <>
