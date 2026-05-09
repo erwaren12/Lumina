@@ -6,7 +6,7 @@ import { db } from '../lib/db.js';
 const session = Astro.cookies.get('user_session');
 
 if (!session) {
-    return Astro.redirect('/login');
+    return Astro.redirect('/login');
 }
 
 const userId = session.value;
@@ -15,31 +15,30 @@ const userId = session.value;
 const [userRows] = await db.query('SELECT role FROM users WHERE id = ?', [userId]) as any;
 
 if (userRows.length === 0 || userRows[0].role !== 'admin') {
-    return Astro.redirect('/dashboard');
+    return Astro.redirect('/dashboard');
 }
 
-// 3. Admin, Ambil Data Pesananan (Sudah ditambah orders.catatan)
+// 3. Admin, Ambil Data Pesananan
 const [orders] = await db.query(`
-    SELECT 
-        orders.id as order_id, 
-        users.nama, 
-        users.email, 
-        orders.jenis_paket, 
-        orders.nama_bisnis, 
-        orders.status, 
-        orders.tanggal_order,
-        orders.catatan 
-    FROM orders 
-    JOIN users ON orders.user_id = users.id 
-    ORDER BY orders.tanggal_order DESC
+    SELECT 
+        orders.id as order_id, 
+        users.nama, 
+        users.email, 
+        orders.jenis_paket, 
+        orders.nama_bisnis, 
+        orders.status, 
+        orders.tanggal_order 
+    FROM orders 
+    JOIN users ON orders.user_id = users.id 
+    ORDER BY orders.tanggal_order DESC
 `) as any;
 ---
 <html lang="id" data-theme="light">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width" />
-        <title>Admin Panel | PyntaDev</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Admin Panel | PyntaDev</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
         <style is:global>
             @import "tailwindcss";
 
@@ -58,291 +57,136 @@ const [orders] = await db.query(`
                 padding: 0; 
             }
             
-            select:focus, textarea:focus { 
+            select:focus { 
                 outline: none; 
                 border-color: #EA580C; 
                 box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
             }
-
-            /* Modal Animation */
-            #modal-client { transition: opacity 0.3s ease, visibility 0.3s ease; }
-            #modal-content { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-            .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-            .modal-hidden #modal-content { transform: scale(0.9) translateY(20px); }
         </style>
-    </head>
-    
-    <body class="min-h-screen w-full relative">
-        
-        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg">
-            <div class="font-black flex items-center gap-2 text-xl px-4">
-                <div class="w-8 h-8 flex items-center justify-center">
-                    <img src="/logo-biru.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-dark-mode" />
-                    <img src="/logo-orange.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-light-mode" />
-                </div>
-                Pynta<span class="text-[#EA580C]">Admin</span>
-            </div>
-            <a href="/dashboard" class="px-4 py-2 bg-[#2E1F1A] hover:bg-[#EA580C] hover:text-white rounded-lg text-sm font-bold transition-colors shadow-md">
-                Mode Klien
-            </a>
-        </nav>
-
-        <main class="p-8 lg:p-12 max-w-7xl mx-auto">
-            <header class="mb-10">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EA580C] text-white text-[10px] font-black tracking-wide mb-4 shadow-sm uppercase">
-                    🛠️ Panel Manajemen
-                </div>
-                <h1 class="text-4xl font-black mb-2 text-[#2E1F1A]">Ruang Kendali Pesanan</h1>
-                <p class="text-[#7B6153] font-medium">Pantau dan kelola seluruh pesanan masuk dari klien PyntaDev.</p>
-            </header>
-
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
-                <div class="md:col-span-2 relative overflow-hidden bg-white/50 backdrop-blur-md border border-[#C8B8A3] p-6 rounded-3xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#EA580C]/10 group cursor-default">
-                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-[#EA580C]/20 rounded-full blur-3xl group-hover:bg-[#EA580C]/30 transition-all duration-500"></div>
-                    <div class="relative z-10">
-                        <h3 class="text-[#7B6153] text-xs font-bold mb-2 uppercase tracking-widest flex items-center gap-2">📊 Total Pendapatan</h3>
-                        <div class="text-4xl lg:text-5xl font-black text-[#2E1F1A] mb-2 tracking-tight">Rp 12.5M</div>
-                        <p class="text-green-600 text-sm font-bold flex items-center gap-1">+15% dari bulan lalu</p>
-                    </div>
+    </head>
+    
+    <body class="min-h-screen w-full">
+        
+        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg">
+            <div class="font-black flex items-center gap-2 text-xl px-4">
+                <div class="w-8 h-8 flex items-center justify-center">
+                    <img src="/logo-biru.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-dark-mode" />
+                    <img src="/logo-orange.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-light-mode" />
                 </div>
-                <div class="relative overflow-hidden bg-white/50 backdrop-blur-md border border-[#C8B8A3] p-6 rounded-3xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#EA580C]/10 group cursor-default">
-                    <div class="relative z-10 flex flex-col h-full justify-between">
-                        <h3 class="text-[#7B6153] text-xs font-bold mb-2 uppercase tracking-widest">Klien Aktif</h3>
-                        <div>
-                            <div class="text-4xl font-black text-[#2E1F1A] mb-1">24</div>
-                            <p class="text-[#7B6153] text-sm font-medium">3 dalam antrean</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="relative overflow-hidden bg-white/50 backdrop-blur-md border border-[#C8B8A3] p-6 rounded-3xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#EA580C]/10 group cursor-default">
-                    <div class="relative z-10 flex flex-col h-full justify-between">
-                        <h3 class="text-[#7B6153] text-xs font-bold mb-2 uppercase tracking-widest">Selesai / Live</h3>
-                        <div>
-                            <div class="text-4xl font-black text-[#2E1F1A] mb-1">18</div>
-                            <p class="text-green-600 font-bold text-sm">Sukses 100%</p>
-                        </div>
-                    </div>
-                </div>
+                Pynta<span class="text-[#EA580C]">Admin</span>
             </div>
-                        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#C8B8A3]">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-[#2E1F1A] text-[#E3D5C1] text-sm uppercase tracking-wide">
-                                <th class="p-5 font-bold">Klien</th>
-                                <th class="p-5 font-bold">Bisnis & Paket</th>
-                                <th class="p-5 font-bold">Tanggal</th>
-                                <th class="p-5 font-bold">Aksi Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-[#C8B8A3]">
-                            {orders.length === 0 ? (
-                                <tr>
-                                    <td colspan="4" class="p-10 text-center text-[#7B6153] font-bold">Belum ada pesanan masuk.</td>
-                                </tr>
-                            ) : (
-                                orders.map((order: any) => (
-                                    <tr class="hover:bg-[#F5EEDB] transition-colors group">
-                                        <td class="p-5">
-                                            <button class="btn-detail text-left outline-none group-hover:translate-x-1 transition-transform" data-id={order.order_id} data-nama={order.nama} data-email={order.email} data-bisnis={order.nama_bisnis} data-paket={order.jenis_paket} data-status={order.status} data-tgl={new Date(order.tanggal_order).toLocaleDateString('id-ID')} data-catatan={order.catatan || ""}>
-                                                <div class="font-black text-[#2E1F1A] group-hover:text-[#EA580C] transition-colors">{order.nama}</div>
-                                                <div class="text-xs font-semibold text-[#7B6153]">{order.email}</div>
-                                            </button>
-                                        </td>
-                                        <td class="p-5">
-                                            <div class="font-bold text-[#EA580C]">{order.nama_bisnis}</div>
-                                            <div class="text-sm font-semibold text-[#2E1F1A]">{order.jenis_paket}</div>
-                                        </td>
-                                        <td class="p-5 text-sm font-medium text-[#7B6153]">
-                                            {new Date(order.tanggal_order).toLocaleDateString('id-ID')}
-                                        </td>
-                                        <td class="p-5">
-                                            <div class="flex items-center gap-3">
-                                                <select class="status-dropdown px-3 py-2 rounded-lg border border-[#C8B8A3] bg-white text-sm font-bold text-[#2E1F1A] cursor-pointer transition-all" data-id={order.order_id}>
-                                                    <option value="Menunggu Pembayaran" selected={order.status === "Menunggu Pembayaran"}>Menunggu Pembayaran</option>
-                                                    <option value="Sedang Dikerjakan" selected={order.status === "Sedang Dikerjakan"}>Sedang Dikerjakan</option>
-                                                    <option value="Selesai / Live" selected={order.status === "Selesai / Live"}>Selesai / Live</option>
-                                                    <option value="Dibatalkan" selected={order.status === "Dibatalkan"}>Dibatalkan</option>
-                                                </select>
-                                                <button class="btn-update bg-[#2E1F1A] text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-[#EA580C] transition-colors shadow-md active:scale-95">
-                                                    Update
-                                                </button>
-                                                <button class="btn-delete-order bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-600 hover:text-white transition-colors shadow-sm" data-id={order.order_id} title="Hapus Permanen">
-                                                    🗑️
+            <a href="/dashboard" class="px-4 py-2 bg-[#2E1F1A] hover:bg-[#EA580C] hover:text-white rounded-lg text-sm font-bold transition-colors shadow-md">
+                Mode Klien
+            </a>
+        </nav>
+
+        <main class="p-8 lg:p-12 max-w-7xl mx-auto">
+            <header class="mb-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EA580C] text-white text-[10px] font-black tracking-wide mb-4 shadow-sm uppercase">
+                    🛠️ Panel Manajemen
+                </div>
+                <h1 class="text-4xl font-black mb-2 text-[#2E1F1A]">Ruang Kendali Pesanan</h1>
+                <p class="text-[#7B6153] font-medium">Pantau dan kelola seluruh pesanan masuk dari klien PyntaDev.</p>
+            </header>
+
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#C8B8A3]">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#2E1F1A] text-[#E3D5C1] text-sm uppercase tracking-wide">
+                                <th class="p-5 font-bold">Klien</th>
+                                <th class="p-5 font-bold">Bisnis & Paket</th>
+                                <th class="p-5 font-bold">Tanggal</th>
+                                <th class="p-5 font-bold">Aksi Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#C8B8A3]">
+                            {orders.length === 0 ? (
+                                <tr>
+                                    <td colspan="4" class="p-10 text-center text-[#7B6153] font-bold">Belum ada pesanan masuk.</td>
+                                </tr>
+                            ) : (
+                                orders.map((order: any) => (
+                                    <tr class="hover:bg-[#F5EEDB] transition-colors">
+                                        <td class="p-5">
+                                            <div class="font-black text-[#2E1F1A]">{order.nama}</div>
+                                            <div class="text-xs font-semibold text-[#7B6153]">{order.email}</div>
+                                        </td>
+                                        <td class="p-5">
+                                            <div class="font-bold text-[#EA580C]">{order.nama_bisnis}</div>
+                                            <div class="text-sm font-semibold text-[#2E1F1A]">{order.jenis_paket}</div>
+                                        </td>
+                                        <td class="p-5 text-sm font-medium text-[#7B6153]">
+                                            {new Date(order.tanggal_order).toLocaleDateString('id-ID')}
+                                        </td>
+                                        <td class="p-5">
+                                            <div class="flex items-center gap-3">
+                                                <select class="status-dropdown px-3 py-2 rounded-lg border border-[#C8B8A3] bg-white text-sm font-bold text-[#2E1F1A] cursor-pointer transition-all" data-id={order.order_id}>
+                                                    <option value="Menunggu Pembayaran" selected={order.status === "Menunggu Pembayaran"}>Menunggu Pembayaran</option>
+                                                    <option value="Sedang Dikerjakan" selected={order.status === "Sedang Dikerjakan"}>Sedang Dikerjakan</option>
+                                                    <option value="Selesai / Live" selected={order.status === "Selesai / Live"}>Selesai / Live</option>
+                                                    <option value="Dibatalkan" selected={order.status === "Dibatalkan"}>Dibatalkan</option>
+                                                </select>
+                                                <button class="btn-update bg-[#2E1F1A] text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-[#EA580C] transition-colors shadow-md active:scale-95">
+                                                    Update
                                                 </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-
-        <div id="modal-client" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[#1A110E]/60 backdrop-blur-sm modal-hidden">
-            <div id="modal-content" class="bg-[#F5EEDB] w-full max-w-lg rounded-3xl shadow-2xl border border-[#C8B8A3] overflow-hidden">
-                <div class="bg-[#2E1F1A] p-6 text-[#E3D5C1] flex justify-between items-center">
-                    <div>
-                        <h2 id="m-nama" class="text-2xl font-black">Nama Klien</h2>
-                        <p id="m-email" class="text-sm opacity-70">email@klien.com</p>
-                    </div>
-                    <button id="close-modal" class="p-2 hover:bg-white/10 rounded-full transition-colors text-2xl">&times;</button>
-                </div>
-                <div class="p-8 space-y-6">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-white/50 p-4 rounded-2xl border border-[#C8B8A3]">
-                            <p class="text-[10px] font-bold uppercase text-[#7B6153] mb-1">Nama Bisnis</p>
-                            <p id="m-bisnis" class="font-black text-[#2E1F1A]">Nama Toko</p>
-                        </div>
-                        <div class="bg-white/50 p-4 rounded-2xl border border-[#C8B8A3]">
-                            <p class="text-[10px] font-bold uppercase text-[#7B6153] mb-1">Paket Layanan</p>
-                            <p id="m-paket" class="font-black text-[#EA580C]">Katalog Basic</p>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold uppercase text-blue-600 mb-2 flex items-center gap-2">📢 Pesan Untuk Klien (Tampil di Dashboard)</p>
-                        <input type="hidden" id="m-order-id" value="">
-                        <textarea id="m-catatan" placeholder="Tulis pesan status untuk klien... (Contoh: Mohon segera transfer ke BCA 12345)" class="w-full bg-white border border-blue-300 rounded-xl p-4 text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none min-h-[100px] transition-all"></textarea>
-                        <button id="btn-save-catatan" class="mt-3 w-full bg-blue-600 text-white py-2.5 rounded-xl font-black text-sm hover:bg-blue-700 transition-colors shadow-md active:scale-[0.98]">💾 Simpan & Tampilkan ke Klien</button>
-                    </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
+        </main>
 
-        <script is:inline>
-            // --- LOGIKA UPDATE STATUS (ASLI) ---
-            const updateButtons = document.querySelectorAll('.btn-update');
-            updateButtons.forEach(button => {
-                button.addEventListener('click', async (e) => {
-                    const selectElement = e.target.previousElementSibling;
-                    const order_id = selectElement.getAttribute('data-id');
-                    const status_baru = selectElement.value;
-                    const originalText = e.target.innerHTML;
-                    e.target.innerHTML = "⏳";
-                    e.target.disabled = true;
+        <script is:inline>
+            const updateButtons = document.querySelectorAll('.btn-update');
 
-                    try {
-                        const response = await fetch('/api/update-status', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ order_id, status_baru })
-                        });
-                        const result = await response.json();
-                        if (response.ok) {
-                            alert("✅ " + result.message);
-                            e.target.innerHTML = "OK!";
-                            e.target.classList.replace('bg-[#2E1F1A]', 'bg-green-600');
-                            e.target.classList.replace('hover:bg-[#EA580C]', 'hover:bg-green-700');
-                            setTimeout(() => {
-                                e.target.innerHTML = originalText;
-                                e.target.classList.replace('bg-green-600', 'bg-[#2E1F1A]');
-                                e.target.classList.replace('hover:bg-green-700', 'hover:bg-[#EA580C]');
-                                e.target.disabled = false;
-                            }, 2000);
-                        } else {
-                            alert("❌ Gagal: " + result.message);
-                            e.target.innerHTML = originalText;
-                            e.target.disabled = false;
-                        }
-                    } catch (error) {
-                        alert("❌ Terjadi kesalahan pada server.");
-                        e.target.innerHTML = originalText;
-                        e.target.disabled = false;
-                    }
-                });
-            });
+            updateButtons.forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const selectElement = e.target.previousElementSibling;
+                    const order_id = selectElement.getAttribute('data-id');
+                    const status_baru = selectElement.value;
 
-            // --- LOGIKA MODAL CRM BUKA TUTUP ---
-            const modal = document.getElementById('modal-client');
-            const closeBtn = document.getElementById('close-modal');
-            const detailBtns = document.querySelectorAll('.btn-detail');
+                    const originalText = e.target.innerHTML;
+                    e.target.innerHTML = "⏳";
+                    e.target.disabled = true;
 
-            detailBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.getElementById('m-order-id').value = btn.dataset.id;
-                    document.getElementById('m-nama').innerText = btn.dataset.nama;
-                    document.getElementById('m-email').innerText = btn.dataset.email;
-                    document.getElementById('m-bisnis').innerText = btn.dataset.bisnis;
-                    document.getElementById('m-paket').innerText = btn.dataset.paket;
-                    document.getElementById('m-catatan').value = btn.dataset.catatan;
-                    
-                    modal.classList.remove('modal-hidden');
-                });
-            });
-
-            closeBtn.addEventListener('click', () => modal.classList.add('modal-hidden'));
-            modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.add('modal-hidden'); });
-
-            // --- LOGIKA SIMPAN PESAN CRM ---
-            document.getElementById('btn-save-catatan').addEventListener('click', async (e) => {
-                const btn = e.target;
-                const order_id = document.getElementById('m-order-id').value;
-                const catatan = document.getElementById('m-catatan').value;
-                
-                const originalText = btn.innerHTML;
-                btn.innerHTML = "⏳ Menyimpan...";
-                btn.disabled = true;
-
-                try {
-                    const response = await fetch('/api/update-catatan', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ order_id, catatan })
-                    });
-
-                    if (response.ok) {
-                        btn.innerHTML = "✅ Tersimpan!";
-                        btn.classList.replace('bg-blue-600', 'bg-green-600');
-                        btn.classList.replace('hover:bg-blue-700', 'hover:bg-green-700');
-                        document.querySelector(`.btn-detail[data-id="${order_id}"]`).dataset.catatan = catatan;
-                    } else {
-                        alert("❌ Gagal menyimpan catatan.");
-                    }
-                } catch (error) {
-                    alert("❌ Error server saat menyimpan.");
-                } finally {
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.classList.replace('bg-green-600', 'bg-blue-600');
-                        btn.classList.replace('hover:bg-green-700', 'hover:bg-blue-700');
-                        btn.disabled = false;
-                        modal.classList.add('modal-hidden');
-                    }, 1500);
-                }
-            });
-
-            // --- LOGIKA HAPUS PERMANEN OLEH ADMIN ---
-            document.querySelectorAll('.btn-delete-order').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const order_id = e.currentTarget.getAttribute('data-id');
-                    
-                    if(!confirm("🚨 PERINGATAN BUKAN MAIN-MAIN 🚨\n\nYakin ingin menghapus pesanan ini secara PERMANEN dari database? Data tidak bisa dikembalikan!")) return;
-                    
-                    const originalHTML = e.currentTarget.innerHTML;
-                    e.currentTarget.innerHTML = "⏳";
-                    
                     try {
-                        const res = await fetch('/api/delete-order', {
+                        const response = await fetch('/api/update-status', {
                             method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ order_id })
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ order_id, status_baru })
                         });
-                        
-                        if(res.ok) {
-                            alert("✅ Pesanan telah musnah dari muka bumi.");
-                            window.location.reload(); 
+
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            alert("✅ " + result.message);
+                            e.target.innerHTML = "OK!";
+                            e.target.classList.replace('bg-[#2E1F1A]', 'bg-green-600');
+                            e.target.classList.replace('hover:bg-[#EA580C]', 'hover:bg-green-700');
+                            
+                            setTimeout(() => {
+                                e.target.innerHTML = originalText;
+                                e.target.classList.replace('bg-green-600', 'bg-[#2E1F1A]');
+                                e.target.classList.replace('hover:bg-green-700', 'hover:bg-[#EA580C]');
+                                e.target.disabled = false;
+                            }, 2000);
                         } else {
-                            alert("❌ Gagal menghapus pesanan.");
-                            e.currentTarget.innerHTML = originalHTML;
+                            alert("❌ Gagal: " + result.message);
+                            e.target.innerHTML = originalText;
+                            e.target.disabled = false;
                         }
-                    } catch (err) {
-                        alert("Error jaringan/server.");
-                        e.currentTarget.innerHTML = originalHTML;
+                    } catch (error) {
+                        alert("❌ Terjadi kesalahan pada server.");
+                        e.target.innerHTML = originalText;
+                        e.target.disabled = false;
                     }
                 });
             });
-        </script>
-    </body>
+        </script>
+    </body>
 </html>
