@@ -40,36 +40,36 @@ const [orders] = await db.query(`
         <meta name="viewport" content="width=device-width" />
         <title>Admin Panel | PyntaDev</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-        <style is:global>
-            @import "tailwindcss";
+        <style is:global>
+            @import "tailwindcss";
 
-            /* --- TOGLE LOGO GAMBAR --- */
-            .logo-dark-mode { display: block; }
-            .logo-light-mode { display: none; }
-            
-            [data-theme="light"] .logo-dark-mode { display: none !important; }
-            [data-theme="light"] .logo-light-mode { display: block !important; }
+            /* --- TOGLE LOGO GAMBAR --- */
+            .logo-dark-mode { display: block; }
+            .logo-light-mode { display: none; }
+            
+            [data-theme="light"] .logo-dark-mode { display: none !important; }
+            [data-theme="light"] .logo-light-mode { display: block !important; }
 
-            body { 
-                font-family: 'Inter', sans-serif; 
-                background-color: #E3D5C1; 
-                color: #2E1F1A; 
-                margin: 0; 
-                padding: 0; 
-            }
-            
-            select:focus, textarea:focus { 
-                outline: none; 
-                border-color: #EA580C; 
-                box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
-            }
+            body { 
+                font-family: 'Inter', sans-serif; 
+                background-color: #E3D5C1; 
+                color: #2E1F1A; 
+                margin: 0; 
+                padding: 0; 
+            }
+            
+            select:focus, textarea:focus { 
+                outline: none; 
+                border-color: #EA580C; 
+                box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
+            }
 
             /* Modal Animation */
             #modal-client { transition: opacity 0.3s ease, visibility 0.3s ease; }
             #modal-content { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
             .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
             .modal-hidden #modal-content { transform: scale(0.9) translateY(20px); }
-        </style>
+        </style>
     </head>
     
     <body class="min-h-screen w-full relative">
