@@ -2,215 +2,103 @@
 import '../styles/global.css';
 import { db } from '../lib/db.js';
 
-// 1. Cek Sesi (Hanya user login yang bisa akses)
 const session = Astro.cookies.get('user_session');
-if (!session) {
-    return Astro.redirect('/login');
-}
+if (!session) return Astro.redirect('/login');
 
 const userId = session.value;
-
-// 2. Ambil Data User dari Database
-const [userRows] = await db.query('SELECT nama, email, role FROM users WHERE id = ?', [userId]) as any;
-if (userRows.length === 0) {
-    Astro.cookies.delete('user_session');
-    return Astro.redirect('/login');
-}
+const [userRows] = await db.query('SELECT nama FROM users WHERE id = ?', [userId]) as any;
 const user = userRows[0];
 
-// 3. Ambil Data SEMUA Pesanan Klien (Tanpa LIMIT 1)
+// Ambil SEMUA pesanan milik klien ini
 const [orders] = await db.query('SELECT * FROM orders WHERE user_id = ? ORDER BY tanggal_order DESC', [userId]) as any;
-
-// Cek apakah user sudah punya pesanan
 const hasOrder = orders.length > 0;
-
-// Menghitung statistik untuk dashboard klien
-const totalProyek = orders.length;
-const proyekAktif = orders.filter((o: any) => o.status !== 'Selesai / Live' && o.status !== 'Dibatalkan').length;
 ---
-
 <html lang="id" data-theme="light">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width" />
         <title>Dashboard Klien | PyntaDev</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
         <style is:global>
             @import "tailwindcss";
-            /* --- LOGO TOGGLE SYSTEM --- */
-            .logo-dark-mode { display: block; }
-            .logo-light-mode { display: none; }
-            
-            [data-theme="light"] .logo-dark-mode { display: none !important; }
-            [data-theme="light"] .logo-light-mode { display: block !important; }
-
-            body { 
-                font-family: 'Inter', sans-serif;
-                background-color: #F5EEDB; 
-                color: #2E1F1A; 
-                margin: 0; 
-                padding: 0; 
-            }
-
-            /* Scrollbar Styling */
-            main::-webkit-scrollbar { width: 8px; }
-            main::-webkit-scrollbar-track { background: #F5EEDB; }
-            main::-webkit-scrollbar-thumb { background: #C8B8A3; border-radius: 10px; }
-            main::-webkit-scrollbar-thumb:hover { background: #EA580C; }
+            body { font-family: 'Inter', sans-serif; background-color: #F5EEDB; color: #2E1F1A; }
         </style>
     </head>
-    
-    <body class="h-screen w-full bg-[#F5EEDB] overflow-hidden flex flex-col lg:flex-row relative">
+    <body class="min-h-screen w-full flex flex-col lg:flex-row">
         
-        <header class="lg:hidden bg-[#2E1F1A] text-[#E3D5C1] p-4 sm:px-6 flex justify-between items-center shadow-md z-30">
-            <div class="font-black flex items-center gap-2 text-xl">
-                <div class="w-8 h-8 flex items-center justify-center">
-                    <img src="/logo-orange.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md" />
+        <aside class="w-full lg:w-64 bg-[#2E1F1A] text-[#E3D5C1] p-8 flex flex-col gap-8 flex-shrink-0">
+            <div class="text-2xl font-black italic">Pynta<span class="text-[#EA580C]">Dev</span></div>
+            <nav class="flex flex-col gap-2 flex-grow">
+                <a href="#" class="p-3 bg-[#EA580C] text-white rounded-xl font-bold">Ringkasan</a>
+                <a href="/order" class="p-3 hover:bg-white/10 rounded-xl font-bold transition-all">Pesanan Baru</a>
+                <div class="mt-auto pt-4 border-t border-white/10">
+                    <button id="btnLogout" class="text-red-400 font-bold hover:text-red-300">Keluar Akun</button>
                 </div>
-                Pynta<span class="text-[#EA580C]">Dev</span>
-            </div>
-            <button id="open-sidebar" class="text-[#E3D5C1] hover:text-[#EA580C] focus:outline-none transition-colors p-2">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
-        </header>
-
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0"></div>
-
-        <aside id="sidebar" class="fixed lg:relative top-0 left-0 w-[280px] bg-[#2E1F1A] text-[#E3D5C1] flex flex-col shadow-2xl z-50 h-full transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0">
-            <button id="close-sidebar" class="lg:hidden absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-full p-1.5 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-
-            <div class="p-8">
-                <div class="text-2xl font-black flex items-center gap-2">
-                    <div class="w-8 h-8 flex items-center justify-center">
-                        <img src="/logo-biru.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-dark-mode" />
-                        <img src="/logo-orange.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-light-mode" />
-                    </div>
-                    Pynta<span class="text-[#EA580C]">Dev</span>
-                </div>
-            </div>
-            
-            <nav class="space-y-2 flex-grow px-4 overflow-y-auto">
-                <a href="#" class="block px-4 py-3 rounded-xl bg-[#EA580C] text-white font-bold shadow-md">Ringkasan</a>
-                <a href="/order" class="block px-4 py-3 rounded-xl font-semibold hover:bg-[#4A332A] transition-colors">Pesanan Baru</a>
-                <a href="#" class="block px-4 py-3 rounded-xl font-semibold hover:bg-[#4A332A] transition-colors">Pengaturan Akun</a>
-                <div class="h-px bg-[#4A332A] my-4"></div>
-                <a href="/" class="block px-4 py-3 rounded-xl font-semibold hover:bg-[#4A332A] transition-colors flex items-center gap-2">🏠 Kembali ke Home</a>
-
-                {user.role === 'admin' && (
-                    <a href="/admin" class="block px-4 py-3 rounded-xl bg-red-600/20 text-red-500 font-bold hover:bg-red-600 hover:text-white transition-colors border border-red-600/30 flex items-center gap-2 mt-2">
-                        👑 Mode Admin
-                    </a>
-                )}
             </nav>
-
-            <div class="p-4 border-t border-[#4A332A]">
-                <button id="btnLogout" class="w-full text-left px-4 py-3 text-red-400 font-bold hover:text-red-300 hover:bg-[#4A332A] rounded-xl transition-colors">Keluar Akun</button>
-            </div>
         </aside>
 
-        <main class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto p-6 sm:p-8 lg:p-12 relative z-10">
-            <header class="mb-8 lg:mb-10">
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black mb-1 sm:mb-2 text-[#2E1F1A]">Selamat Datang, {user.nama}!</h1>
-                <p class="text-sm sm:text-base text-[#7B6153] font-medium">Dashboard eksklusif Klien PyntaDev</p>
+        <main class="flex-1 p-8 lg:p-12 overflow-y-auto">
+            <header class="mb-10">
+                <h1 class="text-4xl font-black text-[#2E1F1A]">Halo, {user.nama}!</h1>
+                <p class="text-[#7B6153] font-medium">Berikut adalah daftar proyek digital Anda.</p>
             </header>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 lg:mb-10">
-                <div class="bg-white p-5 sm:p-6 rounded-2xl border border-[#C8B8A3] shadow-sm">
-                    <div class="text-[10px] sm:text-xs font-bold text-[#7B6153] uppercase mb-1 sm:mb-2 tracking-wide">Total Proyek Anda</div>
-                    <div class="text-lg sm:text-xl font-black text-[#EA580C] truncate">{totalProyek} Proyek</div>
-                </div>
-                <div class="bg-white p-5 sm:p-6 rounded-2xl border border-[#C8B8A3] shadow-sm">
-                    <div class="text-[10px] sm:text-xs font-bold text-[#7B6153] uppercase mb-1 sm:mb-2 tracking-wide">Proyek Aktif (Sedang Proses)</div>
-                    <div class="text-lg sm:text-xl font-black text-[#2E1F1A] truncate">{proyekAktif} Proyek</div>
-                </div>
-                <div class="bg-white p-5 sm:p-6 rounded-2xl border border-[#C8B8A3] shadow-sm sm:col-span-2 lg:col-span-1">
-                    <div class="text-[10px] sm:text-xs font-bold text-[#7B6153] uppercase mb-1 sm:mb-2 tracking-wide">Tiket Bantuan</div>
-                    <div class="text-lg sm:text-xl font-black text-green-600 truncate">0 Aktif</div>
-                </div>
-            </div>
 
             <div class="space-y-6">
                 {hasOrder ? (
-                    // Jika ada pesanan, lakukan LOOP (Mapping) untuk mencetak semua pesanan
                     orders.map((order: any) => (
-                        <div class="bg-[#E3D5C1] p-6 sm:p-8 rounded-3xl border border-[#C8B8A3] shadow-sm relative overflow-hidden">
-                            <div class="absolute -right-10 -top-10 w-40 h-40 bg-[#EA580C] opacity-10 rounded-full blur-3xl"></div>
-                            
-                            <div class="relative z-10">
-                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 border-b border-[#C8B8A3] pb-4 gap-3">
-                                    <div>
-                                        <h3 class="text-xl sm:text-2xl font-black text-[#2E1F1A]">{order.nama_bisnis}</h3>
-                                        <p class="text-sm font-bold text-[#EA580C]">{order.jenis_paket}</p>
-                                    </div>
-                                    <span class="px-4 py-2 bg-[#2E1F1A] text-[#E3D5C1] text-[10px] sm:text-xs font-black uppercase rounded-full tracking-wide">
-                                        Status: {order.status}
-                                    </span>
+                        <div class="bg-[#E3D5C1] p-8 rounded-3xl border border-[#C8B8A3] shadow-sm relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-[#C8B8A3] pb-4">
+                                <div>
+                                    <h3 class="text-2xl font-black text-[#2E1F1A]">{order.nama_bisnis}</h3>
+                                    <p class="font-bold text-[#EA580C] uppercase text-xs">{order.jenis_paket}</p>
                                 </div>
-
-                                <p class="text-xs sm:text-sm text-[#7B6153] font-bold mb-6">
-                                    Dipesan pada: {new Date(order.tanggal_order).toLocaleDateString('id-ID')}
-                                </p>
-
-                                {/* --- KOTAK PESAN DARI ADMIN --- */}
-                                {order.catatan && order.catatan.trim() !== "" && (
-                                    <div class="p-4 sm:p-5 bg-white/60 backdrop-blur-sm border-l-4 border-[#EA580C] rounded-r-xl shadow-sm max-w-2xl">
-                                        <p class="text-[10px] sm:text-xs font-black text-[#EA580C] uppercase mb-1 flex items-center gap-2">
-                                            <span>📢</span> Pesan dari PyntaDev:
-                                        </p>
-                                        <p class="text-sm sm:text-base text-[#2E1F1A] font-bold italic">"{order.catatan}"</p>
-                                    </div>
-                                )}
-                                {/* ------------------------------ */}
+                                <div class="px-4 py-2 bg-[#2E1F1A] text-[#E3D5C1] text-[10px] font-black uppercase rounded-full">
+                                    {order.status}
+                                </div>
                             </div>
+
+                            {/* Tombol Batal Klien */}
+                            {order.status === 'Menunggu Pembayaran' && (
+                                <button class="btn-cancel text-xs font-bold text-red-500 hover:text-red-700 underline mb-6" data-id={order.id}>
+                                    Batalkan Pesanan Ini
+                                </button>
+                            )}
+
+                            {/* Pesan dari Admin */}
+                            {order.catatan && (
+                                <div class="p-5 bg-white/60 backdrop-blur-sm border-l-4 border-[#EA580C] rounded-r-xl shadow-sm">
+                                    <p class="text-[10px] font-black text-[#EA580C] uppercase mb-1">📢 Pesan dari PyntaDev:</p>
+                                    <p class="text-sm text-[#2E1F1A] font-bold italic">"{order.catatan}"</p>
+                                </div>
+                            )}
                         </div>
                     ))
                 ) : (
-                    // Jika belum ada pesanan sama sekali
-                    <div class="bg-[#E3D5C1] p-6 sm:p-8 lg:p-10 rounded-3xl border border-[#C8B8A3] shadow-sm relative overflow-hidden">
-                        <div class="relative z-10">
-                            <h3 class="text-xl sm:text-2xl font-black mb-2 sm:mb-3 text-[#2E1F1A]">Mulai Proyek Pertamamu</h3>
-                            <p class="text-sm sm:text-base text-[#7B6153] mb-6 sm:mb-8 leading-relaxed max-w-2xl font-medium">Anda belum memiliki proyek aktif. Pilih template desain terbaik kami dan mulai transformasi digital bisnis Anda hari ini.</p>
-                            <a href="/order" class="inline-flex items-center gap-2 bg-[#2E1F1A] text-[#E3D5C1] px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl font-bold hover:bg-[#4A332A] transition-all shadow-md active:scale-95 text-sm sm:text-base w-full sm:w-auto justify-center">
-                                Pesan Website Sekarang
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                            </a>
-                        </div>
+                    <div class="text-center p-20 bg-white/50 rounded-3xl border-2 border-dashed border-[#C8B8A3]">
+                        <p class="text-[#7B6153] font-bold">Anda belum memiliki proyek aktif.</p>
+                        <a href="/order" class="inline-block mt-4 px-8 py-3 bg-[#2E1F1A] text-white rounded-xl font-bold">Pesan Sekarang</a>
                     </div>
                 )}
             </div>
         </main>
 
         <script is:inline>
-            // --- LOGIKA SIDEBAR MOBILE ---
-            const btnOpen = document.getElementById('open-sidebar');
-            const btnClose = document.getElementById('close-sidebar');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
+            // Batal Pesanan
+            document.querySelectorAll('.btn-cancel').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if(!confirm("Yakin batalkan pesanan?")) return;
+                    const order_id = e.target.dataset.id;
+                    const res = await fetch('/api/cancel-order', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ order_id })
+                    });
+                    if(res.ok) window.location.reload();
+                });
+            });
 
-            function openSidebar() {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-            }
-
-            function closeSidebar() {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
-            }
-
-            if(btnOpen) btnOpen.addEventListener('click', openSidebar);
-            if(btnClose) btnClose.addEventListener('click', closeSidebar);
-            if(overlay) overlay.addEventListener('click', closeSidebar);
-
-            // --- LOGIKA LOGOUT ---
-            document.getElementById('btnLogout').addEventListener('click', async () => {
-                const confirmLogout = confirm("Apakah Anda yakin ingin keluar?");
-                if (confirmLogout) {
+            // Logout
+            document.getElementById('btnLogout')?.addEventListener('click', async () => {
+                if(confirm("Keluar akun?")) {
                     await fetch('/api/logout', { method: 'POST' });
                     window.location.href = '/login';
                 }
