@@ -317,15 +317,19 @@ const [orders] = await db.query('SELECT orders.id as order_id, users.nama, users
                             body: JSON.stringify({ order_id })
                         });
                         
+                        // Ekstrak pesan dari server
+                        const data = await res.json();
+                        
                         if(res.ok) {
-                            alert("✅ Pesanan telah musnah dari muka bumi.");
+                            alert("✅ " + data.message);
                             window.location.reload(); 
                         } else {
-                            alert("❌ Gagal menghapus pesanan.");
+                            // Tampilkan pesan error aslinya di sini
+                            alert("❌ Gagal: " + data.message);
                             e.currentTarget.innerHTML = originalHTML;
                         }
                     } catch (err) {
-                        alert("Error jaringan/server.");
+                        alert("❌ Error Jaringan/Sistem: " + err.message);
                         e.currentTarget.innerHTML = originalHTML;
                     }
                 });
