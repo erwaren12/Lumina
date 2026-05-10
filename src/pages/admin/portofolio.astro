@@ -150,7 +150,7 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
                 btn.disabled = true;
 
                 try {
-                    const res = await fetch('/api/add-portfolio', {
+                    const res = await fetch('/api/add-portofolio', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
