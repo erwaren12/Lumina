@@ -1,0 +1,177 @@
+---
+import '../../styles/global.css';
+import { db } from '../../lib/db.js';
+
+// Cek Sesi Admin
+const session = Astro.cookies.get('user_session');
+if (!session) return Astro.redirect('/login');
+
+const userId = session.value;
+const [userRows] = await db.query('SELECT role FROM users WHERE id = ?', [userId]) as any;
+if (userRows.length === 0 || userRows[0].role !== 'admin') return Astro.redirect('/dashboard');
+
+// Ambil Data Portofolio dari Database
+const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at DESC') as any;
+---
+<html lang="id" data-theme="light">
+    <head>
+        <meta charset="utf-8" />
+        <title>Kelola Portofolio | PyntaDev Admin</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+        <style is:global>
+            @import "tailwindcss";
+            body { font-family: 'Inter', sans-serif; background-color: #E3D5C1; color: #2E1F1A; }
+            .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+            #modal-content { transition: all 0.3s ease; }
+            .modal-hidden #modal-content { transform: scale(0.95) translateY(20px); }
+        </style>
+    </head>
+    <body class="min-h-screen w-full relative pb-20">
+        
+        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg sticky top-0 z-40">
+            <div class="font-black flex items-center gap-2 text-xl px-4">
+                Pynta<span class="text-[#EA580C]">Admin</span> - CMS
+            </div>
+            <div class="flex gap-3">
+                <a href="/admin" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-bold transition-colors">Kembali ke Pesanan</a>
+            </div>
+        </nav>
+
+        <main class="p-8 lg:p-12 max-w-7xl mx-auto">
+            <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EA580C] text-white text-[10px] font-black tracking-wide mb-4 shadow-sm uppercase">
+                        🎨 Content Management
+                    </div>
+                    <h1 class="text-4xl font-black mb-2 text-[#2E1F1A]">Koleksi Portofolio</h1>
+                    <p class="text-[#7B6153] font-medium">Kelola karya terbaik agensimu untuk dipamerkan ke calon klien.</p>
+                </div>
+                <button id="btn-open-modal" class="px-6 py-3 bg-[#2E1F1A] text-white rounded-xl font-bold hover:bg-[#EA580C] transition-colors shadow-lg flex items-center gap-2">
+                    <span>+</span> Tambah Karya Baru
+                </button>
+            </header>
+
+            {portfolios.length === 0 ? (
+                <div class="bg-white p-12 rounded-3xl text-center border-2 border-dashed border-[#C8B8A3]">
+                    <span class="text-4xl mb-4 block">📭</span>
+                    <h3 class="text-xl font-black text-[#2E1F1A] mb-2">Belum ada portofolio</h3>
+                    <p class="text-[#7B6153] font-medium">Koleksi karyamu masih kosong. Yuk, tambahkan sekarang!</p>
+                </div>
+            ) : (
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {portfolios.map((item: any) => (
+                        <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-[#C8B8A3] group hover:-translate-y-1 transition-all duration-300">
+                            <div class="h-48 w-full bg-slate-200 overflow-hidden relative">
+                                {item.gambar_url ? (
+                                    <img src={item.gambar_url} alt={item.judul} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                ) : (
+                                    <div class="w-full h-full flex items-center justify-center text-slate-400 font-bold">Tidak ada gambar</div>
+                                )}
+                                <div class="absolute top-3 left-3 px-3 py-1 bg-[#2E1F1A]/80 backdrop-blur-sm text-[#E3D5C1] text-[10px] font-black uppercase rounded-full tracking-wider">
+                                    {item.kategori || 'Uncategorized'}
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-black text-[#2E1F1A] mb-2 truncate">{item.judul}</h3>
+                                <p class="text-sm text-[#7B6153] mb-4 line-clamp-2 leading-relaxed">{item.deskripsi || 'Tidak ada deskripsi.'}</p>
+                                <div class="flex justify-between items-center border-t border-[#C8B8A3] pt-4 mt-auto">
+                                    <a href={item.link_proyek || '#'} target="_blank" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">Lihat Web ↗</a>
+                                    <button class="text-xs font-bold text-red-500 hover:text-red-700 bg-red-50 px-3 py-1.5 rounded-lg transition-colors">Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </main>
+
+        <div id="modal-form" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[#1A110E]/70 backdrop-blur-sm modal-hidden">
+            <div id="modal-content" class="bg-[#F5EEDB] w-full max-w-xl rounded-3xl shadow-2xl border border-[#C8B8A3] overflow-hidden max-h-[90vh] flex flex-col">
+                <div class="bg-[#2E1F1A] p-6 text-[#E3D5C1] flex justify-between items-center flex-shrink-0">
+                    <h2 class="text-xl font-black">✨ Tambah Portofolio</h2>
+                    <button id="btn-close-modal" class="text-2xl hover:text-[#EA580C] transition-colors">&times;</button>
+                </div>
+                
+                <div class="p-8 overflow-y-auto space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1">Nama Proyek / Bisnis</label>
+                        <input type="text" id="i-judul" placeholder="Contoh: Toko Sepatu Jaya" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3 text-sm font-bold outline-none focus:ring-2 focus:ring-[#EA580C]" />
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1">Kategori</label>
+                            <input type="text" id="i-kategori" placeholder="Contoh: E-Commerce" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3 text-sm font-bold outline-none focus:ring-2 focus:ring-[#EA580C]" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1">Link Proyek (URL)</label>
+                            <input type="text" id="i-link" placeholder="https://..." class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3 text-sm font-medium outline-none focus:ring-2 focus:ring-[#EA580C]" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1">Link Gambar Preview</label>
+                        <input type="text" id="i-gambar" placeholder="Masukkan URL gambar (https://.../gambar.jpg)" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3 text-sm font-medium outline-none focus:ring-2 focus:ring-[#EA580C]" />
+                        <p class="text-[10px] text-[#7B6153] mt-1 font-medium">*Gunakan link gambar dari imgur, discord, atau tempat upload gambarmu.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1">Deskripsi Singkat</label>
+                        <textarea id="i-deskripsi" placeholder="Ceritakan sedikit tentang proyek ini..." class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3 text-sm font-medium outline-none focus:ring-2 focus:ring-[#EA580C] min-h-[100px]"></textarea>
+                    </div>
+                </div>
+                
+                <div class="p-6 bg-white/50 border-t border-[#C8B8A3] flex-shrink-0">
+                    <button id="btn-save-portfolio" class="w-full bg-[#EA580C] text-white py-3.5 rounded-xl font-black text-sm hover:bg-[#C0470A] transition-colors shadow-md active:scale-[0.98]">
+                        🚀 Simpan Karya
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script is:inline>
+            // Logika Modal
+            const modal = document.getElementById('modal-form');
+            document.getElementById('btn-open-modal').addEventListener('click', () => modal.classList.remove('modal-hidden'));
+            document.getElementById('btn-close-modal').addEventListener('click', () => modal.classList.add('modal-hidden'));
+            
+            // Logika Simpan Portofolio
+            document.getElementById('btn-save-portfolio').addEventListener('click', async (e) => {
+                const btn = e.target;
+                const data = {
+                    judul: document.getElementById('i-judul').value,
+                    kategori: document.getElementById('i-kategori').value,
+                    link_proyek: document.getElementById('i-link').value,
+                    gambar_url: document.getElementById('i-gambar').value,
+                    deskripsi: document.getElementById('i-deskripsi').value
+                };
+
+                if(!data.judul) return alert("Nama proyek wajib diisi!");
+
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "⏳ Mengunggah...";
+                btn.disabled = true;
+
+                try {
+                    const res = await fetch('/api/add-portfolio', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await res.json();
+                    
+                    if (res.ok) {
+                        alert("✅ " + result.message);
+                        window.location.reload();
+                    } else {
+                        alert("❌ Gagal: " + result.message);
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                } catch (error) {
+                    alert("❌ Error jaringan.");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            });
+        </script>
+    </body>
+</html>
