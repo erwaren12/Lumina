@@ -16,17 +16,40 @@ if (userRows.length === 0 || userRows[0].role !== 'admin') {
     return Astro.redirect('/dashboard');
 }
 
-// 3. Admin, Ambil Data Pesananan
-const [orders] = await db.query('SELECT orders.id as order_id, users.nama, users.email, orders.jenis_paket, orders.nama_bisnis, orders.status, orders.tanggal_order, orders.catatan FROM orders JOIN users ON orders.user_id = users.id ORDER BY orders.tanggal_order DESC') as any;
+// 3. TANGKAP PARAMETER PENCARIAN & PENGURUTAN DARI URL
+const searchQuery = Astro.url.searchParams.get('q')?.toLowerCase() || '';
+const sortQuery = Astro.url.searchParams.get('sort') || 'terbaru';
 
-// 4. KELOMPOKKAN PESANAN JADI FOLDER (Berdasarkan Email Klien)
+// 4. SUSUN QUERY SQL BERDASARKAN PENGURUTAN
+let sql = 'SELECT orders.id as order_id, users.nama, users.email, orders.jenis_paket, orders.nama_bisnis, orders.status, orders.tanggal_order, orders.catatan FROM orders JOIN users ON orders.user_id = users.id';
+
+// Atur urutan berdasarkan pilihan dropdown
+if (sortQuery === 'terlama') {
+    sql += ' ORDER BY orders.tanggal_order ASC';
+} else {
+    sql += ' ORDER BY orders.tanggal_order DESC'; // Default terbaru
+}
+
+const [orders] = await db.query(sql) as any;
+
+// 5. FILTER DATA BERDASARKAN PENCARIAN (Cari di Nama Klien, Email, atau Nama Bisnis)
+let filteredOrders = orders;
+if (searchQuery) {
+    filteredOrders = orders.filter((o: any) => 
+        o.nama.toLowerCase().includes(searchQuery) || 
+        o.email.toLowerCase().includes(searchQuery) || 
+        o.nama_bisnis.toLowerCase().includes(searchQuery)
+    );
+}
+
+// 6. KELOMPOKKAN PESANAN JADI FOLDER (Berdasarkan Email Klien)
 const groupedOrders: any = {};
-orders.forEach((o: any) => {
+filteredOrders.forEach((o: any) => {
     if (!groupedOrders[o.email]) {
         groupedOrders[o.email] = {
             nama: o.nama,
             email: o.email,
-            items: [] // array untuk menyimpan pesanannya
+            items: []
         };
     }
     groupedOrders[o.email].items.push(o);
@@ -57,9 +80,9 @@ const clientList = Object.values(groupedOrders);
                 padding: 0; 
             }
             
-            select:focus, textarea:focus { 
+            select:focus, textarea:focus, input:focus { 
                 outline: none; 
-                border-color: #EA580C; 
+                border-color: #EA580C !important; 
                 box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
             }
 
@@ -73,7 +96,7 @@ const clientList = Object.values(groupedOrders);
     
     <body class="min-h-screen w-full relative">
         
-        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg">
+        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg sticky top-0 z-40">
             <div class="font-black flex items-center gap-2 text-xl px-4">
                 <div class="w-8 h-8 flex items-center justify-center">
                     <img src="/logo-biru.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-dark-mode" />
@@ -81,9 +104,14 @@ const clientList = Object.values(groupedOrders);
                 </div>
                 Pynta<span class="text-[#EA580C]">Admin</span>
             </div>
-            <a href="/dashboard" class="px-4 py-2 bg-[#2E1F1A] hover:bg-[#EA580C] hover:text-white rounded-lg text-sm font-bold transition-colors shadow-md">
-                Mode Klien
-            </a>
+            <div class="flex items-center gap-3">
+                <a href="/admin/portofolio" class="px-4 py-2 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-sm font-bold transition-colors hidden md:block">
+                    🎨 CMS Portofolio
+                </a>
+                <a href="/dashboard" class="px-4 py-2 bg-[#2E1F1A] hover:bg-[#EA580C] hover:text-white rounded-lg text-sm font-bold transition-colors shadow-md">
+                    Mode Klien
+                </a>
+            </div>
         </nav>
 
         <main class="p-8 lg:p-12 max-w-7xl mx-auto">
@@ -124,9 +152,33 @@ const clientList = Object.values(groupedOrders);
                 </div>
             </div>
 
+            <form method="GET" action="/admin" class="mb-8 flex flex-col md:flex-row gap-4 bg-white/50 p-4 rounded-3xl border border-[#C8B8A3] backdrop-blur-md shadow-sm">
+                <div class="flex-1 relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#7B6153] text-lg">🔍</span>
+                    <input type="text" name="q" value={searchQuery} placeholder="Cari nama klien, email, atau nama bisnis..." class="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-[#C8B8A3] focus:border-[#EA580C] outline-none bg-white text-sm font-bold text-[#2E1F1A] transition-all" />
+                </div>
+                <div class="flex gap-2">
+                    <select name="sort" class="px-4 py-3.5 rounded-2xl border border-[#C8B8A3] bg-white text-sm font-bold text-[#2E1F1A] focus:border-[#EA580C] outline-none cursor-pointer transition-all w-full md:w-auto" onchange="this.form.submit()">
+                        <option value="terbaru" selected={sortQuery === 'terbaru'}>🕒 Terkini</option>
+                        <option value="terlama" selected={sortQuery === 'terlama'}>⏳ Terlama</option>
+                    </select>
+                    <button type="submit" class="bg-[#2E1F1A] text-white px-8 py-3.5 rounded-2xl font-black text-sm hover:bg-[#EA580C] transition-colors shadow-md hidden md:block">
+                        Cari
+                    </button>
+                    {searchQuery && (
+                        <a href="/admin" class="bg-red-50 text-red-500 border border-red-200 px-5 py-3.5 rounded-2xl font-black text-sm hover:bg-red-500 hover:text-white transition-colors shadow-sm flex items-center justify-center" title="Reset Pencarian">
+                            ✖
+                        </a>
+                    )}
+                </div>
+            </form>
             <div class="space-y-8">
                 {clientList.length === 0 ? (
-                    <div class="bg-white p-10 rounded-2xl text-center text-[#7B6153] font-bold border border-[#C8B8A3]">Belum ada pesanan masuk.</div>
+                    <div class="bg-white p-12 rounded-3xl text-center border border-[#C8B8A3] shadow-sm">
+                        <span class="text-4xl mb-4 block">🕵️</span>
+                        <h3 class="text-xl font-black text-[#2E1F1A] mb-2">Pencarian Tidak Ditemukan</h3>
+                        <p class="text-[#7B6153] font-medium">Tidak ada klien atau pesanan yang cocok dengan kata kuncimu.</p>
+                    </div>
                 ) : (
                     clientList.map((client: any) => (
                         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#C8B8A3]">
@@ -141,7 +193,7 @@ const clientList = Object.values(groupedOrders);
                                         <p class="text-xs font-medium text-[#C8B8A3]">{client.email}</p>
                                     </div>
                                 </div>
-                                <div class="bg-[#E3D5C1] text-[#2E1F1A] px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
+                                <div class="bg-[#E3D5C1] text-[#2E1F1A] px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-2">
                                     📁 {client.items.length} Proyek
                                 </div>
                             </div>
@@ -170,16 +222,16 @@ const clientList = Object.values(groupedOrders);
                                                 </td>
                                                 <td class="p-5">
                                                     <div class="flex items-center gap-3">
-                                                        <select class="status-dropdown px-3 py-2 rounded-lg border border-[#C8B8A3] bg-white text-xs font-bold text-[#2E1F1A] cursor-pointer transition-all" data-id={order.order_id}>
+                                                        <select class="status-dropdown px-3 py-2 rounded-xl border border-[#C8B8A3] bg-white text-xs font-bold text-[#2E1F1A] cursor-pointer transition-all" data-id={order.order_id}>
                                                             <option value="Menunggu Pembayaran" selected={order.status === "Menunggu Pembayaran"}>Menunggu Pembayaran</option>
                                                             <option value="Sedang Dikerjakan" selected={order.status === "Sedang Dikerjakan"}>Sedang Dikerjakan</option>
                                                             <option value="Selesai / Live" selected={order.status === "Selesai / Live"}>Selesai / Live</option>
                                                             <option value="Dibatalkan" selected={order.status === "Dibatalkan"}>Dibatalkan</option>
                                                         </select>
-                                                        <button class="btn-update bg-[#2E1F1A] text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-[#EA580C] transition-colors shadow-md active:scale-95">
+                                                        <button class="btn-update bg-[#2E1F1A] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#EA580C] transition-colors shadow-md active:scale-95">
                                                             Update
                                                         </button>
-                                                        <button class="btn-delete-order bg-red-100 text-red-600 p-2 rounded-lg hover:bg-red-600 hover:text-white transition-colors shadow-sm" data-id={order.order_id} title="Hapus Permanen">
+                                                        <button class="btn-delete-order bg-red-50 text-red-500 border border-red-200 p-2 rounded-xl hover:bg-red-500 hover:text-white transition-colors shadow-sm" data-id={order.order_id} title="Hapus Permanen">
                                                             🗑️
                                                         </button>
                                                     </div>
@@ -219,7 +271,7 @@ const clientList = Object.values(groupedOrders);
                         <p class="text-xs font-bold uppercase text-blue-600 mb-2 flex items-center gap-2">📢 Pesan Untuk Klien (Tampil di Dashboard)</p>
                         <input type="hidden" id="m-order-id" value="">
                         <textarea id="m-catatan" placeholder="Tulis pesan status untuk klien... (Contoh: Mohon segera transfer ke BCA 12345)" class="w-full bg-white border border-blue-300 rounded-xl p-4 text-sm font-medium focus:ring-2 focus:ring-blue-600 outline-none min-h-[100px] transition-all"></textarea>
-                        <button id="btn-save-catatan" class="mt-3 w-full bg-blue-600 text-white py-2.5 rounded-xl font-black text-sm hover:bg-blue-700 transition-colors shadow-md active:scale-[0.98]">💾 Simpan & Tampilkan ke Klien</button>
+                        <button id="btn-save-catatan" class="mt-3 w-full bg-blue-600 text-white py-3.5 rounded-xl font-black text-sm hover:bg-blue-700 transition-colors shadow-md active:scale-[0.98]">💾 Simpan & Tampilkan ke Klien</button>
                     </div>
                 </div>
             </div>
