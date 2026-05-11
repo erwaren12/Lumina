@@ -172,6 +172,39 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
                     btn.disabled = false;
                 }
             });
+            // Logika Hapus Portofolio
+            document.querySelectorAll('.btn-delete-porto').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if(!confirm("Yakin ingin menghapus karya ini?")) return;
+                    
+                    const id = e.target.getAttribute('data-id');
+                    const originalText = e.target.innerText;
+                    e.target.innerText = "⏳";
+                    e.target.disabled = true;
+
+                    try {
+                        const res = await fetch('/api/delete-portofolio', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id })
+                        });
+                        
+                        const result = await res.json();
+                        if(res.ok) {
+                            alert("✅ " + result.message);
+                            window.location.reload();
+                        } else {
+                            alert("❌ Gagal: " + result.message);
+                            e.target.innerText = originalText;
+                            e.target.disabled = false;
+                        }
+                    } catch (err) {
+                        alert("❌ Error jaringan.");
+                        e.target.innerText = originalText;
+                        e.target.disabled = false;
+                    }
+                });
+            });
         </script>
     </body>
 </html>
