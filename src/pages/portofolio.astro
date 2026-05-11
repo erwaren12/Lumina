@@ -1,5 +1,12 @@
 ---
-import '../styles/global.css';
+import '../styles/global.css'; // Pastikan path css-nya benar
+import { db } from '../lib/db.js';
+
+// Ambil data portofolio asli dari database TiDB
+const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at DESC') as any;
+
+// Kita siapkan ini untuk mendeteksi URL aktif (Kasus 2)
+const currentPath = Astro.url.pathname; 
 
 // Cek Sudah Login
 const session = Astro.cookies.get('user_session');
@@ -17,7 +24,7 @@ const isLoggedIn = !!session;
         </script>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
-        <title>Harga Paket | PyntaDev</title>
+        <title>Portofolio | PyntaDev</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         
         <script is:inline>
@@ -80,10 +87,6 @@ const isLoggedIn = !!session;
                 border-radius: 1.5rem !important;
                 box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important; }
 
-            [data-theme="light"] .pricing-card.popular {
-                border-color: #EA580C !important; border-width: 2px !important;
-                box-shadow: 0 10px 25px rgba(234, 88, 12, 0.15) !important; }
-
             [data-theme="light"] .border-slate-800, 
             [data-theme="light"] .border-slate-700, 
             [data-theme="light"] .border-2, 
@@ -94,12 +97,6 @@ const isLoggedIn = !!session;
             [data-theme="light"] .divide-slate-700 > :not([hidden]) ~ :not([hidden]) { 
                 border-color: #C8B8A3 !important;
             }
-            
-            [data-theme="light"] div#stats-grid > * { 
-                border-left-width: 0px !important; border-right-width: 0px !important;
-                border-top-width: 0px !important;
-                border-bottom-width: 0px !important;
-                border-color: transparent !important; }
 
             /* Text & Colors Light Mode */
             [data-theme="light"] .text-white { color: #2E1F1A !important; }
@@ -120,9 +117,6 @@ const isLoggedIn = !!session;
             [data-theme="light"] nav a.bg-blue-600 { background-color: #2E1F1A !important; color: #E3D5C1 !important; } 
             [data-theme="light"] .bg-white.text-blue-600 { background-color: #E3D5C1 !important; color: #2E1F1A !important; border: 1px solid #C8B8A3 !important; }
 
-            [data-theme="light"] .btn-outline { background-color: transparent !important; color: #2E1F1A !important; border: 2px solid #C8B8A3 !important; border-radius: 9999px !important;}
-            [data-theme="light"] .btn-outline:hover { border-color: #EA580C !important; color: #EA580C !important; }
-
             [data-theme="light"] #theme-toggle-desktop, [data-theme="light"] #theme-toggle-mobile { 
                 background-color: transparent !important; border: 1px solid #C8B8A3 !important; color: #2E1F1A !important; 
             }
@@ -135,33 +129,8 @@ const isLoggedIn = !!session;
             [data-theme="light"] section.py-20 div.bg-gradient-to-r .text-white { color: #2E1F1A !important; }
             [data-theme="light"] section.py-20 div.bg-white.text-blue-600 { background-color: #2E1F1A !important; color: #E3D5C1 !important; border: none !important; }
 
-            [data-theme="light"] div.bg-slate-900.px-4.py-3 { background-color: #E3D5C1 !important; border-bottom: 1px solid #C8B8A3 !important; }
-            [data-theme="light"] div.bg-slate-800.px-3.py-1.rounded { background-color: transparent !important; color: #2E1F1A !important; border: 1px solid #C8B8A3 !important; }
-            [data-theme="light"] .bg-slate-700\/50 { background-color: #F5EEDB !important; border: 1px solid #C8B8A3 !important; color: #7B6153 !important; }
-            [data-theme="light"] .bg-slate-700\/30 { background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; }
-
-            [data-theme="light"] #stats-container {
-                background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; 
-                border-radius: 1.5rem !important; 
-                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important; }
-
-            [data-theme="light"] #klien-banner {
-                background-color: #2E1F1A !important; border-top: 1px solid #C8B8A3 !important;
-                border-bottom: 1px solid #C8B8A3 !important; }
-            [data-theme="light"] #klien-title { color: #EA580C !important; }
-            [data-theme="light"] #klien-logos { filter: none !important; opacity: 1 !important; }
-            [data-theme="light"] #klien-logos div { color: #E3D5C1 !important; }
-            [data-theme="light"] #klien-logos span { color: #EA580C !important; }
-
             [data-theme="light"] .bg-blue-600\/20 { display: none !important; } 
             [data-theme="light"] .text-yellow-400 { color: #F59E0B !important; } 
-            [data-theme="light"] #slider-testimoni .text-white { color: #2E1F1A !important; }
-            [data-theme="light"] section.py-12 span.text-blue-500,
-            [data-theme="light"] section.py-12 span.text-emerald-500,
-            [data-theme="light"] section.py-12 span.text-purple-500 { color: #2E1F1A !important; }
-            [data-theme="light"] section.py-12 span.counter { color: #2E1F1A !important; }
-            
-            [data-theme="light"] .badge-popular { background-color: #EA580C !important; color: #F5EEDB !important;}
 
             /* Footer Warna Light Mode */
             [data-theme="light"] footer.bg-slate-950 { background-color: #2E1F1A !important; border-top: none !important; }
@@ -219,12 +188,11 @@ const isLoggedIn = !!session;
                     </a>
                     
                     <div class="hidden lg:flex space-x-8 xl:space-x-10 text-sm xl:text-base font-medium text-slate-300">
-                        <a href="/" class="text-white underline decoration-blue-500 decoration-4 underline-offset-8">Home</a>
-                        <a href="/template" class="hover:text-blue-500 transition-all">Template</a>
-                        <a href="/portofolio" class="hover:text-blue-500 transition-all">Portofolio</a>
-                        <a href="/harga" class="hover:text-blue-500 transition-all">Harga</a>
+                        <a href="/" class={currentPath === '/' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Home</a>
+                        <a href="/template" class={currentPath === '/template' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Template</a>
+                        <a href="/portofolio" class={currentPath === '/portofolio' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Portofolio</a>
+                        <a href="/harga" class={currentPath === '/harga' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Harga</a>
                     </div>
-                    
                     <div class="hidden lg:flex items-center gap-4 md:gap-5">
                         <button id="theme-toggle-desktop" class="w-9 h-9 rounded-xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-slate-300 hover:text-yellow-400 hover:bg-slate-700 transition-all shadow-sm">
                             ☀️
@@ -254,14 +222,12 @@ const isLoggedIn = !!session;
         </header>
 
         <div id="mobile-menu" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 transform translate-x-full transition-transform duration-300 flex flex-col items-center justify-center space-y-6 text-xl font-extrabold lg:hidden">
-            
             <button id="theme-toggle-mobile" class="w-12 h-12 mb-4 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-2xl text-slate-300 hover:text-yellow-400">
                 ☀️
             </button>
-
-            <a href="/" class="text-white hover:text-blue-500 transition-colors">Home</a>
+            <a href="/" class="text-slate-300 hover:text-blue-500 transition-colors">Home</a>
             <a href="/template" class="text-slate-300 hover:text-blue-500 transition-colors">Template</a>
-            <a href="/portofolio" class="text-slate-300 hover:text-blue-500 transition-colors">Portofolio</a>
+            <a href="/portofolio" class="text-white transition-colors">Portofolio</a>
             <a href="/harga" class="text-slate-300 hover:text-blue-500 transition-colors">Harga</a>
             <div class="w-16 h-px bg-slate-700 my-2"></div>
             {isLoggedIn ? (
@@ -288,107 +254,39 @@ const isLoggedIn = !!session;
         </main>
 
         <section class="container mx-auto px-6 pb-24 relative z-10">
-            <div class="flex flex-wrap justify-center gap-3 mb-12">
-                <button class="px-6 py-2 rounded-full bg-blue-600 text-white font-bold text-sm transition-all shadow-lg shadow-blue-500/25">Semua</button>
-                <button class="px-6 py-2 rounded-full bg-slate-800 text-slate-300 font-medium text-sm transition-all shadow-sm">E-Commerce</button>
-                <button class="px-6 py-2 rounded-full bg-slate-800 text-slate-300 font-medium text-sm transition-all shadow-sm">F&B / Kuliner</button>
-                <button class="px-6 py-2 rounded-full bg-slate-800 text-slate-300 font-medium text-sm transition-all shadow-sm">Company Profile</button>
-            </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <div class="group relative rounded-3xl overflow-hidden bg-slate-800 transition-all hover:-translate-y-2 shadow-xl border border-transparent flex flex-col h-full">
-                    <div class="aspect-video portfolio-img-bg relative flex items-center justify-center overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-orange-500/10 to-transparent"></div>
-                        <span class="text-7xl group-hover:scale-110 transition-transform duration-500">🍔</span>
-                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm z-20">
-                            <a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-all shadow-lg text-sm text-white">Pesan Desain Ini</a>
+                {portfolios.length === 0 ? (
+                    <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-20 bg-slate-800 rounded-3xl border border-slate-700">
+                        <p class="text-slate-400 text-lg font-bold">Koleksi portofolio belum tersedia.</p>
+                    </div>
+                ) : (
+                    portfolios.map((item: any) => (
+                        <div class="group relative rounded-3xl overflow-hidden bg-slate-800 transition-all hover:-translate-y-2 shadow-xl border border-transparent flex flex-col h-full">
+                            
+                            <div class="aspect-video relative flex items-center justify-center overflow-hidden bg-slate-900/50">
+                                {item.gambar_url ? (
+                                    <img src={item.gambar_url} alt={item.judul} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                ) : (
+                                    <div class="w-full h-full flex items-center justify-center text-slate-600 font-bold">Tidak Ada Gambar</div>
+                                )}
+                                
+                                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm z-20">
+                                    <a href={item.link_proyek || '#'} target="_blank" class="px-6 py-3 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-all shadow-lg text-sm text-white border border-white/20 bg-white/10 hover:bg-white/20">
+                                        Kunjungi Website
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="p-6 flex-1 flex flex-col relative z-10">
+                                <div class="text-xs font-bold text-blue-500 mb-2 uppercase tracking-wider">{item.kategori || 'Uncategorized'}</div>
+                                <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500 line-clamp-1">{item.judul}</h3>
+                                <p class="text-sm text-slate-400 transition-colors duration-500 line-clamp-3 leading-relaxed">{item.deskripsi}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <div class="text-xs font-bold text-orange-500 mb-2 uppercase tracking-wider">F&B / Kuliner</div>
-                        <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">Juragan Kuliner Katalog</h3>
-                        <p class="text-sm text-slate-400 transition-colors duration-500">Website pemesanan makanan terintegrasi langsung dengan WhatsApp kasir.</p>
-                    </div>
-                </div>
-
-                <div class="group relative rounded-3xl overflow-hidden bg-slate-800 transition-all hover:-translate-y-2 shadow-xl border border-transparent flex flex-col h-full">
-                    <div class="aspect-video portfolio-img-bg relative flex items-center justify-center overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-pink-500/10 to-transparent"></div>
-                        <span class="text-7xl group-hover:scale-110 transition-transform duration-500">💄</span>
-                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm z-20">
-                            <a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-all shadow-lg text-sm text-white">Pesan Desain Ini</a>
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <div class="text-xs font-bold text-pink-500 mb-2 uppercase tracking-wider">E-Commerce</div>
-                        <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">BeautyStudio Store</h3>
-                        <p class="text-sm text-slate-400 transition-colors duration-500">Toko online kosmetik 24 jam dengan Payment Gateway dan AI Assistant.</p>
-                    </div>
-                </div>
-
-                <div class="group relative rounded-3xl overflow-hidden bg-slate-800 transition-all hover:-translate-y-2 shadow-xl border border-transparent flex flex-col h-full">
-                    <div class="aspect-video portfolio-img-bg relative flex items-center justify-center overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent"></div>
-                        <span class="text-7xl group-hover:scale-110 transition-transform duration-500">🏢</span>
-                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm z-20">
-                            <a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-all shadow-lg text-sm text-white">Pesan Desain Ini</a>
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <div class="text-xs font-bold text-emerald-500 mb-2 uppercase tracking-wider">Company Profile</div>
-                        <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">PT Maju Abadi Corp</h3>
-                        <p class="text-sm text-slate-400 transition-colors duration-500">Profil perusahaan profesional yang elegan untuk meyakinkan investor dan klien B2B.</p>
-                    </div>
-                </div>
-
-                <div class="group relative rounded-3xl overflow-hidden bg-slate-800 transition-all hover:-translate-y-2 shadow-xl border border-transparent flex flex-col h-full">
-                    <div class="aspect-video portfolio-img-bg relative flex items-center justify-center overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-purple-500/10 to-transparent"></div>
-                        <span class="text-7xl group-hover:scale-110 transition-transform duration-500">👕</span>
-                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm z-20">
-                            <a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-all shadow-lg text-sm text-white">Pesan Desain Ini</a>
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <div class="text-xs font-bold text-purple-500 mb-2 uppercase tracking-wider">E-Commerce</div>
-                        <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">TokoLokal Fashion</h3>
-                        <p class="text-sm text-slate-400 transition-colors duration-500">Platform belanja fashion lokal dengan manajemen inventaris otomatis.</p>
-                    </div>
-                </div>
-
-                <div class="group relative rounded-3xl overflow-hidden bg-slate-800 transition-all hover:-translate-y-2 shadow-xl border border-transparent flex flex-col h-full">
-                    <div class="aspect-video portfolio-img-bg relative flex items-center justify-center overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/10 to-transparent"></div>
-                        <span class="text-7xl group-hover:scale-110 transition-transform duration-500">☕</span>
-                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm z-20">
-                            <a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-all shadow-lg text-sm text-white">Pesan Desain Ini</a>
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <div class="text-xs font-bold text-amber-500 mb-2 uppercase tracking-wider">F&B / Kuliner</div>
-                        <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">Kopi Senja Roastery</h3>
-                        <p class="text-sm text-slate-400 transition-colors duration-500">Katalog biji kopi premium dan sistem berlangganan bulanan untuk pencinta kopi.</p>
-                    </div>
-                </div>
-
-                <div class="group relative rounded-3xl overflow-hidden bg-slate-800 transition-all hover:-translate-y-2 shadow-xl border border-transparent flex flex-col h-full">
-                    <div class="aspect-video portfolio-img-bg relative flex items-center justify-center overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 to-transparent"></div>
-                        <span class="text-7xl group-hover:scale-110 transition-transform duration-500">📊</span>
-                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm z-20">
-                            <a href="/harga" class="portfolio-btn px-6 py-3 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-all shadow-lg text-sm text-white">Pesan Desain Ini</a>
-                        </div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <div class="text-xs font-bold text-indigo-500 mb-2 uppercase tracking-wider">Tech App</div>
-                        <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">AI Sales Dashboard</h3>
-                        <p class="text-sm text-slate-400 transition-colors duration-500">Sistem manajemen dan analitik internal (admin panel) dengan desain antarmuka modern.</p>
-                    </div>
-                </div>
-
+                    ))
+                )}
             </div>
-        </section>
+            </section>
 
         <section class="py-10 mb-10 transition-colors duration-500">
             <div class="container mx-auto px-6 max-w-5xl">

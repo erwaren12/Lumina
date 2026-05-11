@@ -1,9 +1,15 @@
 ---
 import '../styles/global.css';
-// CEK APAKAH ADA USER YANG SEDANG LOGIN
+
+// Tambahkan baris ini agar 'currentPath' dikenali!
+const currentPath = Astro.url.pathname;
+
+// Cek Sudah Login (jika ada kode ini sebelumnya, biarkan saja)
 const session = Astro.cookies.get('user_session');
-const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belum
+const isLoggedIn = !!session;
 ---
+<html lang="id">
+...
 <html lang="id">
     <head>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-VKX6F25YSC"></script>
@@ -256,10 +262,10 @@ const isLoggedIn = !!session; // Hasilnya true jika sudah login, false jika belu
                     </a>
                     
                     <div class="hidden lg:flex space-x-8 xl:space-x-10 text-sm xl:text-base font-medium text-slate-300">
-                        <a href="/" class="text-white underline decoration-blue-500 decoration-4 underline-offset-8">Home</a>
-                        <a href="/template" class="hover:text-blue-500 transition-all">Template</a>
-                        <a href="/portofolio" class="hover:text-blue-500 transition-all">Portofolio</a>
-                        <a href="/harga" class="hover:text-blue-500 transition-all">Harga</a>
+                        <a href="/" class={currentPath === '/' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Home</a>
+                        <a href="/template" class={currentPath === '/template' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Template</a>
+                        <a href="/portofolio" class={currentPath === '/portofolio' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Portofolio</a>
+                        <a href="/harga" class={currentPath === '/harga' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Harga</a>
                     </div>
                     
                     <div class="hidden lg:flex items-center gap-4 md:gap-5">
