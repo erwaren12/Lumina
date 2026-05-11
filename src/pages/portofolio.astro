@@ -81,8 +81,7 @@ const isLoggedIn = !!session;
             [data-theme="light"] .bg-slate-800\/50,
             [data-theme="light"] .bg-slate-800\/80,
             [data-theme="light"] .pricing-card,
-            [data-theme="light"] #terminal-card,
-            [data-theme="light"] section.py-20 div.bg-gradient-to-r {
+            [data-theme="light"] #terminal-card {
                 background: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; 
                 border-radius: 1.5rem !important;
                 box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important; }
@@ -122,12 +121,13 @@ const isLoggedIn = !!session;
             }
             [data-theme="light"] #theme-toggle-desktop:hover, [data-theme="light"] #theme-toggle-mobile:hover { background-color: #E5E7EB !important; color: #EA580C !important; }
 
-            [data-theme="light"] section.py-20 div.bg-gradient-to-r {
+            /* PERBAIKAN WARNA KOTAK CTA */
+            [data-theme="light"] section.target-cta div.bg-gradient-to-r {
                 background: #E3D5C1 !important; border: 1px solid #C8B8A3 !important;
-                border-radius: 2rem !important;
+                border-radius: 2.5rem !important;
                 box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important; }
-            [data-theme="light"] section.py-20 div.bg-gradient-to-r .text-white { color: #2E1F1A !important; }
-            [data-theme="light"] section.py-20 div.bg-white.text-blue-600 { background-color: #2E1F1A !important; color: #E3D5C1 !important; border: none !important; }
+            [data-theme="light"] section.target-cta div.bg-gradient-to-r .text-white { color: #2E1F1A !important; }
+            [data-theme="light"] section.target-cta a.bg-white.text-blue-600 { background-color: #2E1F1A !important; color: #E3D5C1 !important; border: none !important; }
 
             [data-theme="light"] .bg-blue-600\/20 { display: none !important; } 
             [data-theme="light"] .text-yellow-400 { color: #F59E0B !important; } 
@@ -188,11 +188,12 @@ const isLoggedIn = !!session;
                     </a>
                     
                     <div class="hidden lg:flex space-x-8 xl:space-x-10 text-sm xl:text-base font-medium text-slate-300">
-                        <a href="/" class={currentPath === '/' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Home</a>
-                        <a href="/template" class={currentPath === '/template' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Template</a>
-                        <a href="/portofolio" class={currentPath === '/portofolio' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Portofolio</a>
-                        <a href="/harga" class={currentPath === '/harga' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Harga</a>
+                        <a href="/" class={currentPath === '/' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8 font-bold" : "hover:text-blue-500 transition-all"}>Home</a>
+                        <a href="/template" class={currentPath === '/template' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8 font-bold" : "hover:text-blue-500 transition-all"}>Template</a>
+                        <a href="/portofolio" class={currentPath === '/portofolio' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8 font-bold" : "hover:text-blue-500 transition-all"}>Portofolio</a>
+                        <a href="/harga" class={currentPath === '/harga' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8 font-bold" : "hover:text-blue-500 transition-all"}>Harga</a>
                     </div>
+
                     <div class="hidden lg:flex items-center gap-4 md:gap-5">
                         <button id="theme-toggle-desktop" class="w-9 h-9 rounded-xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-slate-300 hover:text-yellow-400 hover:bg-slate-700 transition-all shadow-sm">
                             ☀️
@@ -225,10 +226,10 @@ const isLoggedIn = !!session;
             <button id="theme-toggle-mobile" class="w-12 h-12 mb-4 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-2xl text-slate-300 hover:text-yellow-400">
                 ☀️
             </button>
-            <a href="/" class="text-slate-300 hover:text-blue-500 transition-colors">Home</a>
-            <a href="/template" class="text-slate-300 hover:text-blue-500 transition-colors">Template</a>
-            <a href="/portofolio" class="text-white transition-colors">Portofolio</a>
-            <a href="/harga" class="text-slate-300 hover:text-blue-500 transition-colors">Harga</a>
+            <a href="/" class={currentPath === '/' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "text-slate-300 hover:text-blue-500 transition-colors"}>Home</a>
+            <a href="/template" class={currentPath === '/template' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "text-slate-300 hover:text-blue-500 transition-colors"}>Template</a>
+            <a href="/portofolio" class={currentPath === '/portofolio' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "text-slate-300 hover:text-blue-500 transition-colors"}>Portofolio</a>
+            <a href="/harga" class={currentPath === '/harga' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "text-slate-300 hover:text-blue-500 transition-colors"}>Harga</a>
             <div class="w-16 h-px bg-slate-700 my-2"></div>
             {isLoggedIn ? (
                 <a href="/dashboard" class="text-blue-500 transition-colors">Dashboard Saya</a>
@@ -286,9 +287,9 @@ const isLoggedIn = !!session;
                     ))
                 )}
             </div>
-            </section>
+        </section>
 
-        <section class="py-10 mb-10 transition-colors duration-500">
+        <section class="py-10 mb-10 transition-colors duration-500 target-cta">
             <div class="container mx-auto px-6 max-w-5xl">
                 <div class="bg-gradient-to-r from-blue-600 to-cyan-500 rounded-[2.5rem] p-10 md:p-16 text-center relative overflow-hidden shadow-xl transition-colors duration-500">
                     <h2 class="text-3xl md:text-5xl font-black text-white mb-6 relative z-10 transition-colors duration-500">Ingin Website Anda Tampil di Sini?</h2>
