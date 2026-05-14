@@ -1,43 +1,45 @@
 ---
 import '../../styles/global.css';
 import { db } from '../../lib/db.js';
-const currentPath = Astro.url.pathname;
 
-let templates = [];
-let errorServer = null;
+// Deteksi URL untuk Navbar Pintar
+const currentPath = Astro.url.pathname;
 
 // Cek Sesi Admin
 const session = Astro.cookies.get('user_session');
 if (!session) return Astro.redirect('/login');
 
-try {
-    const userId = session.value;
-    const [userRows] = await db.query('SELECT role FROM users WHERE id = ?', [userId]) as any;
-    if (userRows.length === 0 || userRows[0].role !== 'admin') return Astro.redirect('/dashboard');
+const userId = session.value;
+const [userRows] = await db.query('SELECT role FROM users WHERE id = ?', [userId]) as any;
+if (userRows.length === 0 || userRows[0].role !== 'admin') return Astro.redirect('/dashboard');
 
-    // Ambil Data Template dari Database
-    const [rows] = await db.query('SELECT * FROM templates ORDER BY id DESC') as any;
-    templates = rows;
-} catch (err: any) {
-    errorServer = err.message;
-}
+// Ambil Data Portofolio dari Database
+const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at DESC') as any;
 ---
 <html lang="id" data-theme="light">
     <head>
         <meta charset="utf-8" />
-        <title>Kelola Template | PyntaDev Admin</title>
+        <title>Kelola Portofolio | PyntaDev Admin</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
         <style is:global>
             @import "tailwindcss";
-            body { font-family: 'Inter', sans-serif; background-color: #E3D5C1; color: #2E1F1A; }
-            .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-            #modal-content { transition: all 0.3s ease; }
-            .modal-hidden #modal-content { transform: scale(0.95) translateY(20px); }
+            body { font-family: 'Inter', sans-serif; background-color: #E3D5C1; color: #2E1F1A; margin: 0; padding: 0; }
+            
+            /* Custom Scrollbar Premium */
+            ::-webkit-scrollbar { width: 10px; height: 10px; }
+            ::-webkit-scrollbar-track { background: #E3D5C1; }
+            ::-webkit-scrollbar-thumb { background: #C8B8A3; border-radius: 10px; border: 2px solid #E3D5C1; }
+            ::-webkit-scrollbar-thumb:hover { background: #EA580C; }
+
             .hide-scrollbar::-webkit-scrollbar { display: none; }
             .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            
+            .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+            #modal-content { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+            .modal-hidden #modal-content { transform: scale(0.9) translateY(20px); }
         </style>
     </head>
-    <body class="min-h-screen w-full relative pb-20">
+    <body class="min-h-screen w-full relative">
         
         <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg sticky top-0 z-40 overflow-x-auto hide-scrollbar">
             <div class="font-black flex items-center gap-2 text-xl px-4 shrink-0">
@@ -53,63 +55,59 @@ try {
                 <a href="/admin/template" class={`px-3 py-1.5 border rounded-lg text-xs font-bold transition-colors ${currentPath.includes('/template') ? 'border-[#EA580C] bg-[#EA580C]/10 text-[#EA580C]' : 'border-[#C8B8A3]/30 hover:bg-white/10 text-[#E3D5C1]'}`}>🗂️ Template</a>
                 <a href="/admin/harga" class={`px-3 py-1.5 border rounded-lg text-xs font-bold transition-colors ${currentPath.includes('/harga') ? 'border-[#EA580C] bg-[#EA580C]/10 text-[#EA580C]' : 'border-[#C8B8A3]/30 hover:bg-white/10 text-[#E3D5C1]'}`}>💰 Harga</a>
                 
-                <a href="/" class="ml-2 px-3 py-1.5 bg-[#F5EEDB] text-[#2E1F1A] rounded-lg text-xs font-black hover:bg-white transition-all shadow-sm">👀 Lihat Web</a>
+                <a href="/" class="ml-4 px-4 py-1.5 bg-[#F5EEDB] text-[#2E1F1A] rounded-lg text-xs font-black hover:bg-white transition-all shadow-sm flex items-center gap-1">👀 Lihat Web</a>
                 <a href="/dashboard" class="px-4 py-1.5 bg-[#2E1F1A] hover:bg-[#EA580C] hover:text-white rounded-lg text-xs font-bold transition-colors shadow-md">Mode Klien</a>
             </div>
         </nav>
 
-        <main class="p-8 lg:p-12 max-w-7xl mx-auto">
+        <main class="p-8 md:p-12 w-full max-w-[1600px] mx-auto pb-24">
             <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EA580C] text-white text-[10px] font-black tracking-wide mb-4 shadow-sm uppercase">
-                        🗂️ Content Management
+                        🎨 Content Management
                     </div>
-                    <h1 class="text-4xl font-black mb-2 text-[#2E1F1A]">Koleksi Template</h1>
-                    <p class="text-[#7B6153] font-medium">Kelola template desain siap pakai yang bisa dipilih oleh klien.</p>
+                    <h1 class="text-4xl font-black mb-2 text-[#2E1F1A]">Koleksi Portofolio</h1>
+                    <p class="text-[#7B6153] font-medium">Kelola karya terbaik agensimu untuk dipamerkan ke calon klien.</p>
                 </div>
                 <button id="btn-open-modal" class="px-6 py-3.5 bg-[#2E1F1A] text-white rounded-2xl font-black hover:bg-[#EA580C] transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center gap-2">
-                    <span class="text-lg">+</span> Tambah Template
+                    <span class="text-lg">+</span> Tambah Karya Baru
                 </button>
             </header>
 
-            {errorServer ? (
-                <div class="bg-red-50 p-12 rounded-[2rem] text-center border-2 border-red-500 shadow-xl">
-                    <span class="text-6xl mb-4 block">🚨</span>
-                    <h3 class="text-3xl font-black text-red-600 mb-2">Sistem Crash!</h3>
-                    <p class="text-red-800 font-medium mb-6">Vercel gagal memuat data dari database. Berikut laporan aslinya:</p>
-                    <code class="bg-[#1A110E] text-green-400 p-6 rounded-xl block text-left text-sm font-mono shadow-inner border border-red-900/50">{errorServer}</code>
-                </div>
-            ) : templates.length === 0 ? (
-                <div class="bg-white/50 backdrop-blur-md p-12 rounded-[2rem] text-center border-2 border-dashed border-[#C8B8A3] shadow-sm">
-                    <span class="text-5xl mb-4 block">📦</span>
-                    <h3 class="text-xl font-black text-[#2E1F1A] mb-2">Belum ada template</h3>
-                    <p class="text-[#7B6153] font-medium">Etalase templatemau masih kosong. Yuk, tambahkan sekarang!</p>
+            {portfolios.length === 0 ? (
+                <div class="bg-white/50 backdrop-blur-md p-16 rounded-[2rem] text-center border-2 border-dashed border-[#C8B8A3] shadow-sm">
+                    <span class="text-6xl mb-4 block">📭</span>
+                    <h3 class="text-2xl font-black text-[#2E1F1A] mb-2">Belum ada portofolio</h3>
+                    <p class="text-[#7B6153] font-medium">Koleksi karyamu masih kosong. Yuk, tambahkan mahakarya pertamamu sekarang!</p>
                 </div>
             ) : (
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {templates.map((item: any) => (
-                        <div class="bg-white/80 backdrop-blur-md rounded-[2rem] overflow-hidden shadow-lg border border-[#C8B8A3] group hover:-translate-y-2 hover:shadow-xl hover:shadow-[#EA580C]/10 transition-all duration-300 flex flex-col h-full">
-                            <div class="h-56 w-full bg-[#F5EEDB] overflow-hidden relative flex items-center justify-center border-b border-[#C8B8A3]/50">
-                                {item.gambar_preview ? (
-                                    <img src={item.gambar_preview} alt={item.nama_template} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    {portfolios.map((item: any) => (
+                        <div class="bg-white/80 backdrop-blur-md rounded-[2rem] overflow-hidden shadow-lg border border-[#C8B8A3] group hover:-translate-y-2 hover:shadow-xl hover:shadow-[#EA580C]/15 transition-all duration-300 flex flex-col h-full">
+                            
+                            <div class="h-60 w-full bg-[#F5EEDB] overflow-hidden relative flex items-center justify-center border-b border-[#C8B8A3]/50">
+                                {item.gambar_url ? (
+                                    <img src={item.gambar_url} alt={item.judul} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                 ) : (
-                                    <div class="flex flex-col items-center justify-center text-[#7B6153] opacity-50 group-hover:scale-110 transition-transform duration-500">
+                                    <div class="flex flex-col items-center justify-center text-[#7B6153] opacity-50 group-hover:scale-110 transition-transform duration-500 w-full h-full bg-[#E3D5C1]/50">
                                         <span class="text-5xl mb-2">🖼️</span>
                                         <span class="text-[10px] font-black uppercase tracking-widest">Tidak Ada Gambar</span>
                                     </div>
                                 )}
-                                <div class="absolute top-4 left-4 px-4 py-1.5 bg-[#2E1F1A] text-white text-[10px] font-black uppercase rounded-full tracking-widest shadow-md">
-                                    {item.tipe}
+                                <div class="absolute top-4 left-4 px-4 py-1.5 bg-[#EA580C] text-white text-[10px] font-black uppercase rounded-full tracking-widest shadow-md">
+                                    {item.kategori || 'Uncategorized'}
                                 </div>
                             </div>
+
                             <div class="p-6 flex-1 flex flex-col">
-                                <h3 class="text-2xl font-black text-[#2E1F1A] mb-4 line-clamp-1 group-hover:text-[#EA580C] transition-colors">{item.nama_template}</h3>
+                                <h3 class="text-2xl font-black text-[#2E1F1A] mb-2 line-clamp-1 group-hover:text-[#EA580C] transition-colors">{item.judul}</h3>
+                                <p class="text-sm text-[#7B6153] mb-6 line-clamp-2 leading-relaxed flex-1">{item.deskripsi || 'Tidak ada deskripsi.'}</p>
                                 
-                                <div class="flex justify-between items-center pt-5 border-t border-[#C8B8A3]/50 mt-auto">
-                                    <a href={item.demo_url?.startsWith('http') ? item.demo_url : `https://${item.demo_url}`} target="_blank" class="inline-flex items-center gap-2 text-xs font-black text-[#2E1F1A] hover:text-[#EA580C] bg-[#E3D5C1] px-4 py-2.5 rounded-xl transition-colors">
-                                        <span>👀</span> Lihat Demo
+                                <div class="flex justify-between items-center pt-5 border-t border-[#C8B8A3]/50">
+                                    <a href={item.link_proyek?.startsWith('http') ? item.link_proyek : `https://${item.link_proyek}`} target="_blank" class="inline-flex items-center gap-2 text-xs font-black text-[#2E1F1A] hover:text-[#EA580C] bg-[#E3D5C1] px-4 py-2.5 rounded-xl transition-colors">
+                                        <span>🌐</span> Kunjungi Web
                                     </a>
-                                    <button class="btn-delete-template inline-flex items-center gap-2 text-xs font-black text-white bg-red-500 hover:bg-red-600 px-4 py-2.5 rounded-xl transition-all shadow-md active:scale-95" data-id={item.id}>
+                                    <button class="btn-delete-porto inline-flex items-center gap-2 text-xs font-black text-white bg-red-500 hover:bg-red-600 px-4 py-2.5 rounded-xl transition-all shadow-md active:scale-95" data-id={item.id}>
                                         🗑️ Hapus
                                     </button>
                                 </div>
@@ -123,73 +121,66 @@ try {
         <div id="modal-form" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A110E]/80 backdrop-blur-md modal-hidden">
             <div id="modal-content" class="bg-[#F5EEDB] w-full max-w-xl rounded-[2rem] shadow-2xl border border-[#C8B8A3] overflow-hidden max-h-[90vh] flex flex-col">
                 <div class="bg-[#2E1F1A] p-6 text-[#E3D5C1] flex justify-between items-center flex-shrink-0">
-                    <h2 class="text-xl font-black flex items-center gap-2"><span>✨</span> Tambah Template Baru</h2>
+                    <h2 class="text-xl font-black flex items-center gap-2"><span>✨</span> Tambah Portofolio Baru</h2>
                     <button id="btn-close-modal" class="text-2xl hover:text-[#EA580C] transition-colors bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">&times;</button>
                 </div>
                 
                 <div class="p-8 overflow-y-auto space-y-5 hide-scrollbar">
                     <div>
-                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Nama Template</label>
-                        <input type="text" id="i-nama" placeholder="Contoh: E-Commerce Pro Max" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
+                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Nama Proyek / Bisnis</label>
+                        <input type="text" id="i-judul" placeholder="Contoh: Toko Sepatu Jaya" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
                     </div>
-                    
-                    <div>
-                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Tipe / Kategori</label>
-                        <select id="i-tipe" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors cursor-pointer">
-                            <option value="Landing Page">Landing Page</option>
-                            <option value="E-Commerce">E-Commerce</option>
-                            <option value="Company Profile">Company Profile</option>
-                            <option value="Custom">Custom</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Link Preview Gambar</label>
-                        <input type="text" id="i-gambar" placeholder="https://..." class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Kategori</label>
+                            <input type="text" id="i-kategori" placeholder="Contoh: E-Commerce" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Link Proyek (URL)</label>
+                            <input type="text" id="i-link" placeholder="https://pyntadev.com" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Link Web Demo (URL)</label>
-                        <input type="text" id="i-demo" placeholder="https://..." class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
+                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Link Gambar Preview</label>
+                        <input type="text" id="i-gambar" placeholder="Masukkan URL gambar (https://.../gambar.jpg)" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Deskripsi Singkat</label>
+                        <textarea id="i-deskripsi" placeholder="Ceritakan sedikit tentang proyek keren ini..." class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors min-h-[120px]"></textarea>
                     </div>
                 </div>
                 
                 <div class="p-6 bg-white/50 border-t border-[#C8B8A3] flex-shrink-0">
-                    <button id="btn-save-template" class="w-full bg-[#EA580C] text-white py-4 rounded-xl font-black text-sm hover:bg-[#C0470A] transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2">
-                        <span>🚀</span> Simpan ke Etalase
+                    <button id="btn-save-portfolio" class="w-full bg-[#EA580C] text-white py-4 rounded-xl font-black text-sm hover:bg-[#C0470A] transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2">
+                        <span>🚀</span> Simpan Karya ke Etalase
                     </button>
                 </div>
             </div>
         </div>
 
         <script is:inline>
-            // CSS untuk modal scrollbar
-            const style = document.createElement('style');
-            style.innerHTML = `.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }`;
-            document.head.appendChild(style);
-
-            // Modal Logika
             const modal = document.getElementById('modal-form');
             document.getElementById('btn-open-modal').addEventListener('click', () => modal.classList.remove('modal-hidden'));
             document.getElementById('btn-close-modal').addEventListener('click', () => modal.classList.add('modal-hidden'));
             
-            // Simpan Template
-            document.getElementById('btn-save-template').addEventListener('click', async (e) => {
+            document.getElementById('btn-save-portfolio').addEventListener('click', async (e) => {
                 const btn = e.target;
                 const data = {
-                    nama_template: document.getElementById('i-nama').value,
-                    tipe: document.getElementById('i-tipe').value,
-                    gambar_preview: document.getElementById('i-gambar').value,
-                    demo_url: document.getElementById('i-demo').value
+                    judul: document.getElementById('i-judul').value,
+                    kategori: document.getElementById('i-kategori').value,
+                    link_proyek: document.getElementById('i-link').value,
+                    gambar_url: document.getElementById('i-gambar').value,
+                    deskripsi: document.getElementById('i-deskripsi').value
                 };
 
-                if(!data.nama_template) return alert("Nama template wajib diisi!");
+                if(!data.judul) return alert("Nama proyek wajib diisi!");
 
                 const originalText = btn.innerHTML;
-                btn.innerHTML = "⏳ Menyimpan...";
+                btn.innerHTML = "⏳ Mengunggah mahakarya...";
                 btn.disabled = true;
 
                 try {
-                    const res = await fetch('/api/add-template', {
+                    const res = await fetch('/api/add-portofolio', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
@@ -210,22 +201,22 @@ try {
                 }
             });
 
-            // Hapus Template
-            document.querySelectorAll('.btn-delete-template').forEach(btn => {
+            document.querySelectorAll('.btn-delete-porto').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
-                    if(!confirm("🚨 Yakin ingin menghapus template ini?")) return;
+                    if(!confirm("🚨 Yakin ingin menghapus karya ini dari muka bumi?")) return;
                     
                     const id = e.currentTarget.getAttribute('data-id');
                     const originalText = e.currentTarget.innerHTML;
-                    e.currentTarget.innerHTML = "⏳";
+                    e.currentTarget.innerHTML = "⏳ Menghapus...";
                     e.currentTarget.disabled = true;
 
                     try {
-                        const res = await fetch('/api/delete-template', {
+                        const res = await fetch('/api/delete-portofolio', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ id })
                         });
+                        
                         const result = await res.json();
                         if(res.ok) {
                             alert("✅ " + result.message);
