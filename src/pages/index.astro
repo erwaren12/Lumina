@@ -7,7 +7,7 @@ let packages = [];
 let errorServer = null;
 
 try {
-    // AMBIL DATA DARI TIDB
+    // AMBIL DATA DARI TIDB UNTUK PORTOFOLIO DAN HARGA
     const [rowsPorto] = await db.query('SELECT * FROM portfolio ORDER BY created_at DESC LIMIT 3') as any;
     portfolios = rowsPorto;
 
@@ -17,10 +17,12 @@ try {
     errorServer = err.message;
 }
 
-// Cek Login
+// Tambahkan baris ini agar 'currentPath' dikenali!
+const currentPath = Astro.url.pathname;
+
+// Cek Sudah Login (jika ada kode ini sebelumnya, biarkan saja)
 const session = Astro.cookies.get('user_session');
 const isLoggedIn = !!session;
-const currentPath = Astro.url.pathname;
 ---
 <html lang="id">
     <head>
@@ -29,6 +31,7 @@ const currentPath = Astro.url.pathname;
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
+
           gtag('config', 'G-VKX6F25YSC');
         </script>
         <meta charset="utf-8" />
@@ -231,7 +234,7 @@ const currentPath = Astro.url.pathname;
                 background-color: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; color: #EA580C !important;
             }
 
-            /* --- FOOTER WARNA LIGHT MODE --- */
+            /* --- FOOTER WARNA LIGHT MODE (DIPERBAIKI) --- */
             [data-theme="light"] footer.bg-slate-950 { background-color: #2E1F1A !important; border-top: none !important; }
             [data-theme="light"] footer h4, 
             [data-theme="light"] footer p, 
@@ -254,6 +257,16 @@ const currentPath = Astro.url.pathname;
     <body class="bg-slate-900 text-slate-300 font-sans antialiased selection:bg-blue-500 selection:text-white flex flex-col min-h-screen transition-colors duration-500" style="font-family: 'Inter', sans-serif;">
         
         <header class="fixed w-full top-0 z-50 transition-all shadow-sm backdrop-blur-lg">
+            <div class="bg-slate-950 border-b border-slate-800 hidden lg:block transition-colors duration-500">
+                <div class="container mx-auto px-6 py-2 flex justify-between items-center text-xs text-slate-400 font-medium">
+                    <div class="flex items-center gap-6">
+                        <span class="flex items-center gap-2">📞 +62 851-7745-3386</span>
+                        <span class="flex items-center gap-2">⏰ Setiap Hari 09.00 - 21.00</span>
+                    </div>
+                    <div class="flex items-center gap-1 cursor-pointer hover:text-blue-500 transition">🌐 ID</div>
+                </div>
+            </div>
+            
             <nav class="bg-slate-900/85 relative z-50 transition-colors duration-500 border-b border-slate-800/50">
                 <div class="container mx-auto px-6 py-4 md:py-5 flex justify-between items-center">
                     <a href="/" class="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2 hover:opacity-80 transition z-50">
@@ -264,24 +277,35 @@ const currentPath = Astro.url.pathname;
                         Pynta<span class="text-blue-500">Dev</span>
                     </a>
                     
-                    <div class="hidden md:flex space-x-10 text-sm font-medium text-slate-300">
-                        <a href="/" class={currentPath === '/' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-colors"}>Home</a>
-                        <a href="/template" class={currentPath === '/template' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-colors"}>Template</a>
-                        <a href="/portofolio" class={currentPath === '/portofolio' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-colors"}>Portofolio</a>
-                        <a href="/harga" class={currentPath === '/harga' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-colors"}>Harga</a>
+                    <div class="hidden lg:flex space-x-8 xl:space-x-10 text-sm xl:text-base font-medium text-slate-300">
+                        <a href="/" class={currentPath === '/' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Home</a>
+                        <a href="/template" class={currentPath === '/template' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Template</a>
+                        <a href="/portofolio" class={currentPath === '/portofolio' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Portofolio</a>
+                        <a href="/harga" class={currentPath === '/harga' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "hover:text-blue-500 transition-all"}>Harga</a>
                     </div>
                     
-                    <div class="hidden md:flex items-center gap-5">
-                        <button id="theme-toggle-desktop" class="w-9 h-9 rounded-xl bg-slate-800 border-2 border-slate-700/50 flex items-center justify-center text-slate-300 hover:text-yellow-400 hover:bg-slate-700 transition-all">☀️</button>
-                        {isLoggedIn ? (
-                            <a href="/dashboard" class="text-blue-500 hover:text-blue-400 transition-colors text-sm font-bold">Dashboard Saya</a>
-                        ) : (
-                            <a href="/login" class="text-slate-300 hover:text-blue-500 transition-colors text-sm font-medium">Login</a>
-                        )}
-                        <a href="https://wa.me/6285177453386" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-blue-600/30 shadow-lg transform hover:-translate-y-1 transition-all">Konsultasi</a>
+                    <div class="hidden lg:flex items-center gap-4 md:gap-5">
+                        <button id="theme-toggle-desktop" class="w-9 h-9 rounded-xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-slate-300 hover:text-yellow-400 hover:bg-slate-700 transition-all shadow-sm">
+                            ☀️
+                        </button>
+                        <div class="flex items-center gap-3 text-sm font-bold">
+                            {isLoggedIn ? (
+                                <a href="/dashboard" class="text-blue-500 hover:text-blue-400 transition-colors">
+                                    Dashboard Saya
+                                </a>
+                            ) : (
+                                <div class="flex items-center gap-3">
+                                    <a href="/login" class="text-slate-300 hover:text-blue-500 transition-colors">Login</a>
+                                    <a href="/register" class="text-blue-500 hover:text-blue-400 transition-colors">Daftar</a>
+                                </div>
+                            )}
+                        </div>
+                        <a href="https://wa.me/6285177453386" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-600/30 transition-all transform hover:-translate-y-1">
+                            Konsultasi
+                        </a>
                     </div>
 
-                    <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-blue-500 focus:outline-none z-50 relative p-2">
+                    <button id="mobile-menu-btn" class="lg:hidden text-slate-300 hover:text-blue-500 focus:outline-none z-50 relative p-2">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
                 </div>
@@ -289,11 +313,13 @@ const currentPath = Astro.url.pathname;
         </header>
 
         <div id="mobile-menu" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 transform translate-x-full transition-transform duration-300 flex flex-col items-center justify-center space-y-6 text-xl font-extrabold lg:hidden">
-            <button id="theme-toggle-mobile" class="w-12 h-12 mb-4 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-2xl text-slate-300 hover:text-yellow-400">☀️</button>
-            <a href="/" class={currentPath === '/' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "text-slate-300 hover:text-blue-500 transition-colors"}>Home</a>
-            <a href="/template" class={currentPath === '/template' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "text-slate-300 hover:text-blue-500 transition-colors"}>Template</a>
-            <a href="/portofolio" class={currentPath === '/portofolio' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "text-slate-300 hover:text-blue-500 transition-colors"}>Portofolio</a>
-            <a href="/harga" class={currentPath === '/harga' ? "text-white underline decoration-blue-500 decoration-4 underline-offset-8" : "text-slate-300 hover:text-blue-500 transition-colors"}>Harga</a>
+            <button id="theme-toggle-mobile" class="w-12 h-12 mb-4 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-2xl text-slate-300 hover:text-yellow-400">
+                ☀️
+            </button>
+            <a href="/" class="text-white hover:text-blue-500 transition-colors">Home</a>
+            <a href="/template" class="text-slate-300 hover:text-blue-500 transition-colors">Template</a>
+            <a href="/portofolio" class="text-slate-300 hover:text-blue-500 transition-colors">Portofolio</a>
+            <a href="/harga" class="text-slate-300 hover:text-blue-500 transition-colors">Harga</a>
             <div class="w-16 h-px bg-slate-700 my-2"></div>
             {isLoggedIn ? (
                 <a href="/dashboard" class="text-blue-500 transition-colors">Dashboard Saya</a>
@@ -306,67 +332,136 @@ const currentPath = Astro.url.pathname;
             <a href="https://wa.me/6285177453386" class="mt-4 bg-blue-600 text-white px-8 py-3 rounded-full text-base">Konsultasi WA</a>
         </div>
 
-        <main class="container mx-auto px-6 pt-32 pb-24 relative flex-1">
-            
-            <section class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center mb-24 mt-12">
-                <div>
-                    <span class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 text-xs font-bold mb-4">🚀 DIGITAL REVOLUTION IS HERE</span>
-                    <h1 class="text-5xl lg:text-6xl font-black text-white leading-tight mb-6">Membangun <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">Jejak Digital</span> Tanpa Batas.</h1>
-                    <p class="text-lg text-slate-400 leading-relaxed mb-8">PyntaDev Agency mewujudkan website masa depan yang dinamis, cepat, dan terintegrasi dengan Payment Gateway serta AI Assistant. Siap mendominasi pasar digital?</p>
-                    <div class="flex flex-wrap gap-4">
-                        <a href="/register" class="btn-primary text-white px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-blue-600/30 transform hover:-translate-y-1 transition-all flex items-center gap-2"><span>✨</span> Daftar Klien Baru</a>
-                        <a href="/portofolio" class="text-slate-300 hover:text-white px-8 py-3 rounded-full font-bold border border-slate-700/50 bg-slate-800/30 backdrop-blur-sm transition-all hover:bg-slate-800">Lihat Portofolio</a>
+        <main class="container mx-auto px-6 pt-56 pb-24 relative">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="w-full lg:w-1/2 text-center lg:text-left relative z-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 text-xs font-bold tracking-wide mb-6">
+                        🌟 AGENSI WEB E-COMMERCE #1
+                    </div>
+                    
+                    <h1 class="text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
+                        Otomatisasi <br/>
+                        <span id="typewriter" class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400 border-r-4 border-blue-500 pr-1 typewriter-text">Bisnis Digital</span> <br/>
+                        Anda Hari Ini.
+                    </h1>
+
+                    <p class="text-lg text-slate-400 mb-8 max-w-lg leading-relaxed mx-auto lg:mx-0 transition-colors duration-500">
+                        Bangun ekosistem website yang terintegrasi langsung dengan Payment Gateway dan AI Assistant.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="/harga" class="w-full sm:w-auto bg-blue-600 text-white px-8 py-4 rounded-full font-black text-lg transition-all text-center shadow-lg btn-magnet">
+                            Lihat Paket Harga
+                        </a>
+                        <a href="/template" class="w-full sm:w-auto bg-slate-800 text-slate-300 px-8 py-4 rounded-full font-bold text-lg transition-all text-center hover:scale-105">
+                            Jelajahi Template
+                        </a>
                     </div>
                 </div>
-                <div class="p-8 bg-slate-800 border-2 border-slate-700 shadow-2xl rounded-3xl" id="terminal-card">
-                    <div class="flex gap-1.5 mb-6"><div class="w-3 h-3 bg-red-500 rounded-full"></div><div class="w-3 h-3 bg-yellow-400 rounded-full"></div><div class="w-3 h-3 bg-emerald-500 rounded-full"></div></div>
-                    <code class="block text-green-400 text-xs md:text-sm font-mono space-y-3 leading-relaxed">
-                        <p>> init pyntadev_project --ai-core</p>
-                        <p class="text-blue-400"># Setting up dynamic portfolio...</p>
-                        <p class="text-yellow-400"># Connecting Payment Gateway (Moota/Xendit)...</p>
-                        <p class="text-slate-500">>> Server live at: https://pyntadev.agency</p>
-                        <p>> start_business --strategy=dominate</p>
-                    </code>
-                </div>
-            </section>
+                
+                <div class="w-full lg:w-1/2 relative group hidden md:block">
+                    <div id="hero-glow" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-blue-600/20 rounded-full z-[-1] blur-[80px] transition-all duration-700"></div>
+                    
+                    <div class="bg-slate-800 rounded-[2rem] overflow-hidden transform md:rotate-2 group-hover:rotate-0 transition-all duration-500 shadow-2xl relative z-10 mockup-container">
+                        
+                        <div class="bg-slate-900 px-6 py-4 flex items-center gap-4 transition-colors duration-500 mockup-header">
+                            <div class="flex gap-2">
+                                <div class="w-3.5 h-3.5 rounded-full bg-red-500 shadow-sm"></div>
+                                <div class="w-3.5 h-3.5 rounded-full bg-yellow-500 shadow-sm"></div>
+                                <div class="w-3.5 h-3.5 rounded-full bg-green-500 shadow-sm"></div>
+                            </div>
+                            <div class="flex-1 max-w-md mx-auto bg-slate-800 px-4 py-2 rounded-lg text-sm text-slate-400 text-center font-medium flex items-center justify-center gap-2 mockup-url transition-colors duration-500">
+                                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8V7z"></path></svg>
+                                pyntadev.com
+                            </div>
+                        </div>
 
-            <section id="stats-section" class="py-12 bg-slate-950 border-t-2 border-b-2 border-slate-800/50 mb-24 rounded-[1.5rem]">
-                <div class="container mx-auto px-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center" id="stats-container">
-                        <div class="p-8"><div class="text-5xl font-black text-white mb-2">24+</div><div class="text-slate-400">Proyek Sukses</div></div>
-                        <div class="p-8 border-slate-800 md:border-l-2 md:border-r-2"><div class="text-5xl font-black text-white mb-2">15+</div><div class="text-slate-400">Partner Terintegrasi (AI/Payment)</div></div>
-                        <div class="p-8"><div class="text-5xl font-black text-white mb-2">100%</div><div class="text-slate-400">Kepuasan Klien</div></div>
+                        <div class="p-8 relative overflow-hidden transition-colors duration-500 mockup-body">
+                            
+                            <div class="w-full h-40 bg-slate-700/50 rounded-2xl mb-8 flex flex-col items-center justify-center text-slate-400 font-bold relative overflow-hidden group/banner border-2 border-dashed border-slate-600 mockup-banner transition-colors duration-500 hover:border-blue-500">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent -translate-x-full group-hover/banner:animate-[shimmer_1.5s_infinite]"></div>
+                                <svg class="w-8 h-8 mb-2 opacity-40 mockup-category-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <span>Banner Etalase Toko</span>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-6">
+                                <div class="h-32 bg-slate-700/30 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all cursor-pointer mockup-category">
+                                    <div class="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center text-3xl shadow-inner mockup-icon-bg transition-colors duration-500 mockup-category-icon-bg">🍔</div>
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mockup-text transition-colors duration-500">F&B</span>
+                                </div>
+                                <div class="h-32 bg-slate-700/30 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all cursor-pointer mockup-category">
+                                    <div class="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center text-3xl shadow-inner mockup-icon-bg transition-colors duration-500 mockup-category-icon-bg">👕</div>
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mockup-text transition-colors duration-500">Fashion</span>
+                                </div>
+                                <div class="h-32 bg-slate-700/30 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all cursor-pointer mockup-category">
+                                    <div class="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center text-3xl shadow-inner mockup-icon-bg transition-colors duration-500 mockup-category-icon-bg">📱</div>
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mockup-text transition-colors duration-500">Gadget</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </main>
 
-            <section class="mb-24 text-center target-cta">
-                <span class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 text-xs font-bold mb-4">🏆 HASIL KARYA KAMI</span>
-                <h2 class="text-4xl md:text-5xl font-black text-white mb-6">Targeting Bisnis Digital.</h2>
-                <p class="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto mb-16">Berikut adalah pameran website klien PyntaDev yang telah bertransformasi total dan mendominasi pasar digital.</p>
+        <section class="py-12 relative z-10 transition-colors duration-500">
+            <div class="container mx-auto px-6">
+                <div id="stats-container" class="py-10 px-6 transition-colors duration-500">
+                    <div id="stats-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-slate-700">
+                        <div class="pt-4 md:pt-0">
+                            <div class="text-5xl font-black text-white mb-2 transition-colors duration-500 stats-counter"><span class="counter" data-target="250">0</span>+</div>
+                            <div class="text-blue-500 text-sm font-bold uppercase tracking-widest stats-text">Klien Terselesaikan</div>
+                        </div>
+                        <div class="pt-8 md:pt-0">
+                            <div class="text-5xl font-black text-white mb-2 transition-colors duration-500 stats-counter"><span class="counter" data-target="99">0</span>%</div>
+                            <div class="text-emerald-500 text-sm font-bold uppercase tracking-widest stats-text">Uptime Server Aktif</div>
+                        </div>
+                        <div class="pt-8 md:pt-0">
+                            <div class="text-5xl font-black text-white mb-2 transition-colors duration-500 stats-counter"><span class="counter" data-target="24">0</span> Jam</div>
+                            <div class="text-purple-500 text-sm font-bold uppercase tracking-widest stats-text">Rata-rata Setup Sistem</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pita-umkm-section" class="py-12 overflow-hidden transition-colors duration-500 bg-slate-900 border-y border-slate-800">
+            <div class="container mx-auto px-6 text-center">
+                <p class="text-sm font-bold uppercase tracking-widest mb-8 transition-colors duration-500 text-slate-500 pita-umkm-title">Dipercaya oleh berbagai UMKM & Bisnis Lokal</p>
+                <div id="klien-logos" class="flex flex-wrap justify-center items-center gap-8 md:gap-16 transition-all duration-500 klien-logo-container">
+                    <div class="text-xl font-extrabold flex items-center gap-2 text-slate-400 pita-umkm-text"><span>📦</span> TokoLokal</div>
+                    <div class="text-xl font-extrabold flex items-center gap-2 text-slate-400 pita-umkm-text"><span>☕</span> Kopi Senja</div>
+                    <div class="text-xl font-extrabold flex items-center gap-2 text-slate-400 pita-umkm-text"><span>🍕</span> Juragan Kuliner</div>
+                    <div class="text-xl font-extrabold flex items-center gap-2 text-slate-400 pita-umkm-text"><span>✨</span> BeautyStudio</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 transition-colors duration-500">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                    <div class="max-w-xl text-left">
+                        <h2 class="text-4xl md:text-5xl font-black text-white mb-4 transition-colors duration-500">Hasil Karya Kami</h2>
+                        <p class="text-slate-400 font-medium transition-colors duration-500">Beberapa contoh website performa tinggi yang telah kami rakit untuk klien kami.</p>
+                    </div>
+                    <a href="/portofolio" id="btn-portofolio" class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all shadow-sm hover:scale-105 mt-6 md:mt-0">
+                        Lihat Semua <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
                 
                 {errorServer ? (
-                    <div class="bg-red-50 p-12 rounded-[2rem] text-center border-2 border-red-500 shadow-xl max-w-2xl mx-auto">
-                        <span class="text-6xl mb-4 block">🚨</span>
-                        <h3 class="text-3xl font-black text-red-600 mb-2">Sistem Crash!</h3>
-                        <p class="text-red-800 font-medium mb-6">Halaman gagal memuat data dari database. Mohon coba lagi beberapa saat.</p>
-                        <code class="bg-[#1A110E] text-green-400 p-6 rounded-xl block text-left text-sm font-mono shadow-inner border border-red-900/50 overflow-x-auto">{errorServer}</code>
-                    </div>
+                    <div class="bg-red-50 p-8 rounded-2xl border-2 border-red-500 text-center"><p class="text-red-600 font-bold">{errorServer}</p></div>
                 ) : portfolios.length === 0 ? (
-                    <div class="bg-white/50 backdrop-blur-md p-12 rounded-[2rem] text-center border-2 border-dashed border-[#C8B8A3] shadow-sm max-w-lg mx-auto">
-                        <span class="text-5xl mb-4 block">📭</span>
-                        <h3 class="text-xl font-black text-[#2E1F1A] mb-2">Portofolio Kosong</h3>
-                        <p class="text-[#7B6153] font-medium">Belum ada karya yang ditambahkan dari panel admin.</p>
-                    </div>
+                    <div class="bg-slate-800 border-2 border-slate-700 border-dashed rounded-3xl p-12 text-center"><p class="text-slate-400 font-bold">Belum ada portofolio yang ditambahkan dari panel admin.</p></div>
                 ) : (
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
                         {portfolios.map((item: any) => (
-                            <div class="bg-white/80 backdrop-blur-md rounded-[2rem] overflow-hidden shadow-lg border border-[#C8B8A3] transition-all hover:-translate-y-2 group bento-porto flex flex-col h-full">
-                                <div class="h-56 w-full bg-[#F5EEDB] overflow-hidden relative flex items-center justify-center border-b border-[#C8B8A3]/50 bg-slate-900/50">
+                            <div class="group relative overflow-hidden bg-slate-800 cursor-pointer transition-colors duration-500 rounded-[1.5rem] flex flex-col h-full shadow-xl portfolio-card hover:-translate-y-2">
+                                <div class="aspect-video portfolio-img-bg relative flex flex-col items-center justify-center overflow-hidden transition-all rounded-t-[1.5rem] portfolio-card-head">
                                     {item.gambar_url ? (
                                         <img src={item.gambar_url} alt={item.judul} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                     ) : (
-                                        <div class="flex flex-col items-center justify-center text-[#7B6153] opacity-50 bg-slate-800 w-full h-full">
+                                        <div class="flex flex-col items-center justify-center text-slate-500 opacity-50 w-full h-full">
                                             <span class="text-5xl mb-2">🖼️</span>
                                             <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Tidak Ada Gambar</span>
                                         </div>
@@ -377,63 +472,275 @@ const currentPath = Astro.url.pathname;
                                         </a>
                                     </div>
                                 </div>
-                                <div class="p-6 flex-1 flex flex-col z-10 relative bg-slate-800">
+                                <div class="p-6 flex-1 flex flex-col">
                                     <div class="text-xs font-bold text-blue-500 mb-2 uppercase tracking-wider">{item.kategori || 'Uncategorized'}</div>
-                                    <h3 class="text-xl font-bold text-white mb-2 leading-tight line-clamp-2">{item.judul}</h3>
-                                    <p class="text-sm text-slate-400 line-clamp-2 leading-relaxed">{item.deskripsi || 'Tidak ada rincian proyek.'}</p>
+                                    <h3 class="text-2xl font-bold text-white transition-colors duration-500 mb-2 line-clamp-1">{item.judul}</h3>
+                                    <p class="text-sm text-slate-400 transition-colors duration-500 line-clamp-2">{item.deskripsi || 'Tidak ada deskripsi.'}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
                 )}
-            </section>
+            </div>
+        </section>
 
-            <section class="py-24 bg-slate-950 border-t-2 border-b-2 border-slate-800 rounded-[2.5rem]" id="pricing-target">
-                <div class="container mx-auto px-6">
-                    <div class="text-center mb-16">
-                        <span class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 text-xs font-bold mb-4">💰 PILIHAN TEPAT UNTUK ANDA</span>
-                        <h2 class="text-4xl md:text-5xl font-black text-white leading-tight mb-4">Paket Harga Spesial.</h2>
-                        <p class="text-lg text-slate-400 max-w-2xl mx-auto">Investasi cerdas untuk membangun aset digital jangka panjang. Pilih paket yang sesuai dengan skala bisnis Anda.</p>
+        <section class="py-24 bg-slate-950 border-y border-slate-800 rounded-none md:rounded-[2.5rem] my-10" id="pricing-target">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 text-xs font-bold mb-4">💰 PILIHAN TEPAT UNTUK ANDA</span>
+                    <h2 class="text-4xl md:text-5xl font-black text-white leading-tight mb-4">Paket Harga Spesial.</h2>
+                    <p class="text-lg text-slate-400 max-w-2xl mx-auto">Investasi cerdas untuk membangun aset digital jangka panjang. Pilih paket yang sesuai dengan skala bisnis Anda.</p>
+                </div>
+
+                {errorServer ? (
+                    <div class="bg-red-50 p-8 rounded-2xl border-2 border-red-500 text-center"><p class="text-red-600 font-bold">{errorServer}</p></div>
+                ) : packages.length === 0 ? (
+                    <div class="text-center text-slate-400 bg-slate-900 border-2 border-slate-800 border-dashed rounded-[1.5rem] p-12">Belum ada paket harga yang ditambahkan dari panel admin.</div>
+                ) : (
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {packages.map((item: any) => (
+                            <div class={`relative bg-slate-900/50 backdrop-blur-md rounded-[2.5rem] border-2 p-8 lg:p-10 flex flex-col transition-all hover:-translate-y-2 hover:shadow-xl ${item.badge ? 'border-[#EA580C] shadow-[#EA580C]/10' : 'border-slate-800/50'}`}>
+                                {item.badge && (
+                                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#EA580C] text-white text-[10px] font-black tracking-widest px-4 py-1.5 rounded-full shadow-lg uppercase badge-premium whitespace-nowrap">
+                                        {item.badge}
+                                    </div>
+                                )}
+                                <h3 class="text-2xl font-black text-white mb-2 mt-2">{item.nama_paket}</h3>
+                                <p class="text-sm text-slate-400 mb-6">{item.deskripsi}</p>
+                                <div class="mb-6">
+                                    <span class="text-4xl font-black text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">Rp {Number(item.harga).toLocaleString('id-ID')}</span>
+                                </div>
+                                <div class="flex-1 bg-slate-800 rounded-2xl p-6 mb-8 border border-slate-700/50">
+                                    <ul class="text-slate-300 text-sm space-y-3 font-medium">
+                                        {item.fitur ? item.fitur.split('\n').map((f: string) => (
+                                            <li class="flex gap-2"><span>✅</span> <span>{f}</span></li>
+                                        )) : <li>Rincian fitur belum ditambahkan</li>}
+                                    </ul>
+                                </div>
+                                <a href={`https://wa.me/6285177453386?text=Halo%20PyntaDev,%20saya%20tertarik%20dengan%20${item.nama_paket}`} target="_blank" class={`w-full text-center py-4 rounded-xl font-bold transition-all transform hover:-translate-y-1 shadow-md ${item.badge ? 'bg-[#EA580C] text-white hover:bg-[#C0470A]' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>Pilih Paket Ini</a>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </section>
+
+        <section class="py-24 transition-colors duration-500">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="text-4xl font-black text-white mb-4 transition-colors duration-500">Bagaimana Cara Mulainya?</h2>
+                    <p class="text-slate-400 transition-colors duration-500">Proses kami sangat transparan, cepat, dan tidak merepotkan.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                    <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -z-10 -translate-y-1/2 transition-colors duration-500 steps-line"></div>
+                    <div class="bg-slate-800 p-8 rounded-3xl text-center transition-all duration-300 group cursor-pointer shadow-lg steps-card">
+                        <div class="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-black mx-auto mb-6 shadow-md group-hover:scale-110 transition-transform steps-number">1</div>
+                        <h3 class="text-xl font-bold text-white mb-3 transition-colors duration-500">Pilih Paket & Desain</h3>
+                        <p class="text-sm text-slate-400 transition-colors duration-500">Pilih paket sesuai budget dan jelajahi galeri template kami.</p>
+                    </div>
+                    <div class="bg-slate-800 p-8 rounded-3xl text-center transition-all duration-300 group cursor-pointer shadow-lg steps-card">
+                        <div class="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-black mx-auto mb-6 shadow-md group-hover:scale-110 transition-transform steps-number">2</div>
+                        <h3 class="text-xl font-bold text-white mb-3 transition-colors duration-500">Kirim Materi</h3>
+                        <p class="text-sm text-slate-400 transition-colors duration-500">Lakukan pembayaran dan kirimkan logo serta foto produk Anda.</p>
+                    </div>
+                    <div class="bg-slate-800 p-8 rounded-3xl text-center transition-all duration-300 group cursor-pointer shadow-lg steps-card">
+                        <div class="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-black mx-auto mb-6 shadow-md group-hover:scale-110 transition-transform steps-number">3</div>
+                        <h3 class="text-xl font-bold text-white mb-3 transition-colors duration-500">Revisi & Launching</h3>
+                        <p class="text-sm text-slate-400 transition-colors duration-500">Tim kami merakit web Anda. Revisi, lalu siap diluncurkan ke internet.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fitur-grid-section" class="max-w-7xl mx-auto px-6 py-20 transition-colors duration-500">
+            <div class="text-center mb-16 relative z-10">
+                <h2 class="text-4xl font-black text-white mb-4 transition-colors duration-500">Fitur Premium Bawaan</h2>
+                <p class="text-slate-400 transition-colors duration-500">Website modern yang langsung siap jualan tanpa perlu coding tambahan.</p>
+            </div>
+            <div id="fitur-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+                <div class="bg-slate-800 p-8 transition-colors duration-500 cursor-pointer shadow-lg fitur-card group hover:border-blue-500">
+                    <div class="text-4xl mb-6 text-blue-500 transition-transform features-icon feature-icon-animate fitur-icon">⚡</div>
+                    <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">Kecepatan Maksimal</h3>
+                    <p class="text-sm text-slate-400 transition-colors duration-500">Dibangun menggunakan framework Astro untuk waktu muat super cepat.</p>
+                </div>
+                <div class="bg-slate-800 p-8 transition-colors duration-500 cursor-pointer shadow-lg fitur-card group hover:border-blue-500">
+                    <div class="text-4xl mb-6 text-blue-500 transition-transform features-icon feature-icon-animate fitur-icon">💳</div>
+                    <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">Payment Gateway</h3>
+                    <p class="text-sm text-slate-400 transition-colors duration-500">Terima pembayaran otomatis 24 jam nonstop via Bank & e-Wallet.</p>
+                </div>
+                <div class="bg-slate-800 p-8 transition-colors duration-500 cursor-pointer shadow-lg fitur-card group hover:border-blue-500">
+                    <div class="text-4xl mb-6 text-blue-500 transition-transform features-icon feature-icon-animate fitur-icon">🤖</div>
+                    <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500">Integrasi AI Agent</h3>
+                    <p class="text-sm text-slate-400 transition-colors duration-500">Otomatisasi pesan tagihan pelanggan langsung ke WhatsApp.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="arsitektur-section" class="py-24 relative overflow-hidden transition-colors duration-500">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none transition-colors duration-500 arsitektur-glow"></div>
+
+            <div class="container mx-auto px-6 max-w-6xl relative z-10">
+                <div class="flex flex-col lg:flex-row gap-16 items-center">
+                    <div class="w-full lg:w-1/2">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-500 text-xs font-bold tracking-wide mb-6 arsitektur-badge">
+                            ⚙️ ENGINE DI BALIK LAYAR
+                        </div>
+                        <h2 class="text-4xl font-black text-white mb-6 transition-colors duration-500 leading-tight">Infrastruktur Jaringan & <span class="text-blue-500 logo-text">AI Agent</span> Canggih.</h2>
+                        <p class="text-slate-400 mb-8 leading-relaxed transition-colors duration-500">
+                            Kami tidak sekadar membuat desain. Website Anda ditenagai oleh konfigurasi administrasi jaringan tingkat tinggi untuk menjamin lalu lintas data yang stabil.
+                        </p>
+
+                        <ul class="space-y-6">
+                            <li class="flex items-start gap-5 group cursor-pointer">
+                                <div class="w-14 h-14 flex items-center justify-center text-2xl transition-all shrink-0 group-hover:scale-110 shadow-md steps-number arsitektur-icon">🌐</div>
+                                <div>
+                                    <h4 class="text-white font-bold mb-1 text-lg transition-colors duration-500">Manajemen Jaringan</h4>
+                                    <p class="text-sm text-slate-400 leading-relaxed transition-colors duration-500">Sistem jaringan *load balancing* yang dirancang untuk merutekan lalu lintas data yang padat.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-5 group cursor-pointer">
+                                <div class="w-14 h-14 flex items-center justify-center text-2xl transition-all shrink-0 group-hover:scale-110 shadow-md steps-number arsitektur-icon">🤖</div>
+                                <div>
+                                    <h4 class="text-white font-bold mb-1 text-lg transition-colors duration-500">AI Affiliate & Sales Agent</h4>
+                                    <p class="text-sm text-slate-400 leading-relaxed transition-colors duration-500">Otomatisasi bisnis Anda dengan *bot* pintar yang bekerja 24/7 memandu pelanggan.</p>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
 
-                    {packages.length === 0 ? (
-                        <div class="text-center text-slate-400 bg-slate-900 border-2 border-slate-800 border-dashed rounded-[1.5rem] p-12">Belum ada paket harga yang ditambahkan.</div>
-                    ) : (
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-                            {packages.map((item: any) => (
-                                <div class={`relative bg-slate-900/50 backdrop-blur-md rounded-[2.5rem] border-2 p-8 lg:p-10 flex flex-col ${item.badge ? 'border-[#EA580C]' : 'border-slate-800/50'}`}>
-                                    {item.badge && (
-                                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#EA580C] text-white text-[10px] font-black tracking-widest px-4 py-1.5 rounded-full shadow-lg uppercase badge-premium">
-                                            {item.badge}
-                                        </div>
-                                    )}
-                                    <h3 class="text-2xl font-black text-white mb-2 mt-2">{item.nama_paket}</h3>
-                                    <p class="text-sm text-slate-400 mb-6">{item.deskripsi}</p>
-                                    <div class="mb-6">
-                                        <span class="text-5xl font-black text-blue-500 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">Rp {Number(item.harga).toLocaleString('id-ID')}</span>
-                                    </div>
-                                    <div class="flex-1 bg-slate-800 rounded-2xl p-6 mb-8 border border-slate-700/50">
-                                        <ul class="text-slate-300 text-sm space-y-3 font-medium">
-                                            {item.fitur ? item.fitur.split('\n').map((f: string) => (
-                                                <li class="flex gap-2"><span>✅</span> <span>{f}</span></li>
-                                            )) : <li>Rincian fitur belum ditambahkan</li>}
-                                        </ul>
-                                    </div>
-                                    <a href={`https://wa.me/6285177453386?text=Halo%20PyntaDev,%20saya%20tertarik%20dengan%20${item.nama_paket}`} target="_blank" class={`w-full text-center py-4 rounded-xl font-bold transition-all transform hover:-translate-y-1 ${item.badge ? 'bg-[#EA580C] text-white shadow-lg shadow-[#EA580C]/20' : 'bg-blue-600 text-white'}`}>Pilih Paket Ini</a>
+                    <div class="w-full lg:w-1/2">
+                        <div id="terminal-card" class="bg-slate-800 p-8 relative overflow-hidden font-mono text-sm hidden md:block transition-colors duration-500 shadow-2xl terminal-card">
+                            <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:100%_4px] pointer-events-none"></div>
+                            
+                            <div class="flex items-center justify-between border-b border-slate-700 pb-4 mb-6 transition-colors duration-500 terminal-card-head">
+                                <div class="flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
                                 </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </section>
-        </main>
+                                <div class="text-slate-500 text-xs tracking-widest transition-colors duration-500 terminal-card-title">PYNTADEV SERVER TERMINAL</div>
+                            </div>
 
-        <section class="py-10 mb-10 transition-colors duration-500 target-cta">
+                            <div class="space-y-4">
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-emerald-500">admin@pyntadev:~$ <span class="text-slate-400">status check --server</span></span>
+                                    <span class="text-slate-500 pl-4">64 bytes from core.pyntadev.com: icmp_seq=1 ttl=116 time=0.8 ms</span>
+                                    <span class="text-blue-500 font-bold pl-4 terminal-text">[OK] Network connection stable.</span>
+                                </div>
+                                
+                                <div class="flex flex-col gap-1 mt-4">
+                                    <span class="text-emerald-500">admin@pyntadev:~$ <span class="text-slate-400">systemctl status ai_sales_agent</span></span>
+                                    <span class="text-slate-500 pl-4">Connecting to WhatsApp API...</span>
+                                    <span class="text-purple-500 font-bold pl-4 terminal-text-accent">[SUCCESS] AI Sales Agent is now ONLINE.</span>
+                                </div>
+
+                                <div class="mt-6 flex items-center gap-2">
+                                    <span class="text-emerald-500">admin@pyntadev:~$ </span>
+                                    <div class="w-2 h-4 bg-slate-400 animate-pulse terminal-cursor"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 border-y border-slate-800 overflow-hidden transition-colors duration-500 section-divide">
+            <div class="container mx-auto px-6 mb-12 text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-500 text-xs font-bold tracking-wide mb-6 arsitektur-badge testimonial-badge">
+                    ⭐ 100+ KLIEN PUAS
+                </div>
+                <h2 class="text-4xl font-black text-white mb-4 transition-colors duration-500">Apa Kata Klien Kami?</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto transition-colors duration-500">Bergabunglah dengan pengusaha hebat yang telah mentransformasi bisnis mereka.</p>
+            </div>
+
+            <div id="slider-testimoni" class="flex items-stretch overflow-x-auto snap-x snap-mandatory gap-6 pb-10 px-6 max-w-7xl mx-auto hide-scrollbar kursor-tarik select-none">
+                
+                <div class="snap-center shrink-0 w-[300px] md:w-[400px] bg-slate-800 p-8 transition-colors pointer-events-none shadow-lg duration-500 rounded-[1.5rem] flex flex-col h-auto steps-card testimonial-card">
+                    <div class="flex text-yellow-400 mb-4 text-sm gap-1">⭐⭐⭐⭐⭐</div>
+                    <p class="text-slate-400 mb-8 italic leading-relaxed transition-colors duration-500 flex-1">"Sangat membantu! Order hari Senin, Rabu katalog makanan saya udah online dan bisa langsung terima orderan via WA."</p>
+                    <div class="flex items-center gap-4 mt-auto">
+                        <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center font-bold text-white shadow-md testimonial-avatar">BS</div>
+                        <div>
+                            <h4 class="text-white font-bold transition-colors duration-500">Budi Santoso</h4>
+                            <p class="text-xs text-slate-500 transition-colors duration-500">Owner, Juragan Kuliner</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="snap-center shrink-0 w-[300px] md:w-[400px] bg-slate-800 p-8 transition-colors pointer-events-none shadow-lg duration-500 rounded-[1.5rem] flex flex-col h-auto steps-card testimonial-card hover:border-blue-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex text-yellow-400 text-sm gap-1">⭐⭐⭐⭐⭐</div>
+                        <span class="bg-blue-600 text-[10px] font-bold px-2 py-1 rounded-full text-white shadow-sm uppercase tracking-wider steps-number testimonial-verified-badge">Verified</span>
+                    </div>
+                    <p class="text-slate-400 mb-8 italic leading-relaxed transition-colors duration-500 flex-1">"Integrasi AI Agent-nya luar biasa. Bot dari PyntaDev handle chat pelanggan otomatis. Toko kosmetik saya beroperasi 24 jam nonstop."</p>
+                    <div class="flex items-center gap-4 mt-auto">
+                        <div class="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center font-bold text-white shadow-md testimonial-avatar">SA</div>
+                        <div>
+                            <h4 class="text-white font-bold transition-colors duration-500">Sarah Amalia</h4>
+                            <p class="text-xs text-slate-500 transition-colors duration-500">CEO, BeautyStudio</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="snap-center shrink-0 w-[300px] md:w-[400px] bg-slate-800 p-8 transition-colors pointer-events-none shadow-lg duration-500 rounded-[1.5rem] flex flex-col h-auto steps-card testimonial-card">
+                    <div class="flex text-yellow-400 mb-4 text-sm gap-1">⭐⭐⭐⭐⭐</div>
+                    <p class="text-slate-400 mb-8 italic leading-relaxed transition-colors duration-500 flex-1">"Tim engineer-nya paham infrastruktur jaringan. Website perusahaan enterprise kami sangat stabil dan tidak pernah down."</p>
+                    <div class="flex items-center gap-4 mt-auto">
+                        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center font-bold text-white shadow-md testimonial-avatar">RW</div>
+                        <div>
+                            <h4 class="text-white font-bold transition-colors duration-500">Reza Wijaya</h4>
+                            <p class="text-xs text-slate-500 transition-colors duration-500">Direktur IT, PT Maju Abadi</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="text-center mt-2 flex justify-center items-center gap-2">
+                <span class="text-xs text-slate-500 font-medium animate-pulse transition-colors duration-500">Geser untuk melihat lebih banyak</span>
+                <svg class="w-4 h-4 text-slate-500 animate-pulse transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </div>
+        </section>
+
+        <section class="py-24 transition-colors duration-500">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-black text-white mb-4 transition-colors duration-500">Pertanyaan Umum</h2>
+                    <p class="text-slate-400 transition-colors duration-500">Jawaban cepat untuk keraguan Anda.</p>
+                </div>
+                <div class="space-y-4">
+                    <details class="group bg-slate-800 p-6 cursor-pointer transition-all duration-500 rounded-2xl shadow-sm steps-card hover:border-blue-500 faq-card">
+                        <summary class="flex justify-between items-center font-bold text-lg text-white outline-none faq-summary">
+                            Berapa lama waktu pembuatan website?
+                            <span class="text-blue-500 group-open:rotate-45 transition-transform duration-300 text-2xl features-icon feature-icon-animate faq-icon">+</span>
+                        </summary>
+                        <div class="mt-4 text-slate-400 text-sm leading-relaxed transition-colors duration-500">Untuk template siap pakai, website meluncur dalam 24-48 jam setelah pembayaran.</div>
+                    </details>
+                    <details class="group bg-slate-800 p-6 cursor-pointer transition-all duration-500 rounded-2xl shadow-sm steps-card hover:border-blue-500 faq-card">
+                        <summary class="flex justify-between items-center font-bold text-lg text-white outline-none faq-summary">
+                            Apakah bisa membuat website untuk jualan makanan?
+                            <span class="text-blue-500 group-open:rotate-45 transition-transform duration-300 text-2xl features-icon feature-icon-animate faq-icon">+</span>
+                        </summary>
+                        <div class="mt-4 text-slate-400 text-sm leading-relaxed transition-colors duration-500">Tentu saja! Sistem kami dilengkapi fitur katalog, keranjang belanja, hingga opsi pesanan langsung dihubungkan ke WhatsApp Anda berserta total harga dan ongkir.</div>
+                    </details>
+                    <details class="group bg-slate-800 p-6 cursor-pointer transition-all duration-500 rounded-2xl shadow-sm steps-card hover:border-blue-500 faq-card">
+                        <summary class="flex justify-between items-center font-bold text-lg text-white outline-none faq-summary">
+                            Apakah ada biaya perpanjangan setiap bulan?
+                            <span class="text-blue-500 group-open:rotate-45 transition-transform duration-300 text-2xl features-icon feature-icon-animate faq-icon">+</span>
+                        </summary>
+                        <div class="mt-4 text-slate-400 text-sm leading-relaxed transition-colors duration-500">Tidak ada langganan bulanan. Anda hanya perlu membayar biaya perpanjangan Domain dan Hosting setiap 1 tahun sekali secara transparan.</div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 transition-colors duration-500">
             <div class="container mx-auto px-6 max-w-5xl">
-                <div class="bg-gradient-to-r from-blue-600 to-cyan-500 rounded-[2.5rem] p-10 md:p-16 text-center relative overflow-hidden shadow-xl transition-colors duration-500">
-                    <h2 class="text-3xl md:text-5xl font-black text-white mb-6 relative z-10 transition-colors duration-500">Ingin Website Anda Tampil di Sini?</h2>
+                <div class="bg-slate-800 p-12 md:p-16 text-center relative overflow-hidden transition-colors duration-500 rounded-[2.5rem] shadow-xl steps-card final-cta-card">
+                    <h2 class="text-4xl md:text-5xl font-black text-white mb-8 relative z-10 transition-colors duration-500">Siap Mendominasi Pasar Online?</h2>
                     <div class="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
-                        <a href="/harga" class="bg-white text-blue-600 px-8 py-4 rounded-xl font-black text-lg hover:scale-105 transition-all shadow-md">Mulai Proyek Anda</a>
+                        <a href="/harga" class="bg-blue-600 text-white px-10 py-5 rounded-full font-black text-lg hover:scale-105 transition-all shadow-md inline-block btn-magnet final-cta-btn">Lihat Harga Spesial</a>
                     </div>
                 </div>
             </div>
@@ -441,7 +748,8 @@ const currentPath = Astro.url.pathname;
 
         <footer class="bg-slate-950 pt-20 pb-10 mt-auto relative z-10 transition-colors duration-500 border-t border-slate-900">
             <div class="container mx-auto px-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 mb-16 divide-slate-700">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 mb-16">
+                    
                     <div class="lg:col-span-5 flex flex-col items-start text-left">
                         <div class="text-3xl font-black text-white tracking-tight flex items-center gap-3 mb-4 transition-colors duration-500">
                             <div class="w-10 h-10 flex items-center justify-center">
@@ -453,7 +761,17 @@ const currentPath = Astro.url.pathname;
                         <p class="text-sm text-slate-400 max-w-sm mb-6 leading-relaxed transition-colors duration-500">
                             Solusi agensi digital terpercaya untuk membangun masa depan bisnis Anda di internet dengan teknologi modern dan otomatisasi cerdas.
                         </p>
+                        
+                        <div class="flex items-center gap-5">
+                            <a href="https://www.instagram.com/pynta.dev?utm_source=qr&igsh=bHN4NDhsZWl2Z3V2" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-500 transition-colors duration-300" title="Instagram PyntaDev">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" /></svg>
+                            </a>
+                            <a href="https://vm.tiktok.com/ZS9NmpuumXMdf-WRgZX/" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-500 transition-colors duration-300" title="TikTok PyntaDev">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" /></svg>
+                            </a>
+                        </div>
                     </div>
+
                     <div class="lg:col-span-3 lg:col-start-7">
                         <h4 class="text-white font-bold mb-6 text-lg transition-colors duration-500">Layanan PyntaDev</h4>
                         <ul class="space-y-4 text-sm font-medium text-slate-400">
@@ -462,6 +780,7 @@ const currentPath = Astro.url.pathname;
                             <li><a href="#" class="hover:text-white transition">Integrasi Sistem AI</a></li>
                         </ul>
                     </div>
+                    
                     <div class="lg:col-span-3">
                         <h4 class="text-white font-bold mb-6 text-lg transition-colors duration-500">Perusahaan</h4>
                         <ul class="space-y-4 text-sm font-medium text-slate-400">
@@ -470,6 +789,7 @@ const currentPath = Astro.url.pathname;
                         </ul>
                     </div>
                 </div>
+                
                 <div class="pt-8 border-t border-slate-800/50 flex flex-col-reverse md:flex-row justify-between items-center gap-6 transition-colors duration-500">
                     <div class="text-slate-500 text-sm font-medium transition-colors duration-500 text-center md:text-left">
                         © 2026 PyntaDev Agency. All rights reserved.
@@ -483,31 +803,43 @@ const currentPath = Astro.url.pathname;
         </footer>
 
         <a href="https://wa.me/6285177453386" target="_blank" class="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[100] bg-[#25D366] text-white p-4 rounded-full shadow-[0_4px_14px_0_rgba(37,211,102,0.39)] hover:shadow-[0_6px_20px_rgba(37,211,102,0.23)] hover:scale-110 hover:-translate-y-2 transition-all duration-300 flex items-center justify-center whatsapp-fab" title="Konsultasi WhatsApp">
-            <svg class="w-8 h-8 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 0 5.414 0 12.05c0 2.123.551 4.197 1.594 6.02L0 24l6.117-1.606a11.777 11.777 0 005.93 1.606h.005c6.632 0 12.049-5.417 12.049-12.05 0-3.218-1.253-6.244-3.526-8.517z"></path></svg>
-            <span class="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30"></span>
+            <svg class="w-8 h-8 relative z-10" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 0 5.414 0 12.05c0 2.123.551 4.197 1.594 6.02L0 24l6.117-1.606a11.777 11.777 0 005.93 1.606h.005c6.632 0 12.049-5.417 12.049-12.05 0-3.218-1.253-6.244-3.526-8.517z"></path>
+            </svg>
+            <span class="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30 whatsapp-ping"></span>
         </a>
 
         <script is:inline>
             // --- SAKELAR TEMA (Desktop & Mobile) ---
             const btnDesktop = document.getElementById('theme-toggle-desktop');
+            const btnMobile = document.getElementById('theme-toggle-mobile');
             const html = document.documentElement;
+            
             let currentTheme = localStorage.getItem('theme') || 'light'; 
+
             function applyTheme(theme) {
                 if(theme === 'light') {
                     html.setAttribute('data-theme', 'light');
                     if(btnDesktop) btnDesktop.innerText = '🌙';
+                    if(btnMobile) btnMobile.innerText = '🌙';
                 } else {
                     html.removeAttribute('data-theme');
                     if(btnDesktop) btnDesktop.innerText = '☀️';
+                    if(btnMobile) btnMobile.innerText = '☀️';
                 }
             }
+
+            // Terapkan tema awal
             applyTheme(currentTheme);
+
             function toggleTheme() {
                 currentTheme = currentTheme === 'light' ? 'dark' : 'light';
                 localStorage.setItem('theme', currentTheme);
                 applyTheme(currentTheme);
             }
+
             if(btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
+            if(btnMobile) btnMobile.addEventListener('click', toggleTheme);
 
             // --- MENU MOBILE (HP) ---
             const btnMenu = document.getElementById('mobile-menu-btn');
@@ -526,7 +858,35 @@ const currentPath = Astro.url.pathname;
                 });
             }
 
-            // --- TYPEWRITER EFFECT ---
+            // --- STATS COUNTER (Angka Berjalan) ---
+            const counters = document.querySelectorAll('.counter');
+            const speed = 200;
+            const startCounters = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target;
+                        const updateCount = () => {
+                            const targetNum = +target.getAttribute('data-target');
+                            const count = +target.innerText;
+                            const inc = targetNum / speed;
+                            if (count < targetNum) { 
+                                target.innerText = Math.ceil(count + inc); 
+                                setTimeout(updateCount, 15); 
+                            } else { 
+                                target.innerText = targetNum; 
+                            }
+                        };
+                        updateCount();
+                        observer.unobserve(target);
+                    }
+                });
+            };
+            if(counters.length > 0) {
+                const counterObserver = new IntersectionObserver(startCounters, { threshold: 0.5 });
+                counters.forEach(counter => { counterObserver.observe(counter); });
+            }
+
+            // --- TYPEWRITER EFFECT (Efek Mengetik) ---
             const words = ["Bisnis Digital", "Toko Online", "Sistem Kasir"];
             let wordIndex = 0; let charIndex = words[0].length;
             let isDeleting = true;
@@ -550,6 +910,41 @@ const currentPath = Astro.url.pathname;
                 setTimeout(typeEffect, typeSpeed);
             }
             if(typewriterElement) { setTimeout(typeEffect, 2000); }
+
+            // --- DRAGGABLE TESTIMONIALS (Geser Testimoni) ---
+            const slider = document.getElementById('slider-testimoni');
+            if(slider) {
+                let isDown = false; let startX; let scrollLeft;
+                slider.addEventListener('mousedown', (e) => { 
+                    isDown = true; 
+                    slider.classList.add('active'); 
+                    startX = e.pageX - slider.offsetLeft; 
+                    scrollLeft = slider.scrollLeft; 
+                });
+                slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
+                slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
+                slider.addEventListener('mousemove', (e) => { 
+                    if (!isDown) return; 
+                    e.preventDefault(); 
+                    const x = e.pageX - slider.offsetLeft; 
+                    const walk = (x - startX) * 2; 
+                    slider.scrollLeft = scrollLeft - walk; 
+                });
+            }
+
+            // --- MAGNET BUTTON EFFECT (Tombol Magnet) ---
+            const magnetButtons = document.querySelectorAll('.btn-magnet');
+            magnetButtons.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect(); 
+                    const x = e.clientX - rect.left - rect.width / 2; 
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px) scale(1.05)`;
+                });
+                btn.addEventListener('mouseleave', () => { 
+                    btn.style.transform = 'translate(0px, 0px) scale(1)'; 
+                });
+            });
         </script>
     </body>
 </html>

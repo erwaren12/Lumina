@@ -24,6 +24,8 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
             .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
             #modal-content { transition: all 0.3s ease; }
             .modal-hidden #modal-content { transform: scale(0.95) translateY(20px); }
+            .hide-scrollbar::-webkit-scrollbar { display: none; }
+            .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         </style>
     </head>
     <body class="min-h-screen w-full relative pb-20">
@@ -37,8 +39,8 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
                 Pynta<span class="text-[#EA580C]">Admin</span>
             </div>
             <div class="flex items-center gap-2 shrink-0 pr-4">
-                <a href="/admin" class="px-3 py-1.5 border border-[#EA580C] bg-[#EA580C]/10 text-[#EA580C] rounded-lg text-xs font-bold transition-colors">🏠 Admin Home</a>
-                <a href="/admin/portofolio" class="px-3 py-1.5 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-xs font-bold transition-colors">🎨 Portofolio</a>
+                <a href="/admin" class="px-3 py-1.5 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-xs font-bold transition-colors">🏠 Home</a>
+                <a href="/admin/portofolio" class="px-3 py-1.5 border border-[#EA580C] bg-[#EA580C]/10 text-[#EA580C] rounded-lg text-xs font-bold transition-colors">🎨 Portofolio</a>
                 <a href="/admin/template" class="px-3 py-1.5 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-xs font-bold transition-colors">🗂️ Template</a>
                 <a href="/admin/harga" class="px-3 py-1.5 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-xs font-bold transition-colors">💰 Harga</a>
                 
@@ -124,13 +126,12 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Link Proyek (URL)</label>
-                            <input type="text" id="i-link" placeholder="pyntadev.com" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
+                            <input type="text" id="i-link" placeholder="https://pyntadev.com" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Link Gambar Preview</label>
                         <input type="text" id="i-gambar" placeholder="Masukkan URL gambar (https://.../gambar.jpg)" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
-                        <p class="text-[10px] text-[#7B6153] mt-1.5 font-bold flex items-center gap-1"><span>💡</span> Gunakan link gambar dari imgur, discord, atau postimages.</p>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Deskripsi Singkat</label>
@@ -147,12 +148,6 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
         </div>
 
         <script is:inline>
-            // CSS untuk menyembunyikan scrollbar bawaan di modal
-            const style = document.createElement('style');
-            style.innerHTML = `.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }`;
-            document.head.appendChild(style);
-
-            // Logika Modal
             const modal = document.getElementById('modal-form');
             document.getElementById('btn-open-modal').addEventListener('click', () => modal.classList.remove('modal-hidden'));
             document.getElementById('btn-close-modal').addEventListener('click', () => modal.classList.add('modal-hidden'));
@@ -182,7 +177,6 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
                     });
                     
                     const result = await res.json();
-                    
                     if (res.ok) {
                         alert("✅ " + result.message);
                         window.location.reload();
