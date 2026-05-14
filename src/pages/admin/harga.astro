@@ -1,0 +1,238 @@
+---
+import '../../styles/global.css';
+import { db } from '../../lib/db.js';
+
+let packages = [];
+let errorServer = null;
+
+const session = Astro.cookies.get('user_session');
+if (!session) return Astro.redirect('/login');
+
+try {
+    const userId = session.value;
+    const [userRows] = await db.query('SELECT role FROM users WHERE id = ?', [userId]) as any;
+    if (userRows.length === 0 || userRows[0].role !== 'admin') return Astro.redirect('/dashboard');
+
+    // Ambil Data Harga
+    const [rows] = await db.query('SELECT * FROM paket_harga ORDER BY id ASC') as any;
+    packages = rows;
+} catch (err: any) {
+    errorServer = err.message;
+}
+---
+<html lang="id" data-theme="light">
+    <head>
+        <meta charset="utf-8" />
+        <title>Kelola Harga | PyntaDev Admin</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+        <style is:global>
+            @import "tailwindcss";
+            body { font-family: 'Inter', sans-serif; background-color: #E3D5C1; color: #2E1F1A; }
+            .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+            #modal-content { transition: all 0.3s ease; }
+            .modal-hidden #modal-content { transform: scale(0.95) translateY(20px); }
+            .hide-scrollbar::-webkit-scrollbar { display: none; }
+            .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        </style>
+    </head>
+    <body class="min-h-screen w-full relative pb-20">
+        
+        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg sticky top-0 z-40 overflow-x-auto hide-scrollbar">
+            <div class="font-black flex items-center gap-2 text-xl px-4 shrink-0">
+                <div class="w-8 h-8 flex items-center justify-center hidden md:flex">
+                    <img src="/logo-biru.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-dark-mode" />
+                    <img src="/logo-orange.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-light-mode" />
+                </div>
+                Pynta<span class="text-[#EA580C]">Admin</span>
+            </div>
+            <div class="flex items-center gap-2 shrink-0 pr-4">
+                <a href="/admin" class="px-3 py-1.5 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-xs font-bold transition-colors">🏠 Home</a>
+                <a href="/admin/portofolio" class="px-3 py-1.5 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-xs font-bold transition-colors">🎨 Portofolio</a>
+                <a href="/admin/template" class="px-3 py-1.5 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-xs font-bold transition-colors">🗂️ Template</a>
+                <a href="/admin/harga" class="px-3 py-1.5 border border-[#EA580C] bg-[#EA580C]/10 text-[#EA580C] rounded-lg text-xs font-bold transition-colors">💰 Harga</a>
+                <a href="/dashboard" class="ml-2 px-4 py-1.5 bg-[#2E1F1A] hover:bg-[#EA580C] hover:text-white rounded-lg text-xs font-bold transition-colors shadow-md">Mode Klien</a>
+            </div>
+        </nav>
+
+        <main class="p-8 lg:p-12 max-w-7xl mx-auto">
+            <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EA580C] text-white text-[10px] font-black tracking-wide mb-4 shadow-sm uppercase">
+                        💰 Pricing Management
+                    </div>
+                    <h1 class="text-4xl font-black mb-2 text-[#2E1F1A]">Paket Harga</h1>
+                    <p class="text-[#7B6153] font-medium">Kelola daftar harga dan fitur paket yang ditawarkan ke klien.</p>
+                </div>
+                <button id="btn-open-modal" class="px-6 py-3.5 bg-[#2E1F1A] text-white rounded-2xl font-black hover:bg-[#EA580C] transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center gap-2">
+                    <span class="text-lg">+</span> Tambah Paket
+                </button>
+            </header>
+
+            {errorServer ? (
+                <div class="bg-red-50 p-12 rounded-[2rem] text-center border-2 border-red-500 shadow-xl">
+                    <code class="text-red-600">{errorServer}</code>
+                </div>
+            ) : packages.length === 0 ? (
+                <div class="bg-white/50 backdrop-blur-md p-12 rounded-[2rem] text-center border-2 border-dashed border-[#C8B8A3] shadow-sm">
+                    <span class="text-5xl mb-4 block">💸</span>
+                    <h3 class="text-xl font-black text-[#2E1F1A] mb-2">Belum ada paket harga</h3>
+                    <p class="text-[#7B6153] font-medium">Klien butuh kepastian harga. Yuk, buat paket pertamamu!</p>
+                </div>
+            ) : (
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {packages.map((item: any) => (
+                        <div class={`relative bg-white/80 backdrop-blur-md rounded-[2rem] border-2 p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 shadow-lg ${item.badge ? 'border-[#EA580C] shadow-[#EA580C]/20' : 'border-[#C8B8A3]'}`}>
+                            
+                            {item.badge && (
+                                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#EA580C] text-white text-[10px] font-black tracking-widest px-4 py-1.5 rounded-full shadow-lg uppercase">
+                                    {item.badge}
+                                </div>
+                            )}
+
+                            <h3 class="text-2xl font-black text-[#2E1F1A] mb-2 mt-2">{item.nama_paket}</h3>
+                            <p class="text-sm text-[#7B6153] mb-6">{item.deskripsi}</p>
+                            
+                            <div class="mb-6">
+                                <span class="text-4xl font-black text-[#EA580C]">Rp {Number(item.harga).toLocaleString('id-ID')}</span>
+                            </div>
+
+                            <div class="flex-1 bg-[#F5EEDB] p-4 rounded-2xl mb-6">
+                                <p class="text-xs font-bold text-[#7B6153] uppercase mb-2">Fitur Unggulan:</p>
+                                <ul class="text-sm text-[#2E1F1A] space-y-2 font-medium">
+                                    {item.fitur ? item.fitur.split('\n').map((f: string) => (
+                                        <li class="flex gap-2"><span>✅</span> <span>{f}</span></li>
+                                    )) : <li>Belum ada rincian fitur</li>}
+                                </ul>
+                            </div>
+
+                            <button class="btn-delete-harga w-full inline-flex justify-center items-center gap-2 text-sm font-black text-red-500 bg-red-50 border border-red-200 hover:bg-red-500 hover:text-white py-3 rounded-xl transition-all shadow-sm active:scale-95" data-id={item.id}>
+                                🗑️ Hapus Paket Ini
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </main>
+
+        <div id="modal-form" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A110E]/80 backdrop-blur-md modal-hidden">
+            <div id="modal-content" class="bg-[#F5EEDB] w-full max-w-xl rounded-[2rem] shadow-2xl border border-[#C8B8A3] overflow-hidden max-h-[90vh] flex flex-col">
+                <div class="bg-[#2E1F1A] p-6 text-[#E3D5C1] flex justify-between items-center flex-shrink-0">
+                    <h2 class="text-xl font-black flex items-center gap-2"><span>✨</span> Tambah Paket Harga</h2>
+                    <button id="btn-close-modal" class="text-2xl hover:text-[#EA580C] transition-colors bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">&times;</button>
+                </div>
+                
+                <div class="p-8 overflow-y-auto space-y-5 hide-scrollbar">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Nama Paket</label>
+                            <input type="text" id="i-nama" placeholder="Katalog Basic" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C]" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Harga (Rp)</label>
+                            <input type="number" id="i-harga" placeholder="499000" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C]" />
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Badge Promo (Opsional)</label>
+                        <input type="text" id="i-badge" placeholder="Contoh: PALING LAKU" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C]" />
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Deskripsi Singkat</label>
+                        <input type="text" id="i-deskripsi" placeholder="Cocok untuk pemula..." class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C]" />
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Daftar Fitur (Pisahkan dengan Enter)</label>
+                        <textarea id="i-fitur" placeholder="Domain .com Gratis&#10;Kapasitas 100 Produk&#10;Desain Premium" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C] min-h-[120px] leading-relaxed"></textarea>
+                    </div>
+                </div>
+                
+                <div class="p-6 bg-white/50 border-t border-[#C8B8A3] flex-shrink-0">
+                    <button id="btn-save" class="w-full bg-[#EA580C] text-white py-4 rounded-xl font-black text-sm hover:bg-[#C0470A] transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2">
+                        <span>🚀</span> Simpan Paket
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script is:inline>
+            const modal = document.getElementById('modal-form');
+            document.getElementById('btn-open-modal').addEventListener('click', () => modal.classList.remove('modal-hidden'));
+            document.getElementById('btn-close-modal').addEventListener('click', () => modal.classList.add('modal-hidden'));
+            
+            // Simpan Data
+            document.getElementById('btn-save').addEventListener('click', async (e) => {
+                const btn = e.target;
+                const data = {
+                    nama_paket: document.getElementById('i-nama').value,
+                    harga: document.getElementById('i-harga').value,
+                    badge: document.getElementById('i-badge').value,
+                    deskripsi: document.getElementById('i-deskripsi').value,
+                    fitur: document.getElementById('i-fitur').value
+                };
+
+                if(!data.nama_paket) return alert("Nama paket wajib diisi!");
+
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "⏳ Menyimpan...";
+                btn.disabled = true;
+
+                try {
+                    const res = await fetch('/api/add-harga', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await res.json();
+                    if (res.ok) {
+                        alert("✅ " + result.message);
+                        window.location.reload();
+                    } else {
+                        alert("❌ Gagal: " + result.message);
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                } catch (error) {
+                    alert("❌ Error jaringan. Pastikan file API sudah ter-push!");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            });
+
+            // Hapus Data
+            document.querySelectorAll('.btn-delete-harga').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if(!confirm("🚨 Yakin ingin menghapus paket harga ini?")) return;
+                    
+                    const id = e.currentTarget.getAttribute('data-id');
+                    const originalText = e.currentTarget.innerHTML;
+                    e.currentTarget.innerHTML = "⏳";
+                    e.currentTarget.disabled = true;
+
+                    try {
+                        const res = await fetch('/api/delete-harga', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id })
+                        });
+                        const result = await res.json();
+                        if(res.ok) {
+                            alert("✅ " + result.message);
+                            window.location.reload();
+                        } else {
+                            alert("❌ Gagal: " + result.message);
+                            e.currentTarget.innerHTML = originalText;
+                            e.currentTarget.disabled = false;
+                        }
+                    } catch (err) {
+                        alert("❌ Error jaringan.");
+                        e.currentTarget.innerHTML = originalText;
+                        e.currentTarget.disabled = false;
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

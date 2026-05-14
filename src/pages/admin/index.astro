@@ -104,21 +104,20 @@ const clientList = Object.values(groupedOrders);
     
     <body class="min-h-screen w-full relative">
         
-        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg sticky top-0 z-40">
-            <div class="font-black flex items-center gap-2 text-xl px-4">
-                <div class="w-8 h-8 flex items-center justify-center">
+        <nav class="w-full bg-[#1A110E] p-4 text-[#E3D5C1] flex justify-between items-center shadow-lg sticky top-0 z-40 overflow-x-auto hide-scrollbar">
+            <div class="font-black flex items-center gap-2 text-xl px-4 shrink-0">
+                <div class="w-8 h-8 flex items-center justify-center hidden md:flex">
                     <img src="/logo-biru.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-dark-mode" />
                     <img src="/logo-orange.png" alt="Logo PyntaDev" class="w-full h-full object-cover rounded-md logo-light-mode" />
                 </div>
                 Pynta<span class="text-[#EA580C]">Admin</span>
             </div>
-            <div class="flex items-center gap-3">
-                <a href="/admin/portofolio" class="px-4 py-2 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-sm font-bold transition-colors hidden md:block">
-                    🎨 CMS Portofolio
-                </a>
-                <a href="/dashboard" class="px-4 py-2 bg-[#2E1F1A] hover:bg-[#EA580C] hover:text-white rounded-lg text-sm font-bold transition-colors shadow-md">
-                    Mode Klien
-                </a>
+            <div class="flex items-center gap-2 shrink-0 pr-4">
+                <a href="/admin" class="px-3 py-1.5 border border-[#EA580C] bg-[#EA580C]/10 text-[#EA580C] rounded-lg text-xs font-bold transition-colors">🏠 Home</a>
+                <a href="/admin/portofolio" class="px-3 py-1.5 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-xs font-bold transition-colors">🎨 Portofolio</a>
+                <a href="/admin/template" class="px-3 py-1.5 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-xs font-bold transition-colors">🗂️ Template</a>
+                <a href="/admin/harga" class="px-3 py-1.5 border border-[#C8B8A3]/30 hover:bg-white/10 rounded-lg text-xs font-bold transition-colors">💰 Harga</a>
+                <a href="/dashboard" class="ml-2 px-4 py-1.5 bg-[#2E1F1A] hover:bg-[#EA580C] hover:text-white rounded-lg text-xs font-bold transition-colors shadow-md">Mode Klien</a>
             </div>
         </nav>
 
