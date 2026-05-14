@@ -2,10 +2,8 @@
 import '../../styles/global.css';
 import { db } from '../../lib/db.js';
 
-// Deteksi URL untuk Navbar Pintar
 const currentPath = Astro.url.pathname;
 
-// Cek Sesi Admin
 const session = Astro.cookies.get('user_session');
 if (!session) return Astro.redirect('/login');
 
@@ -13,7 +11,6 @@ const userId = session.value;
 const [userRows] = await db.query('SELECT role FROM users WHERE id = ?', [userId]) as any;
 if (userRows.length === 0 || userRows[0].role !== 'admin') return Astro.redirect('/dashboard');
 
-// Ambil Data Portofolio dari Database
 const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at DESC') as any;
 ---
 <html lang="id" data-theme="light">
@@ -23,12 +20,27 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
         <style is:global>
             @import "tailwindcss";
-            body { font-family: 'Inter', sans-serif; background-color: #E3D5C1; color: #2E1F1A; }
-            .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-            #modal-content { transition: all 0.3s ease; }
-            .modal-hidden #modal-content { transform: scale(0.95) translateY(20px); }
+            
+            /* HILANGKAN SCROLLBAR SECARA TOTAL UNTUK EFEK FULLSCREEN BERSIH */
+            body { 
+                font-family: 'Inter', sans-serif; 
+                background-color: #E3D5C1; 
+                color: #2E1F1A; 
+                margin: 0; 
+                padding: 0;
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+            body::-webkit-scrollbar { 
+                display: none; /* Chrome, Safari and Opera */
+            }
+
             .hide-scrollbar::-webkit-scrollbar { display: none; }
             .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            
+            .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+            #modal-content { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+            .modal-hidden #modal-content { transform: scale(0.9) translateY(20px); }
         </style>
     </head>
     <body class="min-h-screen w-full relative pb-20">
@@ -47,12 +59,12 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
                 <a href="/admin/template" class={`px-3 py-1.5 border rounded-lg text-xs font-bold transition-colors ${currentPath.includes('/template') ? 'border-[#EA580C] bg-[#EA580C]/10 text-[#EA580C]' : 'border-[#C8B8A3]/30 hover:bg-white/10 text-[#E3D5C1]'}`}>🗂️ Template</a>
                 <a href="/admin/harga" class={`px-3 py-1.5 border rounded-lg text-xs font-bold transition-colors ${currentPath.includes('/harga') ? 'border-[#EA580C] bg-[#EA580C]/10 text-[#EA580C]' : 'border-[#C8B8A3]/30 hover:bg-white/10 text-[#E3D5C1]'}`}>💰 Harga</a>
                 
-                <a href="/" class="ml-2 px-3 py-1.5 bg-[#F5EEDB] text-[#2E1F1A] rounded-lg text-xs font-black hover:bg-white transition-all shadow-sm">👀 Lihat Web</a>
+                <a href="/" class="ml-4 px-4 py-1.5 bg-[#F5EEDB] text-[#2E1F1A] rounded-lg text-xs font-black hover:bg-white transition-all shadow-sm flex items-center gap-1">👀 Lihat Web</a>
                 <a href="/dashboard" class="px-4 py-1.5 bg-[#2E1F1A] hover:bg-[#EA580C] hover:text-white rounded-lg text-xs font-bold transition-colors shadow-md">Mode Klien</a>
             </div>
         </nav>
 
-        <main class="p-8 lg:p-12 max-w-7xl mx-auto">
+        <main class="p-8 md:p-12 w-full mx-auto pb-24">
             <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EA580C] text-white text-[10px] font-black tracking-wide mb-4 shadow-sm uppercase">
@@ -67,21 +79,21 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
             </header>
 
             {portfolios.length === 0 ? (
-                <div class="bg-white/50 backdrop-blur-md p-12 rounded-[2rem] text-center border-2 border-dashed border-[#C8B8A3] shadow-sm">
-                    <span class="text-5xl mb-4 block">📭</span>
-                    <h3 class="text-xl font-black text-[#2E1F1A] mb-2">Belum ada portofolio</h3>
+                <div class="bg-white/50 backdrop-blur-md p-16 rounded-[2rem] text-center border-2 border-dashed border-[#C8B8A3] shadow-sm">
+                    <span class="text-6xl mb-4 block">📭</span>
+                    <h3 class="text-2xl font-black text-[#2E1F1A] mb-2">Belum ada portofolio</h3>
                     <p class="text-[#7B6153] font-medium">Koleksi karyamu masih kosong. Yuk, tambahkan mahakarya pertamamu sekarang!</p>
                 </div>
             ) : (
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
                     {portfolios.map((item: any) => (
-                        <div class="bg-white/80 backdrop-blur-md rounded-[2rem] overflow-hidden shadow-lg border border-[#C8B8A3] group hover:-translate-y-2 hover:shadow-xl hover:shadow-[#EA580C]/10 transition-all duration-300 flex flex-col h-full">
+                        <div class="bg-white/80 backdrop-blur-md rounded-[2rem] overflow-hidden shadow-lg border border-[#C8B8A3] group hover:-translate-y-2 hover:shadow-xl hover:shadow-[#EA580C]/15 transition-all duration-300 flex flex-col h-full">
                             
-                            <div class="h-56 w-full bg-[#F5EEDB] overflow-hidden relative flex items-center justify-center border-b border-[#C8B8A3]/50">
+                            <div class="h-60 w-full bg-[#F5EEDB] overflow-hidden relative flex items-center justify-center border-b border-[#C8B8A3]/50">
                                 {item.gambar_url ? (
                                     <img src={item.gambar_url} alt={item.judul} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                 ) : (
-                                    <div class="flex flex-col items-center justify-center text-[#7B6153] opacity-50 group-hover:scale-110 transition-transform duration-500">
+                                    <div class="flex flex-col items-center justify-center text-[#7B6153] opacity-50 group-hover:scale-110 transition-transform duration-500 w-full h-full bg-[#E3D5C1]/50">
                                         <span class="text-5xl mb-2">🖼️</span>
                                         <span class="text-[10px] font-black uppercase tracking-widest">Tidak Ada Gambar</span>
                                     </div>
@@ -155,7 +167,6 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
             document.getElementById('btn-open-modal').addEventListener('click', () => modal.classList.remove('modal-hidden'));
             document.getElementById('btn-close-modal').addEventListener('click', () => modal.classList.add('modal-hidden'));
             
-            // Logika Simpan Portofolio
             document.getElementById('btn-save-portfolio').addEventListener('click', async (e) => {
                 const btn = e.target;
                 const data = {
@@ -195,7 +206,6 @@ const [portfolios] = await db.query('SELECT * FROM portfolio ORDER BY created_at
                 }
             });
 
-            // Logika Hapus Portofolio
             document.querySelectorAll('.btn-delete-porto').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     if(!confirm("🚨 Yakin ingin menghapus karya ini dari muka bumi?")) return;
