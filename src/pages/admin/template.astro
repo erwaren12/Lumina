@@ -18,7 +18,6 @@ try {
     const [rows] = await db.query('SELECT * FROM templates ORDER BY id DESC') as any;
     templates = rows;
 } catch (err: any) {
-    // Jika crash, tangkap pesan errornya!
     errorServer = err.message;
 }
 ---
@@ -93,8 +92,8 @@ try {
                                 </div>
                             </div>
                             <div class="p-6 flex-1 flex flex-col">
-                                <h3 class="text-2xl font-black text-[#2E1F1A] mb-2 line-clamp-1 group-hover:text-[#EA580C] transition-colors">{item.nama_template}</h3>
-                                <div class="text-[#EA580C] font-black text-lg mb-4">Rp {Number(item.harga_dasar).toLocaleString('id-ID')}</div>
+                                <h3 class="text-2xl font-black text-[#2E1F1A] mb-4 line-clamp-1 group-hover:text-[#EA580C] transition-colors">{item.nama_template}</h3>
+                                
                                 <div class="flex justify-between items-center pt-5 border-t border-[#C8B8A3]/50 mt-auto">
                                     <a href={item.demo_url?.startsWith('http') ? item.demo_url : `https://${item.demo_url}`} target="_blank" class="inline-flex items-center gap-2 text-xs font-black text-[#2E1F1A] hover:text-[#EA580C] bg-[#E3D5C1] px-4 py-2.5 rounded-xl transition-colors">
                                         <span>👀</span> Lihat Demo
@@ -122,21 +121,17 @@ try {
                         <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Nama Template</label>
                         <input type="text" id="i-nama" placeholder="Contoh: E-Commerce Pro Max" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Tipe / Kategori</label>
-                            <select id="i-tipe" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors cursor-pointer">
-                                <option value="Landing Page">Landing Page</option>
-                                <option value="E-Commerce">E-Commerce</option>
-                                <option value="Company Profile">Company Profile</option>
-                                <option value="Custom">Custom</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Harga (Rp)</label>
-                            <input type="number" id="i-harga" placeholder="Contoh: 1499000" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
-                        </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Tipe / Kategori</label>
+                        <select id="i-tipe" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors cursor-pointer">
+                            <option value="Landing Page">Landing Page</option>
+                            <option value="E-Commerce">E-Commerce</option>
+                            <option value="Company Profile">Company Profile</option>
+                            <option value="Custom">Custom</option>
+                        </select>
                     </div>
+                    
                     <div>
                         <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Link Preview Gambar</label>
                         <input type="text" id="i-gambar" placeholder="https://..." class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-medium text-[#2E1F1A] outline-none focus:border-[#EA580C] transition-colors" />
@@ -172,7 +167,6 @@ try {
                 const data = {
                     nama_template: document.getElementById('i-nama').value,
                     tipe: document.getElementById('i-tipe').value,
-                    harga_dasar: document.getElementById('i-harga').value,
                     gambar_preview: document.getElementById('i-gambar').value,
                     demo_url: document.getElementById('i-demo').value
                 };
