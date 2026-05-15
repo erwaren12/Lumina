@@ -163,9 +163,10 @@ const isLoggedIn = !!session;
                 background-color: transparent !important;
             }
             
-            [data-theme="light"] header .bg-slate-950 { background-color: #F5EEDB !important; border: none !important; }
-            [data-theme="light"] nav.bg-slate-900\/85 { background-color: rgba(245, 238, 219, 0.85) !important; border-bottom: 1px solid #E3D5C1 !important; }
-            [data-theme="light"] #mobile-menu { background-color: rgba(245, 238, 219, 0.98) !important; }
+            /* --- FIX WARNA NAVBAR KREM --- */
+            [data-theme="light"] header .bg-slate-950 { background-color: #E3D5C1 !important; border-bottom: 1px solid #C8B8A3 !important; }
+            [data-theme="light"] nav.bg-slate-900\/85 { background-color: rgba(227, 213, 193, 0.95) !important; border-bottom: 1px solid #C8B8A3 !important; backdrop-filter: blur(12px) !important; }
+            [data-theme="light"] #mobile-menu { background-color: rgba(227, 213, 193, 0.98) !important; }
 
             [data-theme="light"] .bg-slate-800, [data-theme="light"] #terminal-card, 
             [data-theme="light"] #stats-container, [data-theme="light"] section div.bg-gradient-to-r,
