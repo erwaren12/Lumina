@@ -7,11 +7,11 @@ export async function POST({ request, cookies }) {
         const [user] = await db.query('SELECT role FROM users WHERE id = ?', [session.value]);
         if (user.length === 0 || user[0].role !== 'admin') return new Response(JSON.stringify({ message: "Akses Ditolak!" }), { status: 403 });
 
-        const { id, nama_paket, deskripsi, harga, badge, fitur } = await request.json();
+        const { id, nama_paket, deskripsi, harga, siklus_tagihan, badge, fitur } = await request.json();
         
         await db.query(
-            'UPDATE paket_harga SET nama_paket = ?, deskripsi = ?, harga = ?, badge = ?, fitur = ? WHERE id = ?', 
-            [nama_paket, deskripsi, harga || 0, badge, fitur, id]
+            'UPDATE paket_harga SET nama_paket = ?, deskripsi = ?, harga = ?, siklus_tagihan = ?, badge = ?, fitur = ? WHERE id = ?', 
+            [nama_paket, deskripsi, harga || 0, siklus_tagihan || '', badge, fitur, id]
         );
         
         return new Response(JSON.stringify({ message: "Data paket berhasil diperbarui!" }), { status: 200 });

@@ -78,7 +78,7 @@ try {
             [data-theme="light"] .bg-slate-900, [data-theme="light"] .bg-slate-950, 
             [data-theme="light"] .bg-slate-900\/50, [data-theme="light"] .bg-slate-800\/30 { 
                 background-color: transparent !important; }
-                
+
             /* --- FIX WARNA NAVBAR KREM --- */
             [data-theme="light"] header .bg-slate-950 { background-color: #E3D5C1 !important; border-bottom: 1px solid #C8B8A3 !important; }
             [data-theme="light"] nav.bg-slate-900\/85 { background-color: rgba(227, 213, 193, 0.95) !important; border-bottom: 1px solid #C8B8A3 !important; backdrop-filter: blur(12px) !important; }
@@ -290,10 +290,10 @@ try {
                     🚀 PILIH PAKET TERBAIK ANDA
                 </div>
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight transition-colors duration-500">
-                    Transparan. <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">Tanpa Biaya Tersembunyi.</span>
+                    Investasi Cerdas. <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">Berkembang Bersama.</span>
                 </h1>
                 <p class="text-lg text-slate-400 leading-relaxed transition-colors duration-500">
-                    Investasi satu kali untuk membangun aset digital Anda selamanya. Tidak ada biaya langganan bulanan dari kami, cukup bayar perpanjangan server tahunan.
+                    Sistem berlangganan transparan untuk memastikan website Anda selalu mendapatkan pemeliharaan server, perpanjangan domain, dan dukungan teknis penuh setiap tahunnya.
                 </p>
             </div>
 
@@ -331,7 +331,7 @@ try {
                                     <span class="text-4xl font-black text-white transition-colors duration-500">
                                         Rp {Number(item.harga).toLocaleString('id-ID')}
                                     </span>
-                                    <span class="text-sm text-slate-500">/sekali bayar</span>
+                                    <span class="text-sm text-slate-500">{item.siklus_tagihan}</span>
                                 </div>
 
                                 <a href={isLoggedIn ? "/order" : "/register"} class={`w-full py-3 rounded-full font-bold text-center transition-colors duration-300 mb-8 block shadow-md ${isPopular ? 'btn-primary text-white shadow-blue-500/25' : 'btn-outline text-white'}`}>
@@ -369,7 +369,7 @@ try {
             )}
             
             <div class="mt-12 text-center text-sm text-slate-500 font-medium transition-colors duration-500 max-w-2xl mx-auto relative z-10">
-                *Harga di atas belum termasuk biaya perpanjangan Domain (.com/.id) dan Cloud Server tahunan sebesar rata-rata Rp 450.000/tahun. Tahun pertama **GRATIS**.
+                *Harga di atas adalah biaya berlangganan per tahun. Sudah **TERMASUK** biaya perpanjangan Domain (.com/.id), Cloud Server berkecepatan tinggi, dan *Maintenance* berkala.
             </div>
         </main>
 

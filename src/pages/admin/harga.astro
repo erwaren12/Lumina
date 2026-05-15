@@ -154,7 +154,7 @@ try {
                                     <span class="text-3xl tracking-tight font-black text-white transition-colors duration-500">
                                         Rp {Number(item.harga).toLocaleString('id-ID')}
                                     </span>
-                                    <span class="text-sm text-slate-500">/sekali</span>
+                                    <span class="text-sm text-slate-500">{item.siklus_tagihan}</span>
                                 </div>
 
                                 <div class="flex gap-2 w-full mb-8">
@@ -197,12 +197,25 @@ try {
             )}
         </main>
 
-        <div id="modal-form" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A110E]/80 backdrop-blur-md modal-hidden">
-            <div id="modal-content" class="bg-[#F5EEDB] w-full max-w-xl rounded-[2rem] shadow-2xl border border-[#C8B8A3] overflow-hidden max-h-[90vh] flex flex-col">
-                <div class="bg-[#2E1F1A] p-6 text-[#E3D5C1] flex justify-between items-center flex-shrink-0">
-                    <h2 id="modal-title-text" class="text-xl font-black flex items-center gap-2">✨ Tambah Paket Harga</h2>
-                    <button id="btn-close-modal" class="text-2xl hover:text-[#EA580C] transition-colors bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">&times;</button>
-                </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Nama Paket</label>
+                <input type="text" id="i-nama" placeholder="Katalog Basic" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C]" />
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Harga (Rp)</label>
+                <input type="number" id="i-harga" placeholder="499000" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C]" />
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-[#7B6153] uppercase mb-1.5">Siklus</label>
+                <select id="i-siklus" class="w-full bg-white border border-[#C8B8A3] rounded-xl p-3.5 text-sm font-bold text-[#2E1F1A] outline-none focus:border-[#EA580C] cursor-pointer">
+                    <option value="/sekali bayar">/sekali bayar</option>
+                    <option value="/tahun">/tahun</option>
+                    <option value="/bulan">/bulan</option>
+                    <option value="">(Kosongkan)</option>
+                </select>
+            </div>
+        </div>
                 
                 <div class="p-8 overflow-y-auto space-y-5 hide-scrollbar">
                     <div class="grid grid-cols-2 gap-4">
