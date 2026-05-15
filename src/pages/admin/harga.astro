@@ -46,6 +46,47 @@ try {
             .modal-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
             #modal-content { transition: all 0.3s ease; }
             .modal-hidden #modal-content { transform: scale(0.95) translateY(20px); }
+
+            /* --- DARK MODE CONFIG (Default) --- */
+            .pricing-card {
+                background-color: #1E293B !important; 
+                border: 1px solid #334155 !important;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+            }
+            .pricing-card:hover { box-shadow: 0 12px 25px rgba(59, 130, 246, 0.15) !important; border-color: #3B82F6 !important; }
+            
+            /* --- LIGHT MODE CONFIG (SAMA DENGAN PUBLIK) --- */
+            [data-theme="light"] .pricing-card {
+                background: #E3D5C1 !important; border: 1px solid #C8B8A3 !important; 
+                border-radius: 2rem !important;
+                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important; 
+            }
+            [data-theme="light"] .pricing-card.popular {
+                border-color: #EA580C !important; border-width: 2px !important;
+                box-shadow: 0 10px 25px rgba(234, 88, 12, 0.15) !important; 
+            }
+            [data-theme="light"] .pricing-card:hover { 
+                box-shadow: 0 12px 25px rgba(234, 88, 12, 0.1) !important;
+                border-color: transparent !important;
+            }
+            [data-theme="light"] .pricing-card.popular:hover { border-color: #EA580C !important; }
+
+            /* Text & Colors */
+            [data-theme="light"] .text-white { color: #2E1F1A !important; }
+            [data-theme="light"] .text-slate-300 { color: #2E1F1A !important; font-weight: 600 !important; }
+            [data-theme="light"] .text-slate-400 { color: #7B6153 !important; font-weight: 500 !important; }
+            [data-theme="light"] .text-slate-500 { color: #8A8173 !important; font-weight: 500 !important; }
+            [data-theme="light"] .text-blue-500, [data-theme="light"] .text-emerald-500 { color: #EA580C !important; font-weight: 800; } 
+            
+            /* Buttons */
+            [data-theme="light"] .btn-primary { background-color: #2E1F1A !important; color: #E3D5C1 !important; border: none !important; border-radius: 9999px !important; }
+            [data-theme="light"] .btn-primary:hover { background-color: #4A332A !important; }
+            [data-theme="light"] .btn-primary .text-white { color: #E3D5C1 !important; }
+            
+            [data-theme="light"] .btn-outline { background-color: transparent !important; color: #2E1F1A !important; border: 1px solid #7B6153 !important; border-radius: 9999px !important;}
+            [data-theme="light"] .btn-outline:hover { border-color: #EA580C !important; color: #EA580C !important; }
+
+            [data-theme="light"] .badge-popular { background-color: #EA580C !important; color: #F5EEDB !important;}
         </style>
     </head>
     <body class="min-h-screen w-full relative pb-20">
@@ -93,42 +134,65 @@ try {
                     <p class="text-[#7B6153] font-medium">Klien butuh kepastian harga. Yuk, buat paket pertamamu!</p>
                 </div>
             ) : (
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {packages.map((item: any) => (
-                        <div class={`relative bg-white/80 backdrop-blur-md rounded-[2rem] border-2 p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 shadow-lg ${item.badge ? 'border-[#EA580C] shadow-[#EA580C]/20' : 'border-[#C8B8A3]'}`}>
-                            
-                            {item.badge && (
-                                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#EA580C] text-white text-[10px] font-black tracking-widest px-4 py-1.5 rounded-full shadow-lg uppercase whitespace-nowrap">
-                                    {item.badge}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+                    {packages.map((item: any) => {
+                        const isPopular = !!item.badge;
+                        
+                        return (
+                            <div class={`pricing-card relative bg-slate-800 rounded-[2rem] p-8 flex flex-col transition-all duration-300 shadow-lg ${isPopular ? 'popular md:-translate-y-4' : 'border border-slate-700'}`}>
+                                
+                                {isPopular && (
+                                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 badge-popular bg-blue-600 text-white text-xs font-black tracking-widest px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap uppercase">
+                                        {item.badge}
+                                    </div>
+                                )}
+
+                                <h3 class="text-xl font-bold text-white mb-2 transition-colors duration-500 mt-2">{item.nama_paket}</h3>
+                                <p class="text-sm text-slate-400 mb-6 transition-colors duration-500">{item.deskripsi}</p>
+                                
+                                <div class="mb-6 flex flex-wrap items-baseline gap-2">
+                                    <span class="text-3xl tracking-tight font-black text-white transition-colors duration-500">
+                                        Rp {Number(item.harga).toLocaleString('id-ID')}
+                                    </span>
+                                    <span class="text-sm text-slate-500">/sekali</span>
                                 </div>
-                            )}
 
-                            <h3 class="text-2xl font-black text-[#2E1F1A] mb-2 mt-2">{item.nama_paket}</h3>
-                            <p class="text-sm text-[#7B6153] mb-6">{item.deskripsi}</p>
-                            
-                            <div class="mb-6">
-                                <span class="text-4xl font-black text-[#EA580C]">Rp {Number(item.harga).toLocaleString('id-ID')}</span>
-                            </div>
+                                <div class="flex gap-2 w-full mb-8">
+                                    <button class={`btn-edit-harga w-1/2 py-3 rounded-full font-bold text-center transition-colors duration-300 shadow-md ${isPopular ? 'btn-primary text-white shadow-blue-500/25' : 'btn-outline text-white'}`} data-item={JSON.stringify(item)}>
+                                        ✏️ Edit
+                                    </button>
+                                    <button class="btn-delete-harga w-1/2 py-3 rounded-full font-bold text-center transition-colors duration-300 shadow-md border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white" data-id={item.id}>
+                                        🗑️ Hapus
+                                    </button>
+                                </div>
 
-                            <div class="flex-1 bg-[#F5EEDB] p-4 rounded-2xl mb-6">
-                                <p class="text-xs font-bold text-[#7B6153] uppercase mb-2">Fitur Unggulan:</p>
-                                <ul class="text-sm text-[#2E1F1A] space-y-2 font-medium">
-                                    {item.fitur ? item.fitur.split('\n').map((f: string) => (
-                                        <li class="flex gap-2"><span>✅</span> <span>{f}</span></li>
-                                    )) : <li>Belum ada rincian fitur</li>}
+                                <ul class="space-y-4 flex-1 text-sm text-slate-300">
+                                    {item.fitur ? item.fitur.split('\n').map((f: string) => {
+                                        const ft = f.trim();
+                                        // Deteksi Otomatis: Jika fitur berawalan "Tanpa", "x", atau "-", jadikan Crossmark transparan
+                                        const isCross = ft.toLowerCase().startsWith('tanpa') || ft.toLowerCase().startsWith('x ') || ft.toLowerCase().startsWith('- ');
+                                        const text = ft.replace(/^[xX-]\s*/, ''); 
+                                        
+                                        if(isCross) {
+                                            return (
+                                                <li class="flex items-start gap-3 opacity-40">
+                                                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                    <span class="transition-colors duration-500">{text}</span>
+                                                </li>
+                                            );
+                                        } else {
+                                            return (
+                                                <li class="flex items-start gap-3">
+                                                    <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                    <span class={`transition-colors duration-500 ${isPopular && text.toLowerCase().includes('agent') ? 'font-bold text-blue-500' : ''}`}>{text}</span>
+                                                </li>
+                                            );
+                                        }
+                                    }) : <li>Belum ada rincian fitur</li>}
                                 </ul>
                             </div>
-
-                            <div class="flex gap-3 mt-auto">
-                                <button class="btn-edit-harga w-1/2 inline-flex justify-center items-center gap-2 text-sm font-black text-[#2E1F1A] bg-[#E3D5C1] hover:bg-[#C8B8A3] py-3 rounded-xl transition-all shadow-sm active:scale-95" data-item={JSON.stringify(item)}>
-                                    ✏️ Edit
-                                </button>
-                                <button class="btn-delete-harga w-1/2 inline-flex justify-center items-center gap-2 text-sm font-black text-red-500 bg-red-50 border border-red-200 hover:bg-red-500 hover:text-white py-3 rounded-xl transition-all shadow-sm active:scale-95" data-id={item.id}>
-                                    🗑️ Hapus
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
         </main>
@@ -188,7 +252,6 @@ try {
                 document.getElementById('modal-title-text').innerHTML = "✨ Tambah Paket Harga";
                 document.getElementById('btn-save').innerHTML = "🚀 Simpan Paket Baru";
                 
-                // Kosongkan form
                 document.getElementById('i-nama').value = "";
                 document.getElementById('i-harga').value = "";
                 document.getElementById('i-badge').value = "";
@@ -208,7 +271,6 @@ try {
                     document.getElementById('modal-title-text').innerHTML = "✏️ Edit Paket Harga";
                     document.getElementById('btn-save').innerHTML = "💾 Update Data Paket";
                     
-                    // Isi form dengan data lama
                     document.getElementById('i-nama').value = item.nama_paket || "";
                     document.getElementById('i-harga').value = item.harga || "";
                     document.getElementById('i-badge').value = item.badge || "";
@@ -219,10 +281,9 @@ try {
                 });
             });
 
-            // FUNGSI: TUTUP MODAL
             document.getElementById('btn-close-modal').addEventListener('click', () => modal.classList.add('modal-hidden'));
             
-            // FUNGSI: EKSEKUSI SIMPAN (OTOMATIS MENDETEKSI TAMBAH ATAU EDIT)
+            // FUNGSI: EKSEKUSI SIMPAN (TAMBAH / EDIT)
             document.getElementById('btn-save').addEventListener('click', async (e) => {
                 const btn = e.target;
                 const data = {
@@ -234,12 +295,11 @@ try {
                 };
 
                 if(!data.nama_paket) return alert("Nama paket wajib diisi!");
-                if(isEditMode) data.id = currentEditId; // Sisipkan ID jika sedang mode edit
+                if(isEditMode) data.id = currentEditId;
 
                 const originalText = btn.innerHTML;
                 btn.innerHTML = "⏳ Memproses..."; btn.disabled = true;
 
-                // Tentukan endpoint API mana yang dipanggil
                 const endpointURL = isEditMode ? '/api/update-harga' : '/api/add-harga';
 
                 try {
